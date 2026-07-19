@@ -54,7 +54,7 @@ class ProfileReadmeTests(unittest.TestCase):
             "open to internships",
             "ChatGPT",
             "Codex",
-            "â€”",
+            "Ã¢â‚¬â€",
         )
         for phrase in forbidden:
             with self.subTest(phrase=phrase):
@@ -63,13 +63,13 @@ class ProfileReadmeTests(unittest.TestCase):
     def test_svg_assets_follow_the_shared_contract(self):
         required_text = (
             "CHIA ZHI FENG",
-            "è°¢æ¢“å³°",
-            "CODE Â· CIRCUITS Â· COFFEE",
+            "\u8c22\u6893\u5cf0",
+            "CODE \u00b7 CIRCUITS \u00b7 COFFEE",
             "AI / ML",
             "BACKEND",
             "ROBOTS",
             "FPGA",
-            "01Â°17â€²N / 103Â°51â€²E",
+            "01\u00b017\u2032N / 103\u00b051\u2032E",
             "SIGNAL ONLINE",
         )
 
@@ -77,7 +77,12 @@ class ProfileReadmeTests(unittest.TestCase):
             with self.subTest(theme=theme):
                 self.assertTrue(asset_path.exists(), f"Missing {asset_path}")
                 source = asset_path.read_text(encoding="utf-8")
+                self.assertTrue(
+                    source.startswith('<?xml version="1.0" encoding="UTF-8"?>\n')
+                )
+                self.assertTrue(source.isascii())
                 root = ET.fromstring(source)
+                rendered_text = "".join(root.itertext())
                 self.assertEqual(root.attrib.get("viewBox"), "0 0 900 300")
                 self.assertEqual(root.attrib.get("role"), "img")
                 self.assertIn("aria-labelledby", root.attrib)
@@ -88,7 +93,7 @@ class ProfileReadmeTests(unittest.TestCase):
                 self.assertNotIn("<script", source.lower())
                 self.assertNotIn("<image", source.lower())
                 for label in required_text:
-                    self.assertIn(label, source)
+                    self.assertIn(label, rendered_text)
 
 
 if __name__ == "__main__":

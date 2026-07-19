@@ -28,7 +28,8 @@ PALETTES = {
     },
 }
 
-SVG_TEMPLATE = Template("""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" role="img" aria-labelledby="title desc">
+SVG_TEMPLATE = Template("""<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" role="img" aria-labelledby="title desc">
   <title id="title">Chia Zhi Feng Signal Lab</title>
   <desc id="desc">An animated engineering schematic connecting coffee with AI, backend systems, robots, and FPGA hardware.</desc>
   <defs>
@@ -136,6 +137,16 @@ SVG_TEMPLATE = Template("""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 
   </g>
 </svg>
 """)
+
+# Keep generated SVG bytes ASCII-only while XML entities preserve Unicode text.
+for mojibake, entity_text in {
+    "\u00e8\u00b0\u00a2\u00e6\u00a2\u201c\u00e5\u00b3\u00b0": "&#35874;&#26771;&#23792;",
+    "\u00c2\u00b7": "&#183;",
+    "01\u00c2\u00b017\u00e2\u20ac\u00b2N / 103\u00c2\u00b051\u00e2\u20ac\u00b2E": (
+        "01&#176;17&#8242;N / 103&#176;51&#8242;E"
+    ),
+}.items():
+    SVG_TEMPLATE = Template(SVG_TEMPLATE.template.replace(mojibake, entity_text))
 
 
 def render_svg(theme: str) -> str:
