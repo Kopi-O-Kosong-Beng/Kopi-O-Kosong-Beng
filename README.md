@@ -17,7 +17,7 @@
 </p>
 
 <details>
-<summary><code>brew --profile</code></summary>
+<summary>a little more about me</summary>
 <br>
 
 ```text
@@ -30,7 +30,7 @@ elsewhere   zhifeng-portfolio.vercel.app
 </details>
 
 <details>
-<summary><code>why the username?</code></summary>
+<summary>why the username?</summary>
 <br>
 
 Kopi o kosong beng is simply my coffee order: black coffee, no sugar, iced.

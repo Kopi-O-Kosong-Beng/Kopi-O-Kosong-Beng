@@ -43,8 +43,10 @@ class ProfileReadmeTests(unittest.TestCase):
     def test_readme_has_exactly_two_native_easter_eggs(self):
         self.assertEqual(self.readme.count("<details>"), 2)
         self.assertEqual(self.readme.count("</details>"), 2)
-        self.assertIn("brew --profile", self.readme)
-        self.assertIn("why the username?", self.readme)
+        self.assertIn("<summary>a little more about me</summary>", self.readme)
+        self.assertIn("<summary>why the username?</summary>", self.readme)
+        self.assertNotIn("brew --profile", self.readme)
+        self.assertNotIn("<summary><code>", self.readme)
         self.assertIn("kopi o kosong", self.readme.lower())
 
     def test_profile_easter_egg_uses_neutral_elsewhere_field(self):
