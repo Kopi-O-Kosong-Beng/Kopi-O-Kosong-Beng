@@ -43,6 +43,11 @@ class ProfileReadmeTests(unittest.TestCase):
         self.assertIn("why the username?", self.readme)
         self.assertIn("kopi o kosong", self.readme.lower())
 
+    def test_profile_easter_egg_uses_neutral_elsewhere_field(self):
+        profile_block = self.readme.split("```text", 1)[1].split("```", 1)[0]
+        self.assertIn("elsewhere", profile_block)
+        self.assertNotIn("serious", profile_block)
+
     def test_readme_does_not_restore_legacy_marketing_content(self):
         forbidden = (
             "survive real users",
@@ -92,6 +97,10 @@ class ProfileReadmeTests(unittest.TestCase):
                 self.assertIn("animation: none !important", source)
                 self.assertNotIn("<script", source.lower())
                 self.assertNotIn("<image", source.lower())
+                self.assertLess(
+                    source.index('<circle class="signal motion"'),
+                    source.index('<g transform="translate(100 158)">'),
+                )
                 for label in required_text:
                     self.assertIn(label, rendered_text)
 

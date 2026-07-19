@@ -81,6 +81,8 @@
     <path class="cup" d="M 427 203 H 476"/>
   </g>
 
+  <circle class="signal motion" cx="0" cy="0" r="6"/>
+
   <g transform="translate(100 158)">
     <rect class="node" width="90" height="36" rx="6"/>
     <text x="45" y="22" text-anchor="middle" class="primary node-label">AI / ML</text>
@@ -97,8 +99,6 @@
     <rect class="node" width="90" height="36" rx="6"/>
     <text x="45" y="22" text-anchor="middle" class="primary node-label">FPGA</text>
   </g>
-
-  <circle class="signal motion" cx="0" cy="0" r="6"/>
 
   <text x="30" y="278" class="secondary meta">01&#176;17&#8242;N / 103&#176;51&#8242;E</text>
   <g transform="translate(742 272)">

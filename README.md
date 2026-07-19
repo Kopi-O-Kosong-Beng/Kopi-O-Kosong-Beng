@@ -24,7 +24,7 @@
 coffee      kopi o kosong
 location    singapore
 currently   studying at SUTD and tinkering
-serious     zhifeng-portfolio.vercel.app
+elsewhere   zhifeng-portfolio.vercel.app
 ```
 
 </details>

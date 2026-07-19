@@ -111,6 +111,8 @@ SVG_TEMPLATE = Template("""<?xml version="1.0" encoding="UTF-8"?>
     <path class="cup" d="M 427 203 H 476"/>
   </g>
 
+  <circle class="signal motion" cx="0" cy="0" r="6"/>
+
   <g transform="translate(100 158)">
     <rect class="node" width="90" height="36" rx="6"/>
     <text x="45" y="22" text-anchor="middle" class="primary node-label">AI / ML</text>
@@ -127,8 +129,6 @@ SVG_TEMPLATE = Template("""<?xml version="1.0" encoding="UTF-8"?>
     <rect class="node" width="90" height="36" rx="6"/>
     <text x="45" y="22" text-anchor="middle" class="primary node-label">FPGA</text>
   </g>
-
-  <circle class="signal motion" cx="0" cy="0" r="6"/>
 
   <text x="30" y="278" class="secondary meta">01Â°17â€²N / 103Â°51â€²E</text>
   <g transform="translate(742 272)">
