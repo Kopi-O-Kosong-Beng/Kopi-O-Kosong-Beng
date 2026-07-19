@@ -95,8 +95,8 @@ SVG_TEMPLATE = Template("""<?xml version="1.0" encoding="UTF-8"?>
   <rect width="900" height="300" rx="12" fill="url(#grid)"/>
 
   <text x="30" y="31" class="secondary serial">SIGNAL LAB / BUILD 2026.07</text>
-  <text x="450" y="75" text-anchor="middle" class="primary name">CHIA ZHI FENG / è°¢æ¢“å³°</text>
-  <text x="450" y="105" text-anchor="middle" class="secondary tagline">CODE Â· CIRCUITS Â· COFFEE</text>
+  <text x="450" y="75" text-anchor="middle" class="primary name">CHIA ZHI FENG / &#35874;&#26771;&#23792;</text>
+  <text x="450" y="105" text-anchor="middle" class="secondary tagline">CODE &#183; CIRCUITS &#183; COFFEE</text>
 
   <path class="wire" d="M 430 176 L 190 176"/>
   <path class="wire" d="M 438 192 L 340 226"/>
@@ -130,24 +130,13 @@ SVG_TEMPLATE = Template("""<?xml version="1.0" encoding="UTF-8"?>
     <text x="45" y="22" text-anchor="middle" class="primary node-label">FPGA</text>
   </g>
 
-  <text x="30" y="278" class="secondary meta">01Â°17â€²N / 103Â°51â€²E</text>
+  <text x="30" y="278" class="secondary meta">01&#176;17&#8242;N / 103&#176;51&#8242;E</text>
   <g transform="translate(742 272)">
     <circle class="status-dot motion" cx="0" cy="2" r="4"/>
     <text x="14" y="6" class="secondary meta">SIGNAL ONLINE</text>
   </g>
 </svg>
 """)
-
-# Keep generated SVG bytes ASCII-only while XML entities preserve Unicode text.
-for mojibake, entity_text in {
-    "\u00e8\u00b0\u00a2\u00e6\u00a2\u201c\u00e5\u00b3\u00b0": "&#35874;&#26771;&#23792;",
-    "\u00c2\u00b7": "&#183;",
-    "01\u00c2\u00b017\u00e2\u20ac\u00b2N / 103\u00c2\u00b051\u00e2\u20ac\u00b2E": (
-        "01&#176;17&#8242;N / 103&#176;51&#8242;E"
-    ),
-}.items():
-    SVG_TEMPLATE = Template(SVG_TEMPLATE.template.replace(mojibake, entity_text))
-
 
 def render_svg(theme: str) -> str:
     return SVG_TEMPLATE.substitute(PALETTES[theme])

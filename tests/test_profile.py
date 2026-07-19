@@ -36,6 +36,10 @@ class ProfileReadmeTests(unittest.TestCase):
         )
         self.assertIn("mailto:zhifeng010729@gmail.com", self.readme)
 
+    def test_readme_uses_html_middle_dot_separators(self):
+        self.assertEqual(self.readme.count("&middot;"), 2)
+        self.assertNotIn("\u00c2\u00b7", self.readme)
+
     def test_readme_has_exactly_two_native_easter_eggs(self):
         self.assertEqual(self.readme.count("<details>"), 2)
         self.assertEqual(self.readme.count("</details>"), 2)
@@ -59,7 +63,7 @@ class ProfileReadmeTests(unittest.TestCase):
             "open to internships",
             "ChatGPT",
             "Codex",
-            "Ã¢â‚¬â€",
+            "\u2014",
         )
         for phrase in forbidden:
             with self.subTest(phrase=phrase):
