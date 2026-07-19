@@ -28,7 +28,7 @@ pitchMe is not featured in the main composition. Visitors who want professional 
 The finished README contains only four elements, in this order:
 
 1. A theme-aware animated Signal Lab SVG.
-2. One short identity line: `Computer Science and Design at SUTD. Usually building something between software and the physical world.`
+2. One short identity line: `I study Computer Science and Design at SUTD. I like building things that connect software to the physical world.`
 3. Centred links to the portfolio, LinkedIn, and email.
 4. Two native `<details>` Easter eggs.
 
@@ -87,7 +87,7 @@ The first is labelled `brew --profile` and contains:
 ```text
 coffee      kopi o kosong
 location    singapore
-currently   building, breaking, learning
+currently   studying at SUTD and tinkering
 serious     portfolio link
 ```
 
@@ -119,6 +119,10 @@ README.md
 assets/
   signal-lab-dark.svg
   signal-lab-light.svg
+scripts/
+  generate_signal_assets.py
+tests/
+  test_profile.py
 docs/
   superpowers/
     specs/
@@ -126,6 +130,7 @@ docs/
 ```
 
 The local `.superpowers/` brainstorming directory is ignored and never committed.
+The generator keeps both theme variants on identical geometry. The test file records the README and SVG contract so later edits cannot silently restore the old marketing copy or break the theme variants.
 
 ## Verification
 
