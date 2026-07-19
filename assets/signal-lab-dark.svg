@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" role="img" aria-labelledby="title desc">
+  <title id="title">Chia Zhi Feng Signal Lab</title>
+  <desc id="desc">An animated engineering schematic connecting coffee with AI, backend systems, robots, and FPGA hardware.</desc>
+  <defs>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#17313C" stroke-width="1"/>
+    </pattern>
+    <filter id="glow" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <style>
+    text {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .primary { fill: #EEF8FA; }
+    .secondary { fill: #7894A0; }
+    .serial { font-size: 10px; letter-spacing: 2.2px; }
+    .name { font-size: 28px; font-weight: 700; letter-spacing: 1.2px; }
+    .tagline { font-size: 11px; letter-spacing: 3.2px; }
+    .node-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+    .meta { font-size: 9px; letter-spacing: 1.2px; }
+    .wire { fill: none; stroke: #2E6977; stroke-width: 1.5; }
+    .node { fill: #0E222C; stroke: #347687; stroke-width: 1.2; }
+    .cup { fill: none; stroke: #68DCC9; stroke-width: 2; }
+    .steam { fill: none; stroke: #68DCC9; stroke-width: 1.8; stroke-linecap: round; opacity: 0.85; }
+    .steam-left { animation: steam-left 4s ease-in-out infinite; }
+    .steam-right { animation: steam-right 4s ease-in-out 0.8s infinite; }
+    .signal { fill: #68DCC9; filter: url(#glow); transform: translate(450px, 176px); animation: signal-route 8s ease-in-out infinite; }
+    .status-dot { fill: #68DCC9; animation: status-glow 2.4s ease-in-out infinite; }
+    @keyframes steam-left {
+      0%, 100% { transform: translateY(2px); opacity: 0.35; }
+      50% { transform: translateY(-7px); opacity: 0.9; }
+    }
+    @keyframes steam-right {
+      0%, 100% { transform: translateY(1px); opacity: 0.3; }
+      50% { transform: translateY(-9px); opacity: 0.85; }
+    }
+    @keyframes signal-route {
+      0%, 5% { transform: translate(450px, 176px); opacity: 0.9; }
+      20% { transform: translate(145px, 176px); opacity: 1; }
+      36% { transform: translate(295px, 238px); opacity: 1; }
+      50% { transform: translate(450px, 176px); opacity: 0.9; }
+      68% { transform: translate(605px, 238px); opacity: 1; }
+      84% { transform: translate(755px, 176px); opacity: 1; }
+      100% { transform: translate(450px, 176px); opacity: 0.9; }
+    }
+    @keyframes status-glow {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .motion {
+        animation: none !important;
+      }
+    }
+  </style>
+
+  <rect width="900" height="300" rx="12" fill="#08151D"/>
+  <rect width="900" height="300" rx="12" fill="url(#grid)"/>
+
+  <text x="30" y="31" class="secondary serial">SIGNAL LAB / BUILD 2026.07</text>
+  <text x="450" y="75" text-anchor="middle" class="primary name">CHIA ZHI FENG / è°¢æ¢“å³°</text>
+  <text x="450" y="105" text-anchor="middle" class="secondary tagline">CODE Â· CIRCUITS Â· COFFEE</text>
+
+  <path class="wire" d="M 430 176 L 190 176"/>
+  <path class="wire" d="M 438 192 L 340 226"/>
+  <path class="wire" d="M 462 192 L 560 226"/>
+  <path class="wire" d="M 470 176 L 710 176"/>
+
+  <g aria-label="Coffee input">
+    <path class="steam motion steam-left" d="M 441 151 C 434 141, 448 136, 440 124"/>
+    <path class="steam motion steam-right" d="M 457 151 C 450 140, 464 135, 456 122"/>
+    <path class="cup" d="M 431 161 H 469 V 182 C 469 192, 461 199, 450 199 C 439 199, 431 192, 431 182 Z"/>
+    <path class="cup" d="M 469 166 H 477 C 486 166, 486 181, 477 181 H 469"/>
+    <path class="cup" d="M 427 203 H 476"/>
+  </g>
+
+  <g transform="translate(100 158)">
+    <rect class="node" width="90" height="36" rx="6"/>
+    <text x="45" y="22" text-anchor="middle" class="primary node-label">AI / ML</text>
+  </g>
+  <g transform="translate(250 220)">
+    <rect class="node" width="90" height="36" rx="6"/>
+    <text x="45" y="22" text-anchor="middle" class="primary node-label">BACKEND</text>
+  </g>
+  <g transform="translate(560 220)">
+    <rect class="node" width="90" height="36" rx="6"/>
+    <text x="45" y="22" text-anchor="middle" class="primary node-label">ROBOTS</text>
+  </g>
+  <g transform="translate(710 158)">
+    <rect class="node" width="90" height="36" rx="6"/>
+    <text x="45" y="22" text-anchor="middle" class="primary node-label">FPGA</text>
+  </g>
+
+  <circle class="signal motion" cx="0" cy="0" r="6"/>
+
+  <text x="30" y="278" class="secondary meta">01Â°17â€²N / 103Â°51â€²E</text>
+  <g transform="translate(742 272)">
+    <circle class="status-dot motion" cx="0" cy="2" r="4"/>
+    <text x="14" y="6" class="secondary meta">SIGNAL ONLINE</text>
+  </g>
+</svg>
