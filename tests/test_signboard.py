@@ -95,6 +95,19 @@ class SignboardAssetTests(unittest.TestCase):
             strip_dark = strip_dark.replace(value, f"${key}")
         self.assertEqual(strip_light, strip_dark)
 
+    def test_the_signal_lab_is_gone_for_good(self):
+        stale = (
+            ROOT / "assets" / "signal-lab-dark.svg",
+            ROOT / "assets" / "signal-lab-light.svg",
+            ROOT / "scripts" / "generate_signal_assets.py",
+        )
+        for path in stale:
+            with self.subTest(path=path.name):
+                self.assertFalse(
+                    path.exists(),
+                    f"{path.name} was superseded by the kopi signboard and must not return.",
+                )
+
 
 if __name__ == "__main__":
     unittest.main()
