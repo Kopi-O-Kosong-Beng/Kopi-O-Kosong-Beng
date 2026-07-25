@@ -68,10 +68,11 @@ LINKS = (
     "mailto:zhifeng010729@gmail.com",
 )
 
+# UTF-8 bytes misread as cp1252
 MOJIBAKE = (
-    chr(0xC2) + chr(0xB7),
-    chr(0xE2) + chr(0x80) + chr(0x9C),
-    chr(0xEF) + chr(0xBF) + chr(0xBD),
+    'Â·',
+    'â€”',
+    'ï¿½',
 )
 
 
