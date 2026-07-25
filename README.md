@@ -1,38 +1,53 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/signal-lab-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="./assets/signal-lab-light.svg">
-  <img alt="Animated systems schematic for Chia Zhi Feng" src="./assets/signal-lab-light.svg" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/kopi-sign-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="./assets/kopi-sign-light.svg">
+  <img alt="A hawker stall signboard reading Kopi O Kosong Beng, with a glass of iced black coffee beside it" src="./assets/kopi-sign-light.svg" width="100%">
 </picture>
 
 <p align="center">
-  I study Computer Science and Design at SUTD. I like building things that connect software to the physical world.
+  English &nbsp;&middot;&nbsp; <a href="./README.zh.md">中文</a>
 </p>
 
-<p align="center">
-  <a href="https://zhifeng-portfolio.vercel.app/">Portfolio</a>
-  &nbsp;&middot;&nbsp;
-  <a href="https://www.linkedin.com/in/zhi-feng-chia-a50266210/">LinkedIn</a>
-  &nbsp;&middot;&nbsp;
-  <a href="mailto:zhifeng010729@gmail.com">Email</a>
-</p>
+I'm Zhi Feng. I study Computer Science and Design at SUTD. Most of what I build has to deal with the physical world at some point, and that is where the interesting bugs live.
+
+### NOW SERVING
+
+**[pitchMe](https://www.pitchmesg.com)**, co-founder and CTO. It's an AI speaking coach. You record yourself talking and it tells you the truth about it. Schools and youth programmes around Singapore use it.
+
+### ON THE SIDE
+
+* a robot arm I taught to pick things up without dropping them
+* a two player math game with no CPU in it, just wires and states
+* quantum devices, in a cleanroom, at hours I would rather not say
+* a very stubborn dataset about American carbon emissions
+
+### ALSO IN THE CUP
+
+* taekwondo. I competed. I was bad at first.
+* certified to go 18 m down, where there is no signal, which is the point
+* marathons and mountains, mostly for the view
+* table tennis, undefeated (sample size: my friends)
+
+### THE FULL MENU
+
+[Portfolio](https://zhifeng-portfolio.vercel.app/) &nbsp;&middot;&nbsp; [pitchMe](https://www.pitchmesg.com) &nbsp;&middot;&nbsp; [LinkedIn](https://www.linkedin.com/in/zhi-feng-chia-a50266210/) &nbsp;&middot;&nbsp; [say hi](mailto:zhifeng010729@gmail.com)
 
 <details>
-<summary>a little more about me</summary>
+<summary>why kopi o kosong beng?</summary>
 <br>
 
-```text
-coffee      kopi o kosong
-location    singapore
-currently   studying at SUTD and tinkering
-elsewhere   zhifeng-portfolio.vercel.app
-```
+It's my order. Kopi is coffee, o means no milk, kosong means no sugar, beng means iced. So: iced black coffee, unsweetened.
+
+And yes, the glass on the sign up there has ice in it. That was on purpose.
 
 </details>
 
 <details>
-<summary>why the username?</summary>
+<summary>what's brewing</summary>
 <br>
 
-Kopi o kosong beng is simply my coffee order: black coffee, no sugar, iced.
+Still at SUTD. Flying to Waterloo at the end of August for an exchange semester. Right now I'm building my portfolio site, which is the one place I let myself write things down properly.
 
 </details>
+
+<p align="center"><i>no sugar. never was.</i></p>
