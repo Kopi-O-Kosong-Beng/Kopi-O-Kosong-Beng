@@ -4,6 +4,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 README_EN = ROOT / "README.md"
+README_ZH = ROOT / "README.zh.md"
 
 BANNED_WIDGETS = (
     "shields.io",
@@ -80,6 +81,7 @@ class ProfileCopyTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.english = README_EN.read_text(encoding="utf-8")
+        cls.chinese = README_ZH.read_text(encoding="utf-8")
 
     @staticmethod
     def prose_only(text):
@@ -167,6 +169,21 @@ class ProfileCopyTests(unittest.TestCase):
     def test_english_readme_does_not_restore_the_signal_lab(self):
         for phrase in ("signal-lab", "SIGNAL LAB", "CODE · CIRCUITS · COFFEE"):
             self.assertNotIn(phrase, self.english)
+
+    def test_chinese_readme_meets_the_shared_contract(self):
+        self.assert_shared_contract(self.chinese, "README.zh.md")
+
+    def test_chinese_readme_carries_the_menu_sections(self):
+        for heading in ("今日供应", "配菜", "杯里还有"):
+            self.assertIn(heading, self.chinese)
+        self.assertIn("pitchMe", self.chinese)
+        self.assertIn("不要糖。从来都不要。", self.chinese)
+
+    def test_the_language_switch_works_in_both_directions(self):
+        self.assertIn('href="./README.zh.md"', self.english)
+        self.assertIn("中文", self.english)
+        self.assertIn('href="./README.md"', self.chinese)
+        self.assertIn(">English</a>", self.chinese)
 
 
 if __name__ == "__main__":
