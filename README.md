@@ -5,7 +5,7 @@
 </picture>
 
 <p align="center">
-  English &nbsp;&middot;&nbsp; <a href="./README.zh.md">中文</a>
+  English &nbsp;&middot;&nbsp; <a href="./README.zh.md" lang="zh-Hans">中文</a>
 </p>
 
 I'm Zhi Feng. I study Computer Science and Design at SUTD. Most of what I build has to deal with the physical world at some point, and that is where the interesting bugs live.

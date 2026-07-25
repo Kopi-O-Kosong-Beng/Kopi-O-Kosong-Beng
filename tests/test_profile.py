@@ -103,6 +103,7 @@ class ProfileCopyTests(unittest.TestCase):
             self.assertIn("./assets/kopi-sign-dark.svg", text)
             self.assertIn("./assets/kopi-sign-light.svg", text)
             self.assertIn('width="100%"', text)
+            self.assertIn('src="./assets/kopi-sign-light.svg"', text)
 
         with self.subTest(check="image has alt text", file=label):
             self.assertRegex(text, r'<img alt="[^"]{20,}"')
@@ -156,6 +157,10 @@ class ProfileCopyTests(unittest.TestCase):
             for garbled in MOJIBAKE:
                 self.assertNotIn(garbled, text)
 
+        with self.subTest(check="signal lab is gone for good", file=label):
+            for phrase in ("signal-lab", "SIGNAL LAB", "CODE · CIRCUITS · COFFEE"):
+                self.assertNotIn(phrase, text)
+
     def test_english_readme_meets_the_shared_contract(self):
         self.assert_shared_contract(self.english, "README.md")
 
@@ -170,11 +175,11 @@ class ProfileCopyTests(unittest.TestCase):
         self.assertIn("co-founder and CTO", self.english[serving:side])
 
     def test_english_readme_closes_with_the_signature(self):
-        self.assertIn("no sugar. never was.", self.english)
-
-    def test_english_readme_does_not_restore_the_signal_lab(self):
-        for phrase in ("signal-lab", "SIGNAL LAB", "CODE · CIRCUITS · COFFEE"):
-            self.assertNotIn(phrase, self.english)
+        self.assertTrue(
+            self.english.rstrip().endswith(
+                '<p align="center"><i>no sugar. never was.</i></p>'
+            )
+        )
 
     def test_chinese_readme_meets_the_shared_contract(self):
         self.assert_shared_contract(self.chinese, "README.zh.md")
@@ -183,11 +188,15 @@ class ProfileCopyTests(unittest.TestCase):
         for heading in ("今日供应", "配菜", "杯里还有"):
             self.assertIn(heading, self.chinese)
         self.assertIn("pitchMe", self.chinese)
-        self.assertIn("不要糖。从来都不要。", self.chinese)
+        self.assertTrue(
+            self.chinese.rstrip().endswith(
+                '<p align="center"><i>不要糖。从来都不要。</i></p>'
+            )
+        )
 
     def test_the_language_switch_works_in_both_directions(self):
         self.assertIn('href="./README.zh.md"', self.english)
-        self.assertIn("中文", self.english)
+        self.assertIn(">中文</a>", self.english)
         self.assertIn('href="./README.md"', self.chinese)
         self.assertIn(">English</a>", self.chinese)
 

@@ -1,0 +1,2 @@
+# The generator emits LF and a test compares generated output byte for byte, so the working tree must keep LF endings.
+* text=auto eol=lf

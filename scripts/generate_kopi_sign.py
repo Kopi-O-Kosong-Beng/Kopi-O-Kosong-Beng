@@ -22,13 +22,13 @@ PALETTES = {
         "paper": "#F2E7D5",
         "panel": "#FBF4E7",
         "ink": "#3A2214",
-        "ink_soft": "#8B6F55",
+        "ink_soft": "#816548",
         "accent": "#C2703A",
         "rule": "#D9C3A5",
         "coffee": "#4A2C17",
         "ice": "#E8F1F3",
         "ice_line": "#AFC6CC",
-        "glass": "#93A9AF",
+        "glass": "#71878E",
     },
 }
 
@@ -49,8 +49,7 @@ SVG_TEMPLATE = Template("""<?xml version="1.0" encoding="UTF-8"?>
     .name { font-size: 16px; letter-spacing: 2.4px; }
     .glass { fill: none; stroke: $glass; stroke-width: 2.4; stroke-linejoin: round; }
     .brew { fill: $coffee; }
-    .ice { fill: $ice; opacity: 0.92; }
-    .ice-edge { fill: none; stroke: $ice_line; stroke-width: 1; }
+    .ice { fill: $ice; fill-opacity: 0.92; stroke: $ice_line; stroke-width: 1; }
     .straw { fill: none; stroke: $accent; stroke-width: 4; stroke-linecap: round; }
     .drop { fill: $ice; opacity: 0; }
     .drop-a { animation: bead 5s ease-in 0s infinite; }
@@ -85,11 +84,8 @@ SVG_TEMPLATE = Template("""<?xml version="1.0" encoding="UTF-8"?>
     <path class="brew" d="M 717 98 L 724 226 Q 726 234 734 234 L 766 234 Q 774 234 776 226 L 783 98 Z"/>
     <ellipse class="brew" cx="750" cy="98" rx="33" ry="7"/>
     <rect class="ice" x="728" y="94" width="20" height="20" rx="3" transform="rotate(-14 738 104)"/>
-    <rect class="ice-edge" x="728" y="94" width="20" height="20" rx="3" transform="rotate(-14 738 104)"/>
     <rect class="ice" x="752" y="102" width="18" height="18" rx="3" transform="rotate(11 761 111)"/>
-    <rect class="ice-edge" x="752" y="102" width="18" height="18" rx="3" transform="rotate(11 761 111)"/>
     <rect class="ice" x="736" y="120" width="17" height="17" rx="3" transform="rotate(6 744 128)"/>
-    <rect class="ice-edge" x="736" y="120" width="17" height="17" rx="3" transform="rotate(6 744 128)"/>
     <path class="straw" d="M 766 56 L 742 150"/>
     <path class="glass" d="M 714 74 L 724 226 Q 726 234 734 234 L 766 234 Q 774 234 776 226 L 786 74"/>
     <ellipse class="glass" cx="750" cy="74" rx="36" ry="8"/>

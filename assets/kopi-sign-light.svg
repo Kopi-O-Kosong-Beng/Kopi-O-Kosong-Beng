@@ -5,7 +5,7 @@
   <style>
     text { font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif; }
     .ink { fill: #3A2214; }
-    .soft { fill: #8B6F55; }
+    .soft { fill: #816548; }
     .board { fill: #FBF4E7; stroke: #D9C3A5; stroke-width: 2; }
     .board-inner { fill: none; stroke: #D9C3A5; stroke-width: 1; }
     .rule { fill: none; stroke: #D9C3A5; stroke-width: 1; }
@@ -13,10 +13,9 @@
     .word { font-size: 52px; font-weight: 700; letter-spacing: 3px; }
     .zh { font-size: 15px; letter-spacing: 4px; }
     .name { font-size: 16px; letter-spacing: 2.4px; }
-    .glass { fill: none; stroke: #93A9AF; stroke-width: 2.4; stroke-linejoin: round; }
+    .glass { fill: none; stroke: #71878E; stroke-width: 2.4; stroke-linejoin: round; }
     .brew { fill: #4A2C17; }
-    .ice { fill: #E8F1F3; opacity: 0.92; }
-    .ice-edge { fill: none; stroke: #AFC6CC; stroke-width: 1; }
+    .ice { fill: #E8F1F3; fill-opacity: 0.92; stroke: #AFC6CC; stroke-width: 1; }
     .straw { fill: none; stroke: #C2703A; stroke-width: 4; stroke-linecap: round; }
     .drop { fill: #E8F1F3; opacity: 0; }
     .drop-a { animation: bead 5s ease-in 0s infinite; }
@@ -51,11 +50,8 @@
     <path class="brew" d="M 717 98 L 724 226 Q 726 234 734 234 L 766 234 Q 774 234 776 226 L 783 98 Z"/>
     <ellipse class="brew" cx="750" cy="98" rx="33" ry="7"/>
     <rect class="ice" x="728" y="94" width="20" height="20" rx="3" transform="rotate(-14 738 104)"/>
-    <rect class="ice-edge" x="728" y="94" width="20" height="20" rx="3" transform="rotate(-14 738 104)"/>
     <rect class="ice" x="752" y="102" width="18" height="18" rx="3" transform="rotate(11 761 111)"/>
-    <rect class="ice-edge" x="752" y="102" width="18" height="18" rx="3" transform="rotate(11 761 111)"/>
     <rect class="ice" x="736" y="120" width="17" height="17" rx="3" transform="rotate(6 744 128)"/>
-    <rect class="ice-edge" x="736" y="120" width="17" height="17" rx="3" transform="rotate(6 744 128)"/>
     <path class="straw" d="M 766 56 L 742 150"/>
     <path class="glass" d="M 714 74 L 724 226 Q 726 234 734 234 L 766 234 Q 774 234 776 226 L 786 74"/>
     <ellipse class="glass" cx="750" cy="74" rx="36" ry="8"/>

@@ -5,7 +5,7 @@
 </picture>
 
 <p align="center">
-  <a href="./README.md">English</a> &nbsp;&middot;&nbsp; 中文
+  <a href="./README.md" lang="en">English</a> &nbsp;&middot;&nbsp; 中文
 </p>
 
 我是谢梓峰,在 SUTD 读计算机科学与设计。我做的东西多半最后都要碰到实体世界,有意思的 bug 都藏在那里。

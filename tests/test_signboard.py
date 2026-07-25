@@ -36,6 +36,9 @@ class SignboardAssetTests(unittest.TestCase):
                     source.startswith('<?xml version="1.0" encoding="UTF-8"?>\n')
                 )
                 self.assertTrue(source.isascii(), "SVG must be ASCII only")
+                # read_text() applies universal newline translation, which would
+                # silently accept a CRLF checkout; check the raw bytes instead.
+                self.assertNotIn(b"\r\n", path.read_bytes())
 
     def test_assets_match_the_generator_exactly(self):
         for theme, path in ASSET_PATHS.items():
@@ -62,7 +65,13 @@ class SignboardAssetTests(unittest.TestCase):
                 self.assertNotIn("<image", source.lower())
                 self.assertNotIn("@font-face", source)
                 self.assertNotIn("xlink:href", source)
+                self.assertNotIn('href="', source)
                 self.assertNotIn("https://", source)
+                # A bare "//" check would false-positive on the xmlns
+                # declaration's "http://www.w3.org/2000/svg", so guard the
+                # protocol-relative form specifically instead.
+                self.assertNotIn('src="//', source)
+                self.assertNotIn('href="//', source)
 
     def test_assets_carry_the_signboard_copy(self):
         for theme, path in ASSET_PATHS.items():
@@ -84,6 +93,7 @@ class SignboardAssetTests(unittest.TestCase):
         light = ASSET_PATHS["light"].read_text(encoding="utf-8")
         dark = ASSET_PATHS["dark"].read_text(encoding="utf-8")
         self.assertNotEqual(light, dark)
+        # This only catches a palette key that is defined but never referenced in the template; it does not verify the committed asset files.
         for theme in ("light", "dark"):
             for token in generate_kopi_sign.PALETTES[theme].values():
                 self.assertIn(token, generate_kopi_sign.render_svg(theme))
