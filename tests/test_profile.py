@@ -18,6 +18,7 @@ BANNED_WIDGETS = (
     "snk.svg",
 )
 
+# Covers both languages: English phrases first, Chinese terms after.
 BANNED_JOB_SEEKING = (
     "seeking",
     "open to opportunit",
@@ -25,6 +26,13 @@ BANNED_JOB_SEEKING = (
     "looking for a role",
     "internship",
     "hire me",
+    "求职",
+    "实习",
+    "找工作",
+    "招聘",
+    "应聘",
+    "内推",
+    "求一份",
 )
 
 BANNED_METRICS = (
@@ -95,7 +103,18 @@ class ProfileCopyTests(unittest.TestCase):
         return re.sub(r'[\w-]+="[^"]*"', "", stripped)
 
     def assert_shared_contract(self, text, label):
-        """Every rule that applies to both language files."""
+        """Checks run against both language files.
+
+        Most of these are genuinely language neutral: they test structure
+        (signboard markup, alt text presence, easter egg count), or literal
+        strings/characters that are not translated prose (widget domains,
+        banned metrics, dash characters, digits, links, mojibake byte
+        sequences, retired signal-lab branding), so they catch real problems
+        in either file. BANNED_JOB_SEEKING also covers both languages: English
+        phrases and Chinese terms. BANNED_VOCAB remains English only by
+        design, it is a lexical filter on English filler words and does not
+        check Chinese phrasing, so do not assume it guards README.zh.md.
+        """
         with self.subTest(check="theme aware signboard", file=label):
             self.assertIn("<picture>", text)
             self.assertIn('media="(prefers-color-scheme: dark)"', text)
