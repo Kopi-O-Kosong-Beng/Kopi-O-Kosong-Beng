@@ -127,12 +127,18 @@ class ProfileCopyTests(unittest.TestCase):
                 self.assertNotIn(metric, text)
 
         with self.subTest(check="no dashes as punctuation", file=label):
-            self.assertNotIn("—", text)
-            self.assertNotIn("–", text)
+            # U+2014 EM DASH, U+2013 EN DASH, U+2015 HORIZONTAL BAR, U+FF0D FULLWIDTH HYPHEN MINUS
+            banned_dashes = ("—", "–", "―", "－")
+            for dash in banned_dashes:
+                self.assertNotIn(
+                    dash,
+                    text,
+                    f"{label} contains banned dash character U+{ord(dash):04X}",
+                )
 
         with self.subTest(check="no banned vocabulary", file=label):
             for entry in BANNED_VOCAB:
-                pattern = r"\b" + re.escape(entry) + r"\b"
+                pattern = r"(?<![A-Za-z])" + re.escape(entry) + r"(?![A-Za-z])"
                 self.assertIsNone(
                     re.search(pattern, text, flags=re.IGNORECASE),
                     f"{label} contains banned wording: {entry}",
