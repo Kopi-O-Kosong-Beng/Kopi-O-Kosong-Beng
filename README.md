@@ -24,7 +24,7 @@ I'm Zhi Feng. I study Computer Science and Design at SUTD. Most of what I build 
 ### ALSO IN THE CUP
 
 * taekwondo. I competed. I was bad at first.
-* certified to go 18 m down, where there is no signal, which is the point
+* scuba diving. no phone signal down there, which is the point.
 * marathons and mountains, mostly for the view
 * table tennis, undefeated (sample size: my friends)
 

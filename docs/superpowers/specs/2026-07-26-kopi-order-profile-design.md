@@ -57,9 +57,12 @@ Competence is conveyed through the specificity of the descriptions instead. "A
 two player math game with no CPU in it" lands harder with an engineer than "117
 state FSM" does with anybody, and it is funnier.
 
-There is exactly one permitted number, `18 m`, which is a diving certification
-depth used to set up a joke about having no phone signal. It is not a credential.
-No other figure may appear in either README.
+No figure may appear in either README.
+
+Revised 2026-07-26 after ZF review: an earlier version permitted `18 m`, a diving
+certification depth. ZF's objection was that nobody reads `18 m` as scuba without
+already knowing the convention, so the joke could not land. The line now says
+scuba diving in plain words and carries no number at all.
 
 ### The craft is the evidence
 
@@ -192,6 +195,16 @@ A hawker stall signboard. Inside the panel:
 - a small `singapore` mark
 - to one side, a tall glass of iced kopi: dark coffee, ice cubes, a straw, and
   condensation beading on the outside
+- along the bottom, a specials strip headed `TODAY'S BREW` listing the stack in
+  monospace: `python · c++ · typescript · ros · fpga · gcp`
+
+The specials strip was added 2026-07-26 after ZF review. The first version of the
+signboard carried no engineering signal at all, which lost half the brief: the
+profile read as someone who likes coffee and sport, with the competence buried in
+prose nobody scans. A hawker stall lists what it serves, so this one lists code.
+It stays typographic and part of the sign, which is what keeps it from becoming
+the badge wall the rest of this spec exists to prevent. It names tools, not
+achievements, so it does not compete with the portfolio.
 
 The drink is iced because `beng` means iced. This is the correction of the
 previous design's central error and it should not be undone.
