@@ -124,8 +124,23 @@ class ProfileCopyTests(unittest.TestCase):
             self.assertIn('width="100%"', text)
             self.assertIn('src="./assets/kopi-sign-light.svg"', text)
 
-        with self.subTest(check="image has alt text", file=label):
-            self.assertRegex(text, r'<img alt="[^"]{20,}"')
+        with self.subTest(check="theme aware order chit", file=label):
+            self.assertIn("./assets/kopi-chit-dark.svg", text)
+            self.assertIn("./assets/kopi-chit-light.svg", text)
+            self.assertIn('src="./assets/kopi-chit-light.svg"', text)
+
+        with self.subTest(check="both cards have alt text", file=label):
+            self.assertEqual(text.count("<picture>"), 2)
+            self.assertEqual(text.count("</picture>"), 2)
+            self.assertEqual(len(re.findall(r'<img alt="[^"]{20,}"', text)), 2)
+
+        with self.subTest(check="cards are local, never remote", file=label):
+            # The whole point of generating these is that no third party serves
+            # them. A remote card would be a slop widget wearing our palette.
+            for asset in re.findall(r'(?:srcset|src)="([^"]*kopi-[^"]*)"', text):
+                self.assertTrue(
+                    asset.startswith("./assets/"), f"{asset} is not a local asset"
+                )
 
         with self.subTest(check="only the diving depth", file=label):
             numbers = set(re.findall(r"\d+", self.prose_only(text)))

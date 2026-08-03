@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360" role="img" aria-labelledby="title desc">
+  <title id="title">The order chit of Chia Zhi Feng, printed at the Kopi O Kosong Beng stall</title>
+  <desc id="desc">A printed order chit listing 726 contributions in the past year, a longest run of 23 days, and 45 of 366 days brewed, above a bar chart of the last thirty days. Beside it stands a tall glass of iced kopi filled to the share of days brewed, its ice cubes stamped py, c++, ts, ros, fpga, gcp.</desc>
+  <style>
+    text { font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ink { fill: #F2E5D1; }
+    .soft { fill: #A78D70; }
+    .chit { fill: #1B1611; stroke: #3B2F23; stroke-width: 1.5; }
+    .dot { fill: none; stroke: #3B2F23; stroke-width: 1; stroke-dasharray: 1 3; }
+    .rule { fill: none; stroke: #3B2F23; stroke-width: 1; }
+    .head { font-size: 15px; font-weight: 700; letter-spacing: 2.6px; }
+    .meta { font-size: 9px; letter-spacing: 1.6px; }
+    .item { font-size: 11.5px; letter-spacing: 0.4px; }
+    .label { font-size: 9px; letter-spacing: 3px; }
+    .spark { fill: #E09551; }
+    .spark-idle { fill: #3B2F23; }
+    .brew { fill: #6B3F1C; }
+    .brew-top { fill: #9C6A2E; }
+    .ice { fill: #DCE9EC; fill-opacity: 0.92; stroke: #7E969C; stroke-width: 1; }
+    .cube { fill: #3A2211; text-anchor: middle; letter-spacing: 0.2px; }
+    .glass { fill: none; stroke: #6F8389; stroke-width: 2.4; stroke-linejoin: round; }
+    .straw { fill: none; stroke: #E09551; stroke-width: 4; stroke-linecap: round; }
+    .drop { fill: #DCE9EC; opacity: 0; }
+    .drop-a { animation: bead 5s ease-in 0s infinite; }
+    .drop-b { animation: bead 5s ease-in 1.7s infinite; }
+    .drop-c { animation: bead 5s ease-in 3.4s infinite; }
+    /* No fill-mode and no delay on purpose. The resting state of the coffee
+       has to be its final level, because anything that does not run the
+       animation, a still thumbnail or a reduced motion viewer, must still see
+       a full glass rather than an empty one. */
+    .pour { animation: pour 1.8s cubic-bezier(0.2, 0.75, 0.25, 1) 1; }
+    @keyframes bead {
+      0% { transform: translateY(0px); opacity: 0; }
+      12% { opacity: 0.85; }
+      70% { opacity: 0.7; }
+      100% { transform: translateY(44px); opacity: 0; }
+    }
+    @keyframes pour {
+      from { transform: translateY(160px); }
+      to { transform: translateY(0px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .motion { animation: none !important; opacity: 0.7 !important; }
+      .pour { animation: none !important; }
+    }
+  </style>
+
+  <rect width="900" height="360" rx="14" fill="#100D0A"/>
+  <path class="chit" d="M 44 26 H 592 V 302 L 585.77 316 L 579.55 302 L 573.32 316 L 567.09 302 L 560.86 316 L 554.64 302 L 548.41 316 L 542.18 302 L 535.95 316 L 529.73 302 L 523.5 316 L 517.27 302 L 511.05 316 L 504.82 302 L 498.59 316 L 492.36 302 L 486.14 316 L 479.91 302 L 473.68 316 L 467.45 302 L 461.23 316 L 455 302 L 448.77 316 L 442.55 302 L 436.32 316 L 430.09 302 L 423.86 316 L 417.64 302 L 411.41 316 L 405.18 302 L 398.95 316 L 392.73 302 L 386.5 316 L 380.27 302 L 374.05 316 L 367.82 302 L 361.59 316 L 355.36 302 L 349.14 316 L 342.91 302 L 336.68 316 L 330.45 302 L 324.23 316 L 318 302 L 311.77 316 L 305.55 302 L 299.32 316 L 293.09 302 L 286.86 316 L 280.64 302 L 274.41 316 L 268.18 302 L 261.95 316 L 255.73 302 L 249.5 316 L 243.27 302 L 237.05 316 L 230.82 302 L 224.59 316 L 218.36 302 L 212.14 316 L 205.91 302 L 199.68 316 L 193.45 302 L 187.23 316 L 181 302 L 174.77 316 L 168.55 302 L 162.32 316 L 156.09 302 L 149.86 316 L 143.64 302 L 137.41 316 L 131.18 302 L 124.95 316 L 118.73 302 L 112.5 316 L 106.27 302 L 100.05 316 L 93.82 302 L 87.59 316 L 81.36 302 L 75.14 316 L 68.91 302 L 62.68 316 L 56.45 302 L 50.23 316 L 44 302 Z"/>
+
+  <text x="70" y="62" class="ink head">KOPI O KOSONG BENG</text>
+  <text x="70" y="80" class="soft mono meta">ORDER #0726 &#183; 04 AUG 2026</text>
+  <path class="dot" d="M 70 96 H 566"/>
+
+  <text x="70" y="122" class="ink mono item">1x&#160;&#160;&#160;commits, past year</text>
+  <text x="566" y="122" text-anchor="end" class="ink mono item">726</text>
+  <text x="70" y="146" class="ink mono item">1x&#160;&#160;&#160;longest run</text>
+  <text x="566" y="146" text-anchor="end" class="ink mono item">23 days</text>
+  <text x="70" y="170" class="ink mono item">1x&#160;&#160;&#160;days brewed</text>
+  <text x="566" y="170" text-anchor="end" class="ink mono item">45/366</text>
+
+  <path class="dot" d="M 70 188 H 566"/>
+  <text x="70" y="206" class="soft label">LAST 30 DAYS</text>
+  <rect class="spark-idle" x="70" y="246" width="9" height="2" rx="1.5"/>
+  <rect class="spark-idle" x="86.53" y="246" width="9" height="2" rx="1.5"/>
+  <rect class="spark" x="103.07" y="214" width="9" height="34" rx="1.5"/>
+  <rect class="spark" x="119.6" y="236.19" width="9" height="11.81" rx="1.5"/>
+  <rect class="spark" x="136.13" y="231.49" width="9" height="16.51" rx="1.5"/>
+  <rect class="spark" x="152.67" y="245.57" width="9" height="2.43" rx="1.5"/>
+  <rect class="spark" x="169.2" y="233.2" width="9" height="14.8" rx="1.5"/>
+  <rect class="spark" x="185.73" y="231.92" width="9" height="16.08" rx="1.5"/>
+  <rect class="spark" x="202.27" y="237.89" width="9" height="10.11" rx="1.5"/>
+  <rect class="spark" x="218.8" y="233.2" width="9" height="14.8" rx="1.5"/>
+  <rect class="spark" x="235.33" y="240.88" width="9" height="7.12" rx="1.5"/>
+  <rect class="spark" x="251.87" y="240.45" width="9" height="7.55" rx="1.5"/>
+  <rect class="spark" x="268.4" y="245.15" width="9" height="2.85" rx="1.5"/>
+  <rect class="spark" x="284.93" y="236.61" width="9" height="11.39" rx="1.5"/>
+  <rect class="spark" x="301.47" y="229.79" width="9" height="18.21" rx="1.5"/>
+  <rect class="spark" x="318" y="227.23" width="9" height="20.77" rx="1.5"/>
+  <rect class="spark" x="334.53" y="232.77" width="9" height="15.23" rx="1.5"/>
+  <rect class="spark" x="351.07" y="238.32" width="9" height="9.68" rx="1.5"/>
+  <rect class="spark" x="367.6" y="231.92" width="9" height="16.08" rx="1.5"/>
+  <rect class="spark" x="384.13" y="244.72" width="9" height="3.28" rx="1.5"/>
+  <rect class="spark" x="400.67" y="235.33" width="9" height="12.67" rx="1.5"/>
+  <rect class="spark" x="417.2" y="227.65" width="9" height="20.35" rx="1.5"/>
+  <rect class="spark" x="433.73" y="242.16" width="9" height="5.84" rx="1.5"/>
+  <rect class="spark" x="450.27" y="233.2" width="9" height="14.8" rx="1.5"/>
+  <rect class="spark" x="466.8" y="242.16" width="9" height="5.84" rx="1.5"/>
+  <rect class="spark-idle" x="483.33" y="246" width="9" height="2" rx="1.5"/>
+  <rect class="spark" x="499.87" y="243.01" width="9" height="4.99" rx="1.5"/>
+  <rect class="spark" x="516.4" y="239.6" width="9" height="8.4" rx="1.5"/>
+  <rect class="spark" x="532.93" y="222.53" width="9" height="25.47" rx="1.5"/>
+  <rect class="spark" x="549.47" y="240.88" width="9" height="7.12" rx="1.5"/>
+  <path class="rule" d="M 70 250 H 566"/>
+
+  <path class="dot" d="M 70 266 H 566"/>
+  <text x="70" y="288" class="soft label">TOTAL</text>
+  <text x="566" y="288" text-anchor="end" class="ink mono item">no sugar</text>
+
+  <path class="rule" d="M 620 44 V 330"/>
+
+  <g aria-label="A tall glass of iced kopi, filled to the share of days brewed">
+    <clipPath id="glass-body"><path d="M 688 58 L 700 308 Q 702 320 714 320 L 790 320 Q 802 320 804 308 L 816 58 Z"/></clipPath>
+    <g clip-path="url(#glass-body)">
+      <g class="pour">
+        <rect class="brew" x="680" y="289.51" width="144" height="36.49"/>
+        <ellipse class="brew-top" cx="752" cy="289.51" rx="41.03" ry="5"/>
+      </g>
+    </g>
+    <path class="straw" d="M 796 30 L 740 302"/>
+    <g transform="rotate(-11 725 105)">
+      <rect class="ice" x="704" y="84" width="42" height="42" rx="4"/>
+      <text class="cube mono" x="725" y="108.67" font-size="11">py</text>
+    </g>
+    <g transform="rotate(8 771 119)">
+      <rect class="ice" x="752" y="100" width="38" height="38" rx="4"/>
+      <text class="cube mono" x="771" y="122.33" font-size="10">c++</text>
+    </g>
+    <g transform="rotate(5 728 160)">
+      <rect class="ice" x="710" y="142" width="36" height="36" rx="4"/>
+      <text class="cube mono" x="728" y="163.33" font-size="10">ts</text>
+    </g>
+    <g transform="rotate(-7 771 179)">
+      <rect class="ice" x="754" y="162" width="34" height="34" rx="4"/>
+      <text class="cube mono" x="771" y="182" font-size="9">ros</text>
+    </g>
+    <g transform="rotate(10 722 214)">
+      <rect class="ice" x="706" y="198" width="32" height="32" rx="4"/>
+      <text class="cube mono" x="722" y="217" font-size="9">fpga</text>
+    </g>
+    <g transform="rotate(-4 767 241)">
+      <rect class="ice" x="752" y="226" width="30" height="30" rx="4"/>
+      <text class="cube mono" x="767" y="243.67" font-size="8">gcp</text>
+    </g>
+    <path class="glass" d="M 688 58 L 700 308 Q 702 320 714 320 L 790 320 Q 802 320 804 308 L 816 58"/>
+    <ellipse class="glass" cx="752" cy="58" rx="64" ry="13"/>
+    <ellipse class="drop motion drop-a" cx="692" cy="130" rx="2.8" ry="3.8"/>
+    <ellipse class="drop motion drop-b" cx="812" cy="170" rx="2.4" ry="3.4"/>
+    <ellipse class="drop motion drop-c" cx="696" cy="220" rx="2.2" ry="3"/>
+  </g>
+
+  <text x="752" y="344" text-anchor="middle" class="soft label">TODAY'S BREW</text>
+</svg>
