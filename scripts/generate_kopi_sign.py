@@ -5,6 +5,22 @@ from string import Template
 ROOT = Path(__file__).resolve().parents[1]
 ASSET_DIR = ROOT / "assets"
 
+# The stack is curated, not detected. Only three public repos exist and their
+# languages read as Python, Python and null, so anything auto-detected would be
+# a lie by omission. Both cards read this tuple: the signboard prints the full
+# names along its specials strip, the chit stamps the short labels onto ice
+# cubes. Keeping one tuple stops the two lists from drifting apart.
+STACK = (
+    ("python", "py"),
+    ("c++", "c++"),
+    ("typescript", "ts"),
+    ("ros", "ros"),
+    ("fpga", "fpga"),
+    ("gcp", "gcp"),
+)
+
+STACK_LINE = " · ".join(name for name, _ in STACK)
+
 PALETTES = {
     "dark": {
         "paper": "#100D0A",
@@ -101,7 +117,7 @@ SVG_TEMPLATE = Template("""<?xml version="1.0" encoding="UTF-8"?>
 
   <path class="rule" d="M 90 212 H 810"/>
   <text x="90" y="236" class="soft label">TODAY&#39;S BREW</text>
-  <text x="214" y="236" class="ink stack">python &#183; c++ &#183; typescript &#183; ros &#183; fpga &#183; gcp</text>
+  <text x="214" y="236" class="ink stack">$stack_line</text>
 </svg>
 """)
 
@@ -111,7 +127,11 @@ def to_ascii_entities(markup: str) -> str:
 
 
 def render_svg(theme: str) -> str:
-    return to_ascii_entities(SVG_TEMPLATE.substitute(PALETTES[theme]))
+    # Substitution runs first so the interpolated middot in STACK_LINE still
+    # gets folded into a numeric entity by to_ascii_entities.
+    return to_ascii_entities(
+        SVG_TEMPLATE.substitute(stack_line=STACK_LINE, **PALETTES[theme])
+    )
 
 
 def main() -> None:
