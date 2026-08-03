@@ -89,6 +89,36 @@ class ChitAssetTests(unittest.TestCase):
                 self.assertNotIn('src="//', source)
                 self.assertNotIn('href="//', source)
 
+    def test_nothing_animated_hides_itself_at_rest(self):
+        """The resting frame has to be the finished frame.
+
+        An earlier version poured the coffee in from below the glass. It looked
+        right in a live browser and rendered an empty glass everywhere the
+        animation was not actually running, because a renderer parked at t=0
+        sits on the from frame whether or not a fill-mode is set. Two rules keep
+        that from coming back: no animation may declare a backwards fill-mode,
+        and every animated element must carry a class the reduced motion block
+        can switch off.
+        """
+        for theme, path in ASSET_PATHS.items():
+            source = path.read_text(encoding="utf-8")
+            with self.subTest(theme=theme, check="no backwards fill-mode"):
+                for shorthand in re.findall(r"animation:\s*([^;]+);", source):
+                    self.assertNotRegex(shorthand, r"\b(both|backwards)\b")
+
+            animated = set(re.findall(r"\.([a-z-]+)\s*\{[^}]*animation:", source))
+            hooks = set(re.findall(r"\.([a-z-]+)\s*\{\s*animation: none", source))
+            self.assertTrue(hooks, "reduced motion switches nothing off")
+            for name in animated - hooks:
+                for attr in re.findall(
+                    r'class="([^"]*\b' + re.escape(name) + r'\b[^"]*)"', source
+                ):
+                    with self.subTest(theme=theme, animated=name):
+                        self.assertTrue(
+                            hooks & set(attr.split()),
+                            f'class="{attr}" animates with no reduced motion hook',
+                        )
+
     def test_the_two_variants_differ_only_in_colour(self):
         light = ASSET_PATHS["light"].read_text(encoding="utf-8")
         dark = ASSET_PATHS["dark"].read_text(encoding="utf-8")

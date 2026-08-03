@@ -61,21 +61,31 @@ and dark stay in lockstep with the sign.
 
 ### Motion
 
-Two animations, both authored so the still state is the correct final state.
+Every animation starts and ends at the resting state, and none of them moves
+the coffee.
 
 - `.motion` drops reuse the existing `bead` keyframes.
-- `.pour` raises the coffee from below to its level on load. With animation
-  disabled the coffee already sits at its final level.
+- `.bob` floats each ice cube, staggered, on an outer group. The tilt stays on
+  an inner group, because a CSS transform on the same element replaces the
+  `transform` attribute outright and would flatten every cube.
+- `.brew-top` ripples the crema horizontally around its own centre.
 
-The reduced motion block handles both, and keeps the existing `.motion` opacity
-behaviour so the drops fade rather than freeze mid fall:
+The first attempt poured the coffee up into the glass from below. It looked
+right in a live browser and rendered an **empty glass** anywhere the animation
+was not actually running, because a renderer parked at t=0 sits on the `from`
+frame whether or not a fill-mode is set. Dropping the fill-mode is not enough.
+The level is now plain geometry and only decoration moves.
 
 ```css
 @media (prefers-reduced-motion: reduce) {
   .motion { animation: none !important; opacity: 0.7 !important; }
-  .pour   { animation: none !important; }
+  .still  { animation: none !important; }
 }
 ```
+
+`tests/test_chit.py` locks this in: no animation may declare a `both` or
+`backwards` fill-mode, and every animated element must carry a class the
+reduced motion block switches off.
 
 ## Data source
 

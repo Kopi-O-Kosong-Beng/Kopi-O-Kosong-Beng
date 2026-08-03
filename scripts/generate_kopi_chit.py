@@ -80,7 +80,13 @@ STYLE = """
     .spark { fill: $accent; }
     .spark-idle { fill: $rule; }
     .brew { fill: $brew; }
-    .brew-top { fill: $crema; }
+    .brew-top {
+      fill: $crema;
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: ripple 5s ease-in-out infinite;
+    }
+    .bob { animation: bob 4.4s ease-in-out infinite; }
     .ice { fill: $ice; fill-opacity: 0.92; stroke: $ice_line; stroke-width: 1; }
     .cube { fill: $coffee; text-anchor: middle; letter-spacing: 0.2px; }
     .glass { fill: none; stroke: $glass; stroke-width: 2.4; stroke-linejoin: round; }
@@ -89,24 +95,29 @@ STYLE = """
     .drop-a { animation: bead 5s ease-in 0s infinite; }
     .drop-b { animation: bead 5s ease-in 1.7s infinite; }
     .drop-c { animation: bead 5s ease-in 3.4s infinite; }
-    /* No fill-mode and no delay on purpose. The resting state of the coffee
-       has to be its final level, because anything that does not run the
-       animation, a still thumbnail or a reduced motion viewer, must still see
-       a full glass rather than an empty one. */
-    .pour { animation: pour 1.8s cubic-bezier(0.2, 0.75, 0.25, 1) 1; }
+    /* Every animation below starts and ends at the resting state, and none of
+       them moves the coffee. An earlier version poured the kopi in from below,
+       which looked good in a live browser and showed an empty glass anywhere
+       the animation was not actually running: dropping the fill-mode is not
+       enough, because a renderer parked at t=0 still sits on the from frame.
+       The level is now plain geometry, and only decoration moves. */
     @keyframes bead {
       0% { transform: translateY(0px); opacity: 0; }
       12% { opacity: 0.85; }
       70% { opacity: 0.7; }
       100% { transform: translateY(44px); opacity: 0; }
     }
-    @keyframes pour {
-      from { transform: translateY(160px); }
-      to { transform: translateY(0px); }
+    @keyframes ripple {
+      0%, 100% { transform: scaleX(1); }
+      50% { transform: scaleX(0.965); }
+    }
+    @keyframes bob {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-2.5px); }
     }
     @media (prefers-reduced-motion: reduce) {
       .motion { animation: none !important; opacity: 0.7 !important; }
-      .pour { animation: none !important; }
+      .still { animation: none !important; }
     }
 """
 
@@ -197,14 +208,19 @@ def sparkline(counts):
 
 def ice_cubes(stack):
     rows = []
-    for (x, y, size, rotation), (_, short) in zip(CUBES, stack):
+    for index, ((x, y, size, rotation), (_, short)) in enumerate(zip(CUBES, stack)):
         cx, cy = x + size / 2, y + size / 2
         font = 11 if size >= 40 else 10 if size >= 36 else 9 if size >= 32 else 8
+        # The bob lives on an outer group and the tilt stays on an inner one.
+        # A CSS transform on the same element replaces the transform attribute
+        # outright, which would flatten every cube the moment it animated.
         rows.append(
-            f'    <g transform="rotate({num(rotation)} {num(cx)} {num(cy)})">\n'
-            f'      <rect class="ice" x="{x}" y="{y}" width="{size}" height="{size}" rx="4"/>\n'
-            f'      <text class="cube mono" x="{num(cx)}" y="{num(cy + font / 3)}" '
+            f'    <g class="bob still" style="animation-delay: {num(index * 0.55)}s">\n'
+            f'      <g transform="rotate({num(rotation)} {num(cx)} {num(cy)})">\n'
+            f'        <rect class="ice" x="{x}" y="{y}" width="{size}" height="{size}" rx="4"/>\n'
+            f'        <text class="cube mono" x="{num(cx)}" y="{num(cy + font / 3)}" '
             f'font-size="{font}">{escape(short)}</text>\n'
+            f"      </g>\n"
             f"    </g>"
         )
     return "\n".join(rows)
@@ -250,10 +266,8 @@ def render_chit(theme, stats, stack=STACK):
   <g aria-label="A tall glass of iced kopi, filled to the share of days brewed">
     <clipPath id="glass-body"><path d="{glass_body} Z"/></clipPath>
     <g clip-path="url(#glass-body)">
-      <g class="pour">
-        <rect class="brew" x="680" y="{num(surface)}" width="144" height="{num(GLASS_BOTTOM + 6 - surface)}"/>
-        <ellipse class="brew-top" cx="{GLASS_CX}" cy="{num(surface)}" rx="{num(glass_half_width(surface))}" ry="5"/>
-      </g>
+      <rect class="brew" x="680" y="{num(surface)}" width="144" height="{num(GLASS_BOTTOM + 6 - surface)}"/>
+      <ellipse class="brew-top still" cx="{GLASS_CX}" cy="{num(surface)}" rx="{num(glass_half_width(surface))}" ry="5"/>
     </g>
     <path class="straw" d="M 796 30 L 740 302"/>
 {ice_cubes(stack)}
