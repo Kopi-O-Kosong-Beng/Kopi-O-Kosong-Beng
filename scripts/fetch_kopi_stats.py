@@ -22,8 +22,6 @@ CALENDAR_URL = "https://github.com/users/{login}/contributions"
 DEFAULT_LOGIN = "Kopi-O-Kosong-Beng"
 USER_AGENT = "kopi-o-kosong-beng-profile-card"
 
-RECENT_DAYS = 30
-
 # A real response carries a full year of cells. Anything much shorter means the
 # markup moved under us, and a wrong card is worse than a stale one.
 MIN_DAYS = 300
@@ -118,9 +116,6 @@ def summarise(days, today, login=DEFAULT_LOGIN):
             break
         current += 1
 
-    recent = counts[-RECENT_DAYS:]
-    recent = [0] * (RECENT_DAYS - len(recent)) + recent
-
     return {
         "login": login,
         "generated_on": today,
@@ -131,7 +126,9 @@ def summarise(days, today, login=DEFAULT_LOGIN):
         "days_total": len(history),
         "longest_run": longest,
         "current_run": current,
-        "recent": recent,
+        # One entry per day of the window, oldest first, so the card can draw
+        # the calendar grid without needing the dates again.
+        "daily": counts,
     }
 
 

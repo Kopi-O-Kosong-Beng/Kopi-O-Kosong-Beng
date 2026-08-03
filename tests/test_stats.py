@@ -124,18 +124,16 @@ class SummaryTests(unittest.TestCase):
         self.assertEqual(summary["current_run"], 2)
         self.assertEqual(summary["window_end"], "2026-01-02")
 
-    def test_recent_holds_thirty_days_oldest_first(self):
+    def test_daily_is_one_entry_per_window_day_oldest_first(self):
         days = self.series(list(range(40)))
         summary = fetch_kopi_stats.summarise(days, today="2026-02-09")
-        self.assertEqual(len(summary["recent"]), 30)
-        self.assertEqual(summary["recent"], list(range(10, 40)))
+        self.assertEqual(summary["daily"], list(range(40)))
+        self.assertEqual(len(summary["daily"]), summary["days_total"])
 
-    def test_recent_is_padded_when_the_history_is_short(self):
-        days = self.series([2, 3])
+    def test_daily_drops_the_days_that_have_not_happened(self):
+        days = self.series([1, 2, 3, 4])
         summary = fetch_kopi_stats.summarise(days, today="2026-01-02")
-        self.assertEqual(len(summary["recent"]), 30)
-        self.assertEqual(summary["recent"][-2:], [2, 3])
-        self.assertEqual(summary["recent"][:-2], [0] * 28)
+        self.assertEqual(summary["daily"], [1, 2])
 
 
 class GuardTests(unittest.TestCase):
@@ -161,10 +159,14 @@ class CommittedStatsTests(unittest.TestCase):
             "days_total",
             "longest_run",
             "current_run",
-            "recent",
+            "daily",
         ):
             self.assertIn(key, stats)
-        self.assertEqual(len(stats["recent"]), 30)
+        self.assertEqual(len(stats["daily"]), stats["days_total"])
+        self.assertEqual(sum(stats["daily"]), stats["total_contributions"])
+        self.assertEqual(
+            sum(1 for day in stats["daily"] if day > 0), stats["days_active"]
+        )
         self.assertLessEqual(stats["days_active"], stats["days_total"])
         self.assertLessEqual(stats["longest_run"], stats["days_total"])
         self.assertLessEqual(stats["current_run"], stats["longest_run"])

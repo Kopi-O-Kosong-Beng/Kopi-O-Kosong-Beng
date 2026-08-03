@@ -55,7 +55,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/kopi-chit-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="./assets/kopi-chit-light.svg">
-  <img alt="一张点单小票,上面记着我过去一年的提交次数、最长的连续天数,还有真正动手的天数,旁边立着一杯冰咖啡乌,冰块上印着我平时用的技术栈" src="./assets/kopi-chit-light.svg" width="100%">
+  <img alt="一张点单小票,上面记着我过去一年的提交次数、最长的连续天数,还有真正动手的天数,下面是一整年的日历方格,每天一格,越忙的日子颜色越深" src="./assets/kopi-chit-light.svg" width="100%">
 </picture>
 
 <p align="center"><i>不要糖。从来都不要。</i></p>

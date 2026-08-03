@@ -1,68 +1,65 @@
-"""Render the order chit: a printed hawker receipt plus a filling glass.
+"""Render the order chit: a printed hawker receipt of the past year.
 
 Pure by contract. Everything drawn here is a function of the stats dict handed
 in, which is why the committed asset can still be compared byte for byte
 against a fresh render even though the numbers change daily. Nothing in this
 module touches the network.
+
+Two things this deliberately is not.
+
+It is not a second glass. The signboard already draws one and already prints
+the stack along its specials strip, so a glass here repeated both the picture
+and the words.
+
+It is not a contribution grid. A grid of small squares is the graphic GitHub
+already puts on the page, and repainting it in a warmer palette would be the
+exact borrowed look the guard suite exists to keep off this profile.
 """
 
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from string import Template
 from xml.sax.saxutils import escape
 import json
 
-from generate_kopi_sign import PALETTES, STACK, to_ascii_entities
+from generate_kopi_sign import PALETTES, to_ascii_entities
 
-# The signboard's flat brown reads fine as a full glass. A shallow pour is a
-# small shape sitting on the panel, and in dark that brown all but vanishes
-# against it, so the liquid gets its own two tokens instead of borrowing one
-# tuned for a different job. No value is repeated, here or in PALETTES, because
-# the light and dark assets are compared by substituting tokens back out.
+# The chit borrows the signboard's paper and ink and adds its own five step
+# scale for the stains. No value is repeated, here or against the borrowed
+# ones, because the light and dark assets are compared by substituting tokens
+# back out.
 CHIT_TOKENS = {
-    "dark": {"brew": "#6B3F1C", "crema": "#9C6A2E"},
-    "light": {"brew": "#472A15", "crema": "#7A4A22"},
+    "dark": {"g0": "#2A2119"},
+    "light": {"g0": "#E6D8C0"},
 }
+
+BORROWED = ("paper", "panel", "ink", "ink_soft", "accent", "rule")
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSET_DIR = ROOT / "assets"
 STATS_FILE = ROOT / "data" / "stats.json"
 
-WIDTH, HEIGHT = 900, 360
+WIDTH, HEIGHT = 900, 406
 
-CHIT_LEFT, CHIT_RIGHT = 44, 592
-CHIT_TOP, CHIT_BOTTOM = 26, 302
-TEETH, TOOTH_DROP = 44, 14
-PAD_L, PAD_R = 70, 566
+CHIT_LEFT, CHIT_RIGHT = 44, 856
+CHIT_TOP, CHIT_BOTTOM = 26, 372
+TEETH, TOOTH_DROP = 66, 14
+PAD_L, PAD_R = 70, 830
 
-BAR_COUNT = 30
-BAR_BASELINE = 248.0
-BAR_MIN, BAR_MAX = 2.0, 34.0
-BAR_WIDTH = 9.0
+GAUGE_X, GAUGE_W, GAUGE_H = 610, 130.0, 8
 
-GLASS_CX = 752
-GLASS_TOP, GLASS_BOTTOM = 58, 320
-GLASS_TOP_RX, GLASS_BOTTOM_RX = 64.0, 38.0
-
-# The glass is empty at 0.0 and brim full at 1.0, so a silent year reads as an
-# empty glass rather than a flattering sliver.
-GLASS_TOP_LEVEL, GLASS_BOTTOM_LEVEL = 72.0, 320.0
+# Thirty days, drawn full width and large. A twelve month breakdown was tried
+# and thrown out: nine of the twelve months here are empty, so any yearly
+# layout is mostly holes no matter how it is drawn. The last month is the
+# window where this data is actually dense, and it visibly moves every day.
+BARS = 30
+BAR_BASELINE = 300.0
+BAR_MIN, BAR_MAX = 3.0, 66.0
+TICK_Y = 318
 
 MONTHS = (
     "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
     "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
-)
-
-# x, y, size, rotation. Ice is heaped through the whole glass rather than
-# floated on the surface, so a shallow pour still looks like a real iced kopi
-# instead of cubes hanging in mid air.
-CUBES = (
-    (704, 84, 42, -11),
-    (752, 100, 38, 8),
-    (710, 142, 36, 5),
-    (754, 162, 34, -7),
-    (706, 198, 32, 10),
-    (752, 226, 30, -4),
 )
 
 STYLE = """
@@ -73,58 +70,34 @@ STYLE = """
     .chit { fill: $panel; stroke: $rule; stroke-width: 1.5; }
     .dot { fill: none; stroke: $rule; stroke-width: 1; stroke-dasharray: 1 3; }
     .rule { fill: none; stroke: $rule; stroke-width: 1; }
-    .head { font-size: 15px; font-weight: 700; letter-spacing: 2.6px; }
+    .head { font-size: 17px; font-weight: 700; letter-spacing: 2.8px; }
     .meta { font-size: 9px; letter-spacing: 1.6px; }
     .item { font-size: 11.5px; letter-spacing: 0.4px; }
     .label { font-size: 9px; letter-spacing: 3px; }
-    .spark { fill: $accent; }
-    .spark-idle { fill: $rule; }
-    .brew { fill: $brew; }
-    .brew-top {
-      fill: $crema;
-      transform-box: fill-box;
-      transform-origin: center;
-      animation: ripple 5s ease-in-out infinite;
-    }
-    .bob { animation: bob 4.4s ease-in-out infinite; }
-    .ice { fill: $ice; fill-opacity: 0.92; stroke: $ice_line; stroke-width: 1; }
-    .cube { fill: $coffee; text-anchor: middle; letter-spacing: 0.2px; }
-    .glass { fill: none; stroke: $glass; stroke-width: 2.4; stroke-linejoin: round; }
-    .straw { fill: none; stroke: $accent; stroke-width: 4; stroke-linecap: round; }
-    .drop { fill: $ice; opacity: 0; }
-    .drop-a { animation: bead 5s ease-in 0s infinite; }
-    .drop-b { animation: bead 5s ease-in 1.7s infinite; }
-    .drop-c { animation: bead 5s ease-in 3.4s infinite; }
-    /* Every animation below starts and ends at the resting state, and none of
-       them moves the coffee. An earlier version poured the kopi in from below,
-       which looked good in a live browser and showed an empty glass anywhere
-       the animation was not actually running: dropping the fill-mode is not
-       enough, because a renderer parked at t=0 still sits on the from frame.
-       The level is now plain geometry, and only decoration moves. */
-    @keyframes bead {
-      0% { transform: translateY(0px); opacity: 0; }
-      12% { opacity: 0.85; }
-      70% { opacity: 0.7; }
-      100% { transform: translateY(44px); opacity: 0; }
-    }
-    @keyframes ripple {
-      0%, 100% { transform: scaleX(1); }
-      50% { transform: scaleX(0.965); }
-    }
-    @keyframes bob {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-2.5px); }
+    .tick { font-size: 7.5px; letter-spacing: 1.4px; }
+    .track { fill: $g0; }
+    .gauge { fill: $accent; }
+    .bar { fill: $accent; }
+    .bar-idle { fill: $g0; }
+    /* Only today's bar moves, and it rests at full opacity, so a
+       renderer parked at t=0 shows the finished card. An earlier version
+       animated the artwork itself and rendered wrong wherever the animation
+       was not running. */
+    .today { animation: settle 3.4s ease-in-out infinite; }
+    @keyframes settle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .motion { animation: none !important; opacity: 0.7 !important; }
       .still { animation: none !important; }
     }
 """
 
 
 def palette(theme):
-    """The signboard palette plus the chit only liquid tokens."""
-    return {**PALETTES[theme], **CHIT_TOKENS[theme]}
+    """Only what the chit actually paints with, so a dead token is a failure."""
+    borrowed = {key: PALETTES[theme][key] for key in BORROWED}
+    return {**borrowed, **CHIT_TOKENS[theme]}
 
 
 def num(value):
@@ -153,16 +126,15 @@ def fill_fraction(stats):
     return max(0.0, min(1.0, stats.get("days_active", 0) / total))
 
 
-def surface_y(fill):
-    return GLASS_BOTTOM_LEVEL - fill * (GLASS_BOTTOM_LEVEL - GLASS_TOP_LEVEL)
-
-
-def glass_half_width(y):
-    ratio = (y - GLASS_TOP) / (GLASS_BOTTOM - GLASS_TOP)
-    return GLASS_TOP_RX - ratio * (GLASS_TOP_RX - GLASS_BOTTOM_RX)
+def recent(stats):
+    """The last thirty days, oldest first, padded if the history is shorter."""
+    tail = (stats.get("daily") or [])[-BARS:]
+    return [0] * (BARS - len(tail)) + tail
 
 
 def bar_heights(counts):
+    """Height is a length, so it scales linearly. That is the honest encoding
+    for a bar, unlike a circle, whose area does the reading."""
     peak = max(counts) if counts else 0
     if peak <= 0:
         return [BAR_MIN] * len(counts)
@@ -170,6 +142,33 @@ def bar_heights(counts):
         BAR_MIN if value <= 0 else BAR_MIN + (BAR_MAX - BAR_MIN) * (value / peak)
         for value in counts
     ]
+
+
+def bars(stats):
+    counts = recent(stats)
+    heights = bar_heights(counts)
+    pitch = (PAD_R - PAD_L) / BARS
+    width = pitch - 8
+    newest = len(counts) - 1
+    rows = []
+    for index, height in enumerate(heights):
+        style = "bar" if counts[index] > 0 else "bar-idle"
+        if index == newest and counts[index] > 0:
+            style += " today still"
+        rows.append(
+            f'  <rect class="{style}" x="{num(PAD_L + index * pitch)}" '
+            f'y="{num(BAR_BASELINE - height)}" width="{num(width)}" '
+            f'height="{num(height)}" rx="2.5"/>'
+        )
+    return "\n".join(rows)
+
+
+def window_label(stats):
+    """The date the leftmost bar stands for, so the axis is not a mystery."""
+    end = stats.get("window_end")
+    if not end:
+        return ""
+    return stamp((date.fromisoformat(end) - timedelta(days=BARS - 1)).isoformat())
 
 
 def torn_edge():
@@ -187,98 +186,50 @@ def torn_edge():
 
 def line_item(y, label, value):
     return (
-        f'  <text x="{PAD_L}" y="{y}" class="ink mono item">1x&#160;&#160;&#160;{escape(label)}</text>\n'
+        f'  <text x="{PAD_L}" y="{y}" class="ink mono item">{escape(label)}</text>\n'
         f'  <text x="{PAD_R}" y="{y}" text-anchor="end" class="ink mono item">{escape(value)}</text>'
     )
 
 
-def sparkline(counts):
-    heights = bar_heights(counts)
-    pitch = (PAD_R - PAD_L) / BAR_COUNT
-    rows = []
-    for index, height in enumerate(heights):
-        style = "spark" if counts[index] > 0 else "spark-idle"
-        rows.append(
-            f'  <rect class="{style}" x="{num(PAD_L + index * pitch)}" '
-            f'y="{num(BAR_BASELINE - height)}" width="{num(BAR_WIDTH)}" '
-            f'height="{num(height)}" rx="1.5"/>'
-        )
-    return "\n".join(rows)
-
-
-def ice_cubes(stack):
-    rows = []
-    for index, ((x, y, size, rotation), (_, short)) in enumerate(zip(CUBES, stack)):
-        cx, cy = x + size / 2, y + size / 2
-        font = 11 if size >= 40 else 10 if size >= 36 else 9 if size >= 32 else 8
-        # The bob lives on an outer group and the tilt stays on an inner one.
-        # A CSS transform on the same element replaces the transform attribute
-        # outright, which would flatten every cube the moment it animated.
-        rows.append(
-            f'    <g class="bob still" style="animation-delay: {num(index * 0.55)}s">\n'
-            f'      <g transform="rotate({num(rotation)} {num(cx)} {num(cy)})">\n'
-            f'        <rect class="ice" x="{x}" y="{y}" width="{size}" height="{size}" rx="4"/>\n'
-            f'        <text class="cube mono" x="{num(cx)}" y="{num(cy + font / 3)}" '
-            f'font-size="{font}">{escape(short)}</text>\n'
-            f"      </g>\n"
-            f"    </g>"
-        )
-    return "\n".join(rows)
-
-
-def render_chit(theme, stats, stack=STACK):
-    fill = fill_fraction(stats)
-    surface = surface_y(fill)
-    labels = [short for _, short in stack]
-    glass_body = (
-        f"M {GLASS_CX - GLASS_TOP_RX:.0f} {GLASS_TOP} L 700 308 Q 702 320 714 320 "
-        f"L 790 320 Q 802 320 804 308 L {GLASS_CX + GLASS_TOP_RX:.0f} {GLASS_TOP}"
+def gauge(y, fraction):
+    return (
+        f'  <rect class="track" x="{GAUGE_X}" y="{y - 8}" width="{num(GAUGE_W)}" height="{GAUGE_H}" rx="4"/>\n'
+        f'  <rect class="gauge" x="{GAUGE_X}" y="{y - 8}" width="{num(GAUGE_W * fraction)}" height="{GAUGE_H}" rx="4"/>'
     )
+
+
+def render_chit(theme, stats):
+    fraction = fill_fraction(stats)
+    served = stamp(stats["window_start"]) if stats.get("window_start") else ""
 
     markup = f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WIDTH} {HEIGHT}" role="img" aria-labelledby="title desc">
   <title id="title">The order chit of Chia Zhi Feng, printed at the Kopi O Kosong Beng stall</title>
-  <desc id="desc">A printed order chit listing {count(stats["total_contributions"])} contributions in the past year, a longest run of {days_label(stats["longest_run"])}, and {stats["days_active"]} of {stats["days_total"]} days brewed, above a bar chart of the last thirty days. Beside it stands a tall glass of iced kopi filled to the share of days brewed, its ice cubes stamped {escape(", ".join(labels))}.</desc>
+  <desc id="desc">A printed order chit listing {count(stats["total_contributions"])} contributions in the past year, a longest unbroken streak of {days_label(stats["longest_run"])}, and {stats["days_active"]} active days out of {stats["days_total"]}. Below the totals a bar chart shows the last thirty days, one bar per day, taller on the busier days.</desc>
   <style>{STYLE}  </style>
 
   <rect width="{WIDTH}" height="{HEIGHT}" rx="14" fill="$paper"/>
   <path class="chit" d="M {CHIT_LEFT} {CHIT_TOP} H {CHIT_RIGHT} V {CHIT_BOTTOM} {torn_edge()} Z"/>
 
-  <text x="{PAD_L}" y="62" class="ink head">KOPI O KOSONG BENG</text>
-  <text x="{PAD_L}" y="80" class="soft mono meta">ORDER #{stats["total_contributions"]:04d} &#183; {stamp(stats["generated_on"])}</text>
-  <path class="dot" d="M {PAD_L} 96 H {PAD_R}"/>
+  <text x="{PAD_L}" y="64" class="ink head">KOPI O KOSONG BENG</text>
+  <text x="{PAD_L}" y="84" class="soft mono meta">ORDER #{stats["total_contributions"]:04d} &#183; {stamp(stats["generated_on"])}</text>
+  <path class="dot" d="M {PAD_L} 100 H {PAD_R}"/>
 
-{line_item(122, "commits, past year", count(stats["total_contributions"]))}
-{line_item(146, "longest run", days_label(stats["longest_run"]))}
-{line_item(170, "days brewed", f'{stats["days_active"]}/{stats["days_total"]}')}
+{line_item(128, "commits, past year", count(stats["total_contributions"]))}
+{line_item(152, "longest streak", days_label(stats["longest_run"]))}
+{line_item(176, "days active", f'{stats["days_active"]} of {stats["days_total"]}')}
+{gauge(176, fraction)}
 
-  <path class="dot" d="M {PAD_L} 188 H {PAD_R}"/>
-  <text x="{PAD_L}" y="206" class="soft label">LAST 30 DAYS</text>
-{sparkline(stats["recent"])}
-  <path class="rule" d="M {PAD_L} {num(BAR_BASELINE + 2)} H {PAD_R}"/>
+  <path class="dot" d="M {PAD_L} 196 H {PAD_R}"/>
+  <text x="{PAD_L}" y="216" class="soft label">THE LAST THIRTY DAYS</text>
+{bars(stats)}
+  <path class="rule" d="M {PAD_L} {num(BAR_BASELINE + 3)} H {PAD_R}"/>
+  <text x="{PAD_L}" y="{TICK_Y}" class="soft mono tick">{escape(window_label(stats))}</text>
+  <text x="{PAD_R}" y="{TICK_Y}" text-anchor="end" class="soft mono tick">TODAY</text>
 
-  <path class="dot" d="M {PAD_L} 266 H {PAD_R}"/>
-  <text x="{PAD_L}" y="288" class="soft label">TOTAL</text>
-  <text x="{PAD_R}" y="288" text-anchor="end" class="ink mono item">no sugar</text>
-
-  <path class="rule" d="M 620 44 V 330"/>
-
-  <g aria-label="A tall glass of iced kopi, filled to the share of days brewed">
-    <clipPath id="glass-body"><path d="{glass_body} Z"/></clipPath>
-    <g clip-path="url(#glass-body)">
-      <rect class="brew" x="680" y="{num(surface)}" width="144" height="{num(GLASS_BOTTOM + 6 - surface)}"/>
-      <ellipse class="brew-top still" cx="{GLASS_CX}" cy="{num(surface)}" rx="{num(glass_half_width(surface))}" ry="5"/>
-    </g>
-    <path class="straw" d="M 796 30 L 740 302"/>
-{ice_cubes(stack)}
-    <path class="glass" d="{glass_body}"/>
-    <ellipse class="glass" cx="{GLASS_CX}" cy="{GLASS_TOP}" rx="{num(GLASS_TOP_RX)}" ry="13"/>
-    <ellipse class="drop motion drop-a" cx="692" cy="130" rx="2.8" ry="3.8"/>
-    <ellipse class="drop motion drop-b" cx="812" cy="170" rx="2.4" ry="3.4"/>
-    <ellipse class="drop motion drop-c" cx="696" cy="220" rx="2.2" ry="3"/>
-  </g>
-
-  <text x="{GLASS_CX}" y="344" text-anchor="middle" class="soft label">TODAY'S BREW</text>
+  <path class="dot" d="M {PAD_L} 334 H {PAD_R}"/>
+  <text x="{PAD_L}" y="356" class="soft label">COUNTING SINCE</text>
+  <text x="{PAD_R}" y="356" text-anchor="end" class="ink mono item">{escape(served)}</text>
 </svg>
 """
     return to_ascii_entities(Template(markup).substitute(palette(theme)))

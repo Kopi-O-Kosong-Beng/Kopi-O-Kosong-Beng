@@ -26,10 +26,45 @@ digits, so the READMEs stay number free with no change to that rule.
 
 ## Visual design
 
-One card, `900 x 360`, sitting directly beneath the signboard so the two read as a
-single stall front.
+One card, `900 x 410`, sitting directly beneath the signboard so the two read as a
+single stall front: a full width thermal printed order chit with a torn bottom
+edge.
 
-Left, `x 44..592`: a thermal printed order chit with a torn bottom edge.
+**There is deliberately no second glass.** The first build put a tall glass of
+iced kopi beside the chit, filling to the share of days brewed with the stack
+stamped on its ice cubes. Stacked under the signboard it read as two cups on one
+profile, and worse, it repeated the stack twice: once as pictures on the ice and
+once as words along the signboard's specials strip. The glass stays on the sign,
+where it belongs, and the chit became the receipt it always was.
+
+**And there is deliberately no contribution grid.** The freed space first went to
+a calendar of small squares, one per day. That is the graphic GitHub already
+draws on the same page, and repainting it in a warmer palette is precisely the
+borrowed look the guard suite exists to keep off this profile. Designing a stats
+card is not the same as reskinning one.
+
+**Nor twelve monthly cup rings**, which were tried next. The problem was the
+data, not the drawing: nine of the twelve months in this account are empty, so
+any per month layout is a row of holes however carefully it is rendered.
+
+The card shows **the last thirty days**, full width, one bar per day. That is the
+only window where this data is dense, 28 of 30 days active, and it visibly moves
+every morning. Height scales linearly, which is the honest encoding for a bar,
+where length does the reading. The axis names the date of the leftmost bar so it
+is not a mystery ruler.
+
+### The copy says what it measures
+
+The first pass leaned on the receipt metaphor and the puns did not map onto the
+numbers underneath. `days brewed` was not a thing anyone buys, `SERVED SINCE`
+read like the stall opened that day rather than naming a rolling window, and a
+`TOTAL` row whose value was "no sugar" totalled nothing while repeating the
+sign-off sitting directly beneath it in the README.
+
+The labels are now plain: `commits, past year`, `longest streak`, `days active`,
+and a footer that states the window the card is counting over. The kopi theme
+lives in the paper, the ink, the torn edge and the signboard above it, which is
+enough. It does not need every label to be a joke.
 
 ```
 KOPI O KOSONG BENG
