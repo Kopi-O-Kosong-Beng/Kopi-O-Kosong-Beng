@@ -1,19 +1,19 @@
-"""Render the order chit: a printed hawker receipt of the past year.
+"""Render the order chit: what a year of this account actually says.
 
 Pure by contract. Everything drawn here is a function of the stats dict handed
 in, which is why the committed asset can still be compared byte for byte
 against a fresh render even though the numbers change daily. Nothing in this
 module touches the network.
 
-Two things this deliberately is not.
+The card is meant to say something the profile page does not already say.
+A total and a streak are just the same numbers GitHub prints, so the three
+findings on it are derived: how much of the year landed in its ten busiest
+days, which weekday the stall is effectively shut, and when the best run ran.
 
-It is not a second glass. The signboard already draws one and already prints
-the stack along its specials strip, so a glass here repeated both the picture
-and the words.
-
-It is not a contribution grid. A grid of small squares is the graphic GitHub
-already puts on the page, and repainting it in a warmer palette would be the
-exact borrowed look the guard suite exists to keep off this profile.
+Several earlier shapes were tried and thrown out, each recorded in the design
+doc: a second glass repeated the signboard, a calendar of small squares was
+GitHub's own graphic in a warmer palette, and twelve monthly cup rings were
+mostly empty because nine of the twelve months here have nothing in them.
 """
 
 from datetime import date, timedelta
@@ -24,43 +24,44 @@ import json
 
 from generate_kopi_sign import PALETTES, to_ascii_entities
 
-# The chit borrows the signboard's paper and ink and adds its own five step
-# scale for the stains. No value is repeated, here or against the borrowed
-# ones, because the light and dark assets are compared by substituting tokens
-# back out.
 CHIT_TOKENS = {
     "dark": {"g0": "#2A2119"},
     "light": {"g0": "#E6D8C0"},
 }
 
-BORROWED = ("paper", "panel", "ink", "ink_soft", "accent", "rule")
+BORROWED = ("paper", "panel", "ink", "ink_soft", "accent", "rule", "glass")
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSET_DIR = ROOT / "assets"
 STATS_FILE = ROOT / "data" / "stats.json"
 
-WIDTH, HEIGHT = 900, 406
+WIDTH, HEIGHT = 900, 426
 
 CHIT_LEFT, CHIT_RIGHT = 44, 856
-CHIT_TOP, CHIT_BOTTOM = 26, 372
+CHIT_TOP, CHIT_BOTTOM = 26, 392
 TEETH, TOOTH_DROP = 66, 14
 PAD_L, PAD_R = 70, 830
 
-GAUGE_X, GAUGE_W, GAUGE_H = 610, 130.0, 8
+# The gauge sits in the empty middle column. Further right it collided with
+# the value, which is right aligned and long enough to reach back past 720.
+GAUGE_X, GAUGE_W, GAUGE_H = 300, 220.0, 8
 
-# Thirty days, drawn full width and large. A twelve month breakdown was tried
-# and thrown out: nine of the twelve months here are empty, so any yearly
-# layout is mostly holes no matter how it is drawn. The last month is the
-# window where this data is actually dense, and it visibly moves every day.
-BARS = 30
-BAR_BASELINE = 300.0
-BAR_MIN, BAR_MAX = 3.0, 66.0
-TICK_Y = 318
+# Seven glasses, one per weekday, each poured to how much that day carries.
+# Small and plain on purpose: no straw, no ice, no condensation. These are
+# data marks, and the one detailed glass on the profile stays on the signboard.
+GLASS_TOP, GLASS_BOTTOM = 226.0, 312.0
+GLASS_TOP_HW, GLASS_BOT_HW = 27.0, 21.0
+GLASS_FULL, GLASS_EMPTY = 234.0, 304.0
+DOW_LABEL_Y = 330
+DOW_TAG_Y = 344
+
+BURST_DAYS = 10
 
 MONTHS = (
     "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
     "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
 )
+WEEKDAYS = ("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
 
 STYLE = """
     text { font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif; }
@@ -74,19 +75,21 @@ STYLE = """
     .meta { font-size: 9px; letter-spacing: 1.6px; }
     .item { font-size: 11.5px; letter-spacing: 0.4px; }
     .label { font-size: 9px; letter-spacing: 3px; }
-    .tick { font-size: 7.5px; letter-spacing: 1.4px; }
+    .day { font-size: 9px; letter-spacing: 2px; }
+    .tag { font-size: 8px; letter-spacing: 1.6px; fill: $accent; }
     .track { fill: $g0; }
     .gauge { fill: $accent; }
-    .bar { fill: $accent; }
-    .bar-idle { fill: $g0; }
-    /* Only today's bar moves, and it rests at full opacity, so a
-       renderer parked at t=0 shows the finished card. An earlier version
-       animated the artwork itself and rendered wrong wherever the animation
-       was not running. */
-    .today { animation: settle 3.4s ease-in-out infinite; }
+    .tumbler { fill: $panel; stroke: $glass; stroke-width: 2; stroke-linejoin: round; }
+    .pour { fill: $accent; }
+    .pour-quiet { fill: $g0; }
+    /* Only the rest day tag moves, and it rests at full opacity, so a renderer
+       parked at t=0 shows the finished card. An earlier version animated the
+       artwork itself and rendered wrong wherever the animation was not
+       running. */
+    .blink { animation: settle 3.4s ease-in-out infinite; }
     @keyframes settle {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      50% { opacity: 0.45; }
     }
     @media (prefers-reduced-motion: reduce) {
       .still { animation: none !important; }
@@ -119,56 +122,116 @@ def stamp(iso):
     return f"{day.day:02d} {MONTHS[day.month - 1]} {day.year}"
 
 
-def fill_fraction(stats):
-    total = stats.get("days_total") or 0
+def short_stamp(day):
+    return f"{day.day:02d} {MONTHS[day.month - 1]}"
+
+
+def each_day(stats):
+    daily = stats.get("daily") or []
+    if not daily or not stats.get("window_start"):
+        return []
+    start = date.fromisoformat(stats["window_start"])
+    return [(start + timedelta(days=offset), value) for offset, value in enumerate(daily)]
+
+
+def weekday_totals(stats):
+    """Monday first, matching the labels printed under the bars."""
+    totals = [0] * 7
+    for day, value in each_day(stats):
+        totals[day.weekday()] += value
+    return totals
+
+
+def rest_day(stats):
+    """The weekday this account is effectively shut.
+
+    Only claimed when the quietest weekday is genuinely far below the average,
+    otherwise an evenly spread week would get an arbitrary day labelled.
+    """
+    totals = weekday_totals(stats)
+    if sum(totals) <= 0:
+        return None
+    quietest = min(range(7), key=lambda index: totals[index])
+    average = sum(totals) / 7
+    return quietest if totals[quietest] * 3 < average else None
+
+
+def burst_share(stats, top=BURST_DAYS):
+    """How much of the year landed in its busiest handful of days."""
+    daily = sorted(stats.get("daily") or [], reverse=True)
+    total = sum(daily)
     if total <= 0:
         return 0.0
-    return max(0.0, min(1.0, stats.get("days_active", 0) / total))
+    return sum(daily[:top]) / total
 
 
-def recent(stats):
-    """The last thirty days, oldest first, padded if the history is shorter."""
-    tail = (stats.get("daily") or [])[-BARS:]
-    return [0] * (BARS - len(tail)) + tail
+def best_run_end(stats):
+    """The day the longest unbroken run finished, so the streak has a date."""
+    best = run = 0
+    end = None
+    for day, value in each_day(stats):
+        run = run + 1 if value > 0 else 0
+        if run > best:
+            best, end = run, day
+    return end
 
 
-def bar_heights(counts):
-    """Height is a length, so it scales linearly. That is the honest encoding
-    for a bar, unlike a circle, whose area does the reading."""
-    peak = max(counts) if counts else 0
+def pour_levels(values):
+    """Share of the busiest weekday, which becomes how full each glass is.
+
+    Level is a length up the side of the glass, so it scales linearly. That is
+    the honest encoding here, unlike a circle, which is read by its area.
+    """
+    peak = max(values) if values else 0
     if peak <= 0:
-        return [BAR_MIN] * len(counts)
-    return [
-        BAR_MIN if value <= 0 else BAR_MIN + (BAR_MAX - BAR_MIN) * (value / peak)
-        for value in counts
-    ]
+        return [0.0] * len(values)
+    return [max(0.0, value / peak) for value in values]
 
 
-def bars(stats):
-    counts = recent(stats)
-    heights = bar_heights(counts)
-    pitch = (PAD_R - PAD_L) / BARS
-    width = pitch - 8
-    newest = len(counts) - 1
+def surface_y(level):
+    return GLASS_EMPTY - level * (GLASS_EMPTY - GLASS_FULL)
+
+
+def tumbler_path(centre):
+    """A plain tapered tumbler. No straw, no ice: this is a data mark."""
+    return (
+        f"M {num(centre - GLASS_TOP_HW)} {num(GLASS_TOP)} "
+        f"L {num(centre - GLASS_BOT_HW)} {num(GLASS_BOTTOM - 8)} "
+        f"Q {num(centre - GLASS_BOT_HW)} {num(GLASS_BOTTOM)} {num(centre - GLASS_BOT_HW + 8)} {num(GLASS_BOTTOM)} "
+        f"L {num(centre + GLASS_BOT_HW - 8)} {num(GLASS_BOTTOM)} "
+        f"Q {num(centre + GLASS_BOT_HW)} {num(GLASS_BOTTOM)} {num(centre + GLASS_BOT_HW)} {num(GLASS_BOTTOM - 8)} "
+        f"L {num(centre + GLASS_TOP_HW)} {num(GLASS_TOP)} Z"
+    )
+
+
+def weekday_glasses(stats):
+    levels = pour_levels(weekday_totals(stats))
+    quiet = rest_day(stats)
+    pitch = (PAD_R - PAD_L) / 7
     rows = []
-    for index, height in enumerate(heights):
-        style = "bar" if counts[index] > 0 else "bar-idle"
-        if index == newest and counts[index] > 0:
-            style += " today still"
+    for index, level in enumerate(levels):
+        centre = PAD_L + (index + 0.5) * pitch
+        path = tumbler_path(centre)
+        surface = surface_y(level)
+        style = "pour-quiet" if index == quiet else "pour"
+        rows.append(f'  <clipPath id="cup-{index}"><path d="{path}"/></clipPath>')
+        rows.append(f'  <path class="tumbler" d="{path}"/>')
+        if level > 0:
+            rows.append(
+                f'  <rect class="{style}" clip-path="url(#cup-{index})" '
+                f'x="{num(centre - GLASS_TOP_HW - 2)}" y="{num(surface)}" '
+                f'width="{num(2 * GLASS_TOP_HW + 4)}" height="{num(GLASS_BOTTOM + 4 - surface)}"/>'
+            )
         rows.append(
-            f'  <rect class="{style}" x="{num(PAD_L + index * pitch)}" '
-            f'y="{num(BAR_BASELINE - height)}" width="{num(width)}" '
-            f'height="{num(height)}" rx="2.5"/>'
+            f'  <text x="{num(centre)}" y="{DOW_LABEL_Y}" text-anchor="middle" '
+            f'class="soft day">{WEEKDAYS[index]}</text>'
         )
+        if index == quiet:
+            rows.append(
+                f'  <text x="{num(centre)}" y="{DOW_TAG_Y}" text-anchor="middle" '
+                f'class="tag mono blink still">rest day</text>'
+            )
     return "\n".join(rows)
-
-
-def window_label(stats):
-    """The date the leftmost bar stands for, so the axis is not a mystery."""
-    end = stats.get("window_end")
-    if not end:
-        return ""
-    return stamp((date.fromisoformat(end) - timedelta(days=BARS - 1)).isoformat())
 
 
 def torn_edge():
@@ -198,14 +261,25 @@ def gauge(y, fraction):
     )
 
 
+def streak_value(stats):
+    end = best_run_end(stats)
+    run = days_label(stats["longest_run"])
+    return f"{run} to {short_stamp(end)}" if end else run
+
+
 def render_chit(theme, stats):
-    fraction = fill_fraction(stats)
-    served = stamp(stats["window_start"]) if stats.get("window_start") else ""
+    share = burst_share(stats)
+    quiet = rest_day(stats)
+    quiet_desc = (
+        f" The quietest weekday by a wide margin is {WEEKDAYS[quiet]}."
+        if quiet is not None
+        else ""
+    )
 
     markup = f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WIDTH} {HEIGHT}" role="img" aria-labelledby="title desc">
   <title id="title">The order chit of Chia Zhi Feng, printed at the Kopi O Kosong Beng stall</title>
-  <desc id="desc">A printed order chit listing {count(stats["total_contributions"])} contributions in the past year, a longest unbroken streak of {days_label(stats["longest_run"])}, and {stats["days_active"]} active days out of {stats["days_total"]}. Below the totals a bar chart shows the last thirty days, one bar per day, taller on the busier days.</desc>
+  <desc id="desc">A printed order chit. Over the past year: {count(stats["total_contributions"])} contributions, a longest unbroken streak of {days_label(stats["longest_run"])}, and {share:.0%} of the whole year landing in its {BURST_DAYS} busiest days, which says the work comes in bursts rather than a steady drip. Below that, seven glasses compare how much lands on each weekday, each poured as full as that day is busy.{quiet_desc}</desc>
   <style>{STYLE}  </style>
 
   <rect width="{WIDTH}" height="{HEIGHT}" rx="14" fill="$paper"/>
@@ -216,20 +290,17 @@ def render_chit(theme, stats):
   <path class="dot" d="M {PAD_L} 100 H {PAD_R}"/>
 
 {line_item(128, "commits, past year", count(stats["total_contributions"]))}
-{line_item(152, "longest streak", days_label(stats["longest_run"]))}
-{line_item(176, "days active", f'{stats["days_active"]} of {stats["days_total"]}')}
-{gauge(176, fraction)}
+{line_item(152, "longest streak", streak_value(stats))}
+{line_item(176, f"busiest {BURST_DAYS} days", f"{share:.0%} of the year")}
+{gauge(176, share)}
 
   <path class="dot" d="M {PAD_L} 196 H {PAD_R}"/>
-  <text x="{PAD_L}" y="216" class="soft label">THE LAST THIRTY DAYS</text>
-{bars(stats)}
-  <path class="rule" d="M {PAD_L} {num(BAR_BASELINE + 3)} H {PAD_R}"/>
-  <text x="{PAD_L}" y="{TICK_Y}" class="soft mono tick">{escape(window_label(stats))}</text>
-  <text x="{PAD_R}" y="{TICK_Y}" text-anchor="end" class="soft mono tick">TODAY</text>
+  <text x="{PAD_L}" y="216" class="soft label">HOW THE WEEK POURS</text>
+{weekday_glasses(stats)}
 
-  <path class="dot" d="M {PAD_L} 334 H {PAD_R}"/>
-  <text x="{PAD_L}" y="356" class="soft label">COUNTING SINCE</text>
-  <text x="{PAD_R}" y="356" text-anchor="end" class="ink mono item">{escape(served)}</text>
+  <path class="dot" d="M {PAD_L} 358 H {PAD_R}"/>
+  <text x="{PAD_L}" y="380" class="soft label">COUNTING SINCE</text>
+  <text x="{PAD_R}" y="380" text-anchor="end" class="ink mono item">{escape(stamp(stats["window_start"]))}</text>
 </svg>
 """
     return to_ascii_entities(Template(markup).substitute(palette(theme)))

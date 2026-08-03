@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 406" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 426" role="img" aria-labelledby="title desc">
   <title id="title">The order chit of Chia Zhi Feng, printed at the Kopi O Kosong Beng stall</title>
-  <desc id="desc">A printed order chit listing 726 contributions in the past year, a longest unbroken streak of 23 days, and 45 active days out of 366. Below the totals a bar chart shows the last thirty days, one bar per day, taller on the busier days.</desc>
+  <desc id="desc">A printed order chit. Over the past year: 726 contributions, a longest unbroken streak of 23 days, and 57% of the whole year landing in its 10 busiest days, which says the work comes in bursts rather than a steady drip. Below that, seven glasses compare how much lands on each weekday, each poured as full as that day is busy. The quietest weekday by a wide margin is FRI.</desc>
   <style>
     text { font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
@@ -14,27 +14,29 @@
     .meta { font-size: 9px; letter-spacing: 1.6px; }
     .item { font-size: 11.5px; letter-spacing: 0.4px; }
     .label { font-size: 9px; letter-spacing: 3px; }
-    .tick { font-size: 7.5px; letter-spacing: 1.4px; }
+    .day { font-size: 9px; letter-spacing: 2px; }
+    .tag { font-size: 8px; letter-spacing: 1.6px; fill: #E09551; }
     .track { fill: #2A2119; }
     .gauge { fill: #E09551; }
-    .bar { fill: #E09551; }
-    .bar-idle { fill: #2A2119; }
-    /* Only today's bar moves, and it rests at full opacity, so a
-       renderer parked at t=0 shows the finished card. An earlier version
-       animated the artwork itself and rendered wrong wherever the animation
-       was not running. */
-    .today { animation: settle 3.4s ease-in-out infinite; }
+    .tumbler { fill: #1B1611; stroke: #6F8389; stroke-width: 2; stroke-linejoin: round; }
+    .pour { fill: #E09551; }
+    .pour-quiet { fill: #2A2119; }
+    /* Only the rest day tag moves, and it rests at full opacity, so a renderer
+       parked at t=0 shows the finished card. An earlier version animated the
+       artwork itself and rendered wrong wherever the animation was not
+       running. */
+    .blink { animation: settle 3.4s ease-in-out infinite; }
     @keyframes settle {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      50% { opacity: 0.45; }
     }
     @media (prefers-reduced-motion: reduce) {
       .still { animation: none !important; }
     }
   </style>
 
-  <rect width="900" height="406" rx="14" fill="#100D0A"/>
-  <path class="chit" d="M 44 26 H 856 V 372 L 849.85 386 L 843.7 372 L 837.55 386 L 831.39 372 L 825.24 386 L 819.09 372 L 812.94 386 L 806.79 372 L 800.64 386 L 794.48 372 L 788.33 386 L 782.18 372 L 776.03 386 L 769.88 372 L 763.73 386 L 757.58 372 L 751.42 386 L 745.27 372 L 739.12 386 L 732.97 372 L 726.82 386 L 720.67 372 L 714.52 386 L 708.36 372 L 702.21 386 L 696.06 372 L 689.91 386 L 683.76 372 L 677.61 386 L 671.45 372 L 665.3 386 L 659.15 372 L 653 386 L 646.85 372 L 640.7 386 L 634.55 372 L 628.39 386 L 622.24 372 L 616.09 386 L 609.94 372 L 603.79 386 L 597.64 372 L 591.48 386 L 585.33 372 L 579.18 386 L 573.03 372 L 566.88 386 L 560.73 372 L 554.58 386 L 548.42 372 L 542.27 386 L 536.12 372 L 529.97 386 L 523.82 372 L 517.67 386 L 511.52 372 L 505.36 386 L 499.21 372 L 493.06 386 L 486.91 372 L 480.76 386 L 474.61 372 L 468.45 386 L 462.3 372 L 456.15 386 L 450 372 L 443.85 386 L 437.7 372 L 431.55 386 L 425.39 372 L 419.24 386 L 413.09 372 L 406.94 386 L 400.79 372 L 394.64 386 L 388.48 372 L 382.33 386 L 376.18 372 L 370.03 386 L 363.88 372 L 357.73 386 L 351.58 372 L 345.42 386 L 339.27 372 L 333.12 386 L 326.97 372 L 320.82 386 L 314.67 372 L 308.52 386 L 302.36 372 L 296.21 386 L 290.06 372 L 283.91 386 L 277.76 372 L 271.61 386 L 265.45 372 L 259.3 386 L 253.15 372 L 247 386 L 240.85 372 L 234.7 386 L 228.55 372 L 222.39 386 L 216.24 372 L 210.09 386 L 203.94 372 L 197.79 386 L 191.64 372 L 185.48 386 L 179.33 372 L 173.18 386 L 167.03 372 L 160.88 386 L 154.73 372 L 148.58 386 L 142.42 372 L 136.27 386 L 130.12 372 L 123.97 386 L 117.82 372 L 111.67 386 L 105.52 372 L 99.36 386 L 93.21 372 L 87.06 386 L 80.91 372 L 74.76 386 L 68.61 372 L 62.45 386 L 56.3 372 L 50.15 386 L 44 372 Z"/>
+  <rect width="900" height="426" rx="14" fill="#100D0A"/>
+  <path class="chit" d="M 44 26 H 856 V 392 L 849.85 406 L 843.7 392 L 837.55 406 L 831.39 392 L 825.24 406 L 819.09 392 L 812.94 406 L 806.79 392 L 800.64 406 L 794.48 392 L 788.33 406 L 782.18 392 L 776.03 406 L 769.88 392 L 763.73 406 L 757.58 392 L 751.42 406 L 745.27 392 L 739.12 406 L 732.97 392 L 726.82 406 L 720.67 392 L 714.52 406 L 708.36 392 L 702.21 406 L 696.06 392 L 689.91 406 L 683.76 392 L 677.61 406 L 671.45 392 L 665.3 406 L 659.15 392 L 653 406 L 646.85 392 L 640.7 406 L 634.55 392 L 628.39 406 L 622.24 392 L 616.09 406 L 609.94 392 L 603.79 406 L 597.64 392 L 591.48 406 L 585.33 392 L 579.18 406 L 573.03 392 L 566.88 406 L 560.73 392 L 554.58 406 L 548.42 392 L 542.27 406 L 536.12 392 L 529.97 406 L 523.82 392 L 517.67 406 L 511.52 392 L 505.36 406 L 499.21 392 L 493.06 406 L 486.91 392 L 480.76 406 L 474.61 392 L 468.45 406 L 462.3 392 L 456.15 406 L 450 392 L 443.85 406 L 437.7 392 L 431.55 406 L 425.39 392 L 419.24 406 L 413.09 392 L 406.94 406 L 400.79 392 L 394.64 406 L 388.48 392 L 382.33 406 L 376.18 392 L 370.03 406 L 363.88 392 L 357.73 406 L 351.58 392 L 345.42 406 L 339.27 392 L 333.12 406 L 326.97 392 L 320.82 406 L 314.67 392 L 308.52 406 L 302.36 392 L 296.21 406 L 290.06 392 L 283.91 406 L 277.76 392 L 271.61 406 L 265.45 392 L 259.3 406 L 253.15 392 L 247 406 L 240.85 392 L 234.7 406 L 228.55 392 L 222.39 406 L 216.24 392 L 210.09 406 L 203.94 392 L 197.79 406 L 191.64 392 L 185.48 406 L 179.33 392 L 173.18 406 L 167.03 392 L 160.88 406 L 154.73 392 L 148.58 406 L 142.42 392 L 136.27 406 L 130.12 392 L 123.97 406 L 117.82 392 L 111.67 406 L 105.52 392 L 99.36 406 L 93.21 392 L 87.06 406 L 80.91 392 L 74.76 406 L 68.61 392 L 62.45 406 L 56.3 392 L 50.15 406 L 44 392 Z"/>
 
   <text x="70" y="64" class="ink head">KOPI O KOSONG BENG</text>
   <text x="70" y="84" class="soft mono meta">ORDER #0726 &#183; 03 AUG 2026</text>
@@ -43,49 +45,45 @@
   <text x="70" y="128" class="ink mono item">commits, past year</text>
   <text x="830" y="128" text-anchor="end" class="ink mono item">726</text>
   <text x="70" y="152" class="ink mono item">longest streak</text>
-  <text x="830" y="152" text-anchor="end" class="ink mono item">23 days</text>
-  <text x="70" y="176" class="ink mono item">days active</text>
-  <text x="830" y="176" text-anchor="end" class="ink mono item">45 of 366</text>
-  <rect class="track" x="610" y="168" width="130" height="8" rx="4"/>
-  <rect class="gauge" x="610" y="168" width="15.98" height="8" rx="4"/>
+  <text x="830" y="152" text-anchor="end" class="ink mono item">23 days to 29 JUL</text>
+  <text x="70" y="176" class="ink mono item">busiest 10 days</text>
+  <text x="830" y="176" text-anchor="end" class="ink mono item">57% of the year</text>
+  <rect class="track" x="300" y="168" width="220" height="8" rx="4"/>
+  <rect class="gauge" x="300" y="168" width="126.06" height="8" rx="4"/>
 
   <path class="dot" d="M 70 196 H 830"/>
-  <text x="70" y="216" class="soft label">THE LAST THIRTY DAYS</text>
-  <rect class="bar-idle" x="70" y="297" width="17.33" height="3" rx="2.5"/>
-  <rect class="bar-idle" x="95.33" y="297" width="17.33" height="3" rx="2.5"/>
-  <rect class="bar" x="120.67" y="234" width="17.33" height="66" rx="2.5"/>
-  <rect class="bar" x="146" y="277.68" width="17.33" height="22.32" rx="2.5"/>
-  <rect class="bar" x="171.33" y="268.44" width="17.33" height="31.56" rx="2.5"/>
-  <rect class="bar" x="196.67" y="296.16" width="17.33" height="3.84" rx="2.5"/>
-  <rect class="bar" x="222" y="271.8" width="17.33" height="28.2" rx="2.5"/>
-  <rect class="bar" x="247.33" y="269.28" width="17.33" height="30.72" rx="2.5"/>
-  <rect class="bar" x="272.67" y="281.04" width="17.33" height="18.96" rx="2.5"/>
-  <rect class="bar" x="298" y="271.8" width="17.33" height="28.2" rx="2.5"/>
-  <rect class="bar" x="323.33" y="286.92" width="17.33" height="13.08" rx="2.5"/>
-  <rect class="bar" x="348.67" y="286.08" width="17.33" height="13.92" rx="2.5"/>
-  <rect class="bar" x="374" y="295.32" width="17.33" height="4.68" rx="2.5"/>
-  <rect class="bar" x="399.33" y="278.52" width="17.33" height="21.48" rx="2.5"/>
-  <rect class="bar" x="424.67" y="265.08" width="17.33" height="34.92" rx="2.5"/>
-  <rect class="bar" x="450" y="260.04" width="17.33" height="39.96" rx="2.5"/>
-  <rect class="bar" x="475.33" y="270.96" width="17.33" height="29.04" rx="2.5"/>
-  <rect class="bar" x="500.67" y="281.88" width="17.33" height="18.12" rx="2.5"/>
-  <rect class="bar" x="526" y="269.28" width="17.33" height="30.72" rx="2.5"/>
-  <rect class="bar" x="551.33" y="294.48" width="17.33" height="5.52" rx="2.5"/>
-  <rect class="bar" x="576.67" y="276" width="17.33" height="24" rx="2.5"/>
-  <rect class="bar" x="602" y="260.88" width="17.33" height="39.12" rx="2.5"/>
-  <rect class="bar" x="627.33" y="289.44" width="17.33" height="10.56" rx="2.5"/>
-  <rect class="bar" x="652.67" y="271.8" width="17.33" height="28.2" rx="2.5"/>
-  <rect class="bar" x="678" y="289.44" width="17.33" height="10.56" rx="2.5"/>
-  <rect class="bar-idle" x="703.33" y="297" width="17.33" height="3" rx="2.5"/>
-  <rect class="bar" x="728.67" y="291.12" width="17.33" height="8.88" rx="2.5"/>
-  <rect class="bar" x="754" y="284.4" width="17.33" height="15.6" rx="2.5"/>
-  <rect class="bar" x="779.33" y="250.8" width="17.33" height="49.2" rx="2.5"/>
-  <rect class="bar today still" x="804.67" y="286.92" width="17.33" height="13.08" rx="2.5"/>
-  <path class="rule" d="M 70 303 H 830"/>
-  <text x="70" y="318" class="soft mono tick">05 JUL 2026</text>
-  <text x="830" y="318" text-anchor="end" class="soft mono tick">TODAY</text>
+  <text x="70" y="216" class="soft label">HOW THE WEEK POURS</text>
+  <clipPath id="cup-0"><path d="M 97.29 226 L 103.29 304 Q 103.29 312 111.29 312 L 137.29 312 Q 145.29 312 145.29 304 L 151.29 226 Z"/></clipPath>
+  <path class="tumbler" d="M 97.29 226 L 103.29 304 Q 103.29 312 111.29 312 L 137.29 312 Q 145.29 312 145.29 304 L 151.29 226 Z"/>
+  <rect class="pour" clip-path="url(#cup-0)" x="95.29" y="268.22" width="58" height="47.78"/>
+  <text x="124.29" y="330" text-anchor="middle" class="soft day">MON</text>
+  <clipPath id="cup-1"><path d="M 205.86 226 L 211.86 304 Q 211.86 312 219.86 312 L 245.86 312 Q 253.86 312 253.86 304 L 259.86 226 Z"/></clipPath>
+  <path class="tumbler" d="M 205.86 226 L 211.86 304 Q 211.86 312 219.86 312 L 245.86 312 Q 253.86 312 253.86 304 L 259.86 226 Z"/>
+  <rect class="pour" clip-path="url(#cup-1)" x="203.86" y="234.78" width="58" height="81.22"/>
+  <text x="232.86" y="330" text-anchor="middle" class="soft day">TUE</text>
+  <clipPath id="cup-2"><path d="M 314.43 226 L 320.43 304 Q 320.43 312 328.43 312 L 354.43 312 Q 362.43 312 362.43 304 L 368.43 226 Z"/></clipPath>
+  <path class="tumbler" d="M 314.43 226 L 320.43 304 Q 320.43 312 328.43 312 L 354.43 312 Q 362.43 312 362.43 304 L 368.43 226 Z"/>
+  <rect class="pour" clip-path="url(#cup-2)" x="312.43" y="274.44" width="58" height="41.56"/>
+  <text x="341.43" y="330" text-anchor="middle" class="soft day">WED</text>
+  <clipPath id="cup-3"><path d="M 423 226 L 429 304 Q 429 312 437 312 L 463 312 Q 471 312 471 304 L 477 226 Z"/></clipPath>
+  <path class="tumbler" d="M 423 226 L 429 304 Q 429 312 437 312 L 463 312 Q 471 312 471 304 L 477 226 Z"/>
+  <rect class="pour" clip-path="url(#cup-3)" x="421" y="269" width="58" height="47"/>
+  <text x="450" y="330" text-anchor="middle" class="soft day">THU</text>
+  <clipPath id="cup-4"><path d="M 531.57 226 L 537.57 304 Q 537.57 312 545.57 312 L 571.57 312 Q 579.57 312 579.57 304 L 585.57 226 Z"/></clipPath>
+  <path class="tumbler" d="M 531.57 226 L 537.57 304 Q 537.57 312 545.57 312 L 571.57 312 Q 579.57 312 579.57 304 L 585.57 226 Z"/>
+  <rect class="pour-quiet" clip-path="url(#cup-4)" x="529.57" y="297.78" width="58" height="18.22"/>
+  <text x="558.57" y="330" text-anchor="middle" class="soft day">FRI</text>
+  <text x="558.57" y="344" text-anchor="middle" class="tag mono blink still">rest day</text>
+  <clipPath id="cup-5"><path d="M 640.14 226 L 646.14 304 Q 646.14 312 654.14 312 L 680.14 312 Q 688.14 312 688.14 304 L 694.14 226 Z"/></clipPath>
+  <path class="tumbler" d="M 640.14 226 L 646.14 304 Q 646.14 312 654.14 312 L 680.14 312 Q 688.14 312 688.14 304 L 694.14 226 Z"/>
+  <rect class="pour" clip-path="url(#cup-5)" x="638.14" y="267.44" width="58" height="48.56"/>
+  <text x="667.14" y="330" text-anchor="middle" class="soft day">SAT</text>
+  <clipPath id="cup-6"><path d="M 748.71 226 L 754.71 304 Q 754.71 312 762.71 312 L 788.71 312 Q 796.71 312 796.71 304 L 802.71 226 Z"/></clipPath>
+  <path class="tumbler" d="M 748.71 226 L 754.71 304 Q 754.71 312 762.71 312 L 788.71 312 Q 796.71 312 796.71 304 L 802.71 226 Z"/>
+  <rect class="pour" clip-path="url(#cup-6)" x="746.71" y="234" width="58" height="82"/>
+  <text x="775.71" y="330" text-anchor="middle" class="soft day">SUN</text>
 
-  <path class="dot" d="M 70 334 H 830"/>
-  <text x="70" y="356" class="soft label">COUNTING SINCE</text>
-  <text x="830" y="356" text-anchor="end" class="ink mono item">03 AUG 2025</text>
+  <path class="dot" d="M 70 358 H 830"/>
+  <text x="70" y="380" class="soft label">COUNTING SINCE</text>
+  <text x="830" y="380" text-anchor="end" class="ink mono item">03 AUG 2025</text>
 </svg>

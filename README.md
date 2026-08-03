@@ -55,7 +55,7 @@ Still at SUTD. Flying to Waterloo at the end of August for an exchange semester.
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/kopi-chit-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="./assets/kopi-chit-light.svg">
-  <img alt="A printed order chit listing commits over the past year, my longest unbroken run and the days I actually showed up, above a calendar grid with one small square for every day of the year, shaded darker on the busier days" src="./assets/kopi-chit-light.svg" width="100%">
+  <img alt="A printed order chit listing commits over the past year, my longest unbroken streak, and how much of the year landed in its ten busiest days, above seven glasses of kopi showing how much work falls on each day of the week" src="./assets/kopi-chit-light.svg" width="100%">
 </picture>
 
 <p align="center"><i>no sugar. never was.</i></p>
