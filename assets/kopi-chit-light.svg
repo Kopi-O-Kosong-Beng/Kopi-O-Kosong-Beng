@@ -1,26 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 426" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" role="img" aria-labelledby="title desc">
   <title id="title">The order chit of Chia Zhi Feng, printed at the Kopi O Kosong Beng stall</title>
-  <desc id="desc">A printed order chit. Over the past year: 726 contributions, a longest unbroken streak of 23 days, and 57% of the whole year landing in its 10 busiest days, which says the work comes in bursts rather than a steady drip. Below that, seven glasses compare how much lands on each weekday, each poured as full as that day is busy. The quietest weekday by a wide margin is FRI.</desc>
+  <desc id="desc">A printed order chit. Its headline, shown inside a dial, is 57% of the whole year landed in 10 days. Alongside it: 726 commits, past year, 23 days longest streak, to 29 jul. An area chart traces the last 30 days, and a strip along the bottom splits the week into seven parts, each as wide as that weekday's share. FRI is so far below the rest that it is marked closed.</desc>
+  <defs>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
   <style>
     text { font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
     .ink { fill: #3A2214; }
     .soft { fill: #816548; }
-    .chit { fill: #FBF4E7; stroke: #D9C3A5; stroke-width: 1.5; }
+    .sheet { fill: #F2E7D5; }
+    .chit { fill: #FBF4E7; stroke: #D9C3A5; stroke-width: 1.25; }
     .dot { fill: none; stroke: #D9C3A5; stroke-width: 1; stroke-dasharray: 1 3; }
-    .rule { fill: none; stroke: #D9C3A5; stroke-width: 1; }
-    .head { font-size: 17px; font-weight: 700; letter-spacing: 2.8px; }
-    .meta { font-size: 9px; letter-spacing: 1.6px; }
-    .item { font-size: 11.5px; letter-spacing: 0.4px; }
-    .label { font-size: 9px; letter-spacing: 3px; }
+    .pill { fill: none; stroke: #D9C3A5; stroke-width: 1; }
+    .meta { font-size: 9px; letter-spacing: 1.8px; }
+    .eyebrow { font-size: 8px; letter-spacing: 2.4px; }
+    .hero { font-size: 40px; font-weight: 700; letter-spacing: -1px; fill: #C2703A; }
+    .figure { font-size: 26px; font-weight: 700; letter-spacing: -0.4px; }
+    .ring-track { fill: none; stroke: #E6D8C0; stroke-width: 13; }
+    .ring { fill: none; stroke: #C2703A; stroke-width: 13; stroke-linecap: round; }
+    .spark-fill { fill: #C2703A; opacity: 0.16; }
+    .spark-line { fill: none; stroke: #C2703A; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+    .spark-base { fill: none; stroke: #D9C3A5; stroke-width: 1; }
+    .spark-dot { fill: #C2703A; }
+    .caption { font-size: 12px; letter-spacing: 0.3px; }
     .day { font-size: 9px; letter-spacing: 2px; }
     .tag { font-size: 8px; letter-spacing: 1.6px; fill: #C2703A; }
-    .track { fill: #E6D8C0; }
-    .gauge { fill: #C2703A; }
-    .tumbler { fill: #FBF4E7; stroke: #71878E; stroke-width: 2; stroke-linejoin: round; }
-    .pour { fill: #C2703A; }
-    .pour-quiet { fill: #E6D8C0; }
+    .seg { fill: #C2703A; }
+    .seg-quiet { fill: #E6D8C0; }
     /* Only the rest day tag moves, and it rests at full opacity, so a renderer
        parked at t=0 shows the finished card. An earlier version animated the
        artwork itself and rendered wrong wherever the animation was not
@@ -35,55 +46,49 @@
     }
   </style>
 
-  <rect width="900" height="426" rx="14" fill="#F2E7D5"/>
-  <path class="chit" d="M 44 26 H 856 V 392 L 849.85 406 L 843.7 392 L 837.55 406 L 831.39 392 L 825.24 406 L 819.09 392 L 812.94 406 L 806.79 392 L 800.64 406 L 794.48 392 L 788.33 406 L 782.18 392 L 776.03 406 L 769.88 392 L 763.73 406 L 757.58 392 L 751.42 406 L 745.27 392 L 739.12 406 L 732.97 392 L 726.82 406 L 720.67 392 L 714.52 406 L 708.36 392 L 702.21 406 L 696.06 392 L 689.91 406 L 683.76 392 L 677.61 406 L 671.45 392 L 665.3 406 L 659.15 392 L 653 406 L 646.85 392 L 640.7 406 L 634.55 392 L 628.39 406 L 622.24 392 L 616.09 406 L 609.94 392 L 603.79 406 L 597.64 392 L 591.48 406 L 585.33 392 L 579.18 406 L 573.03 392 L 566.88 406 L 560.73 392 L 554.58 406 L 548.42 392 L 542.27 406 L 536.12 392 L 529.97 406 L 523.82 392 L 517.67 406 L 511.52 392 L 505.36 406 L 499.21 392 L 493.06 406 L 486.91 392 L 480.76 406 L 474.61 392 L 468.45 406 L 462.3 392 L 456.15 406 L 450 392 L 443.85 406 L 437.7 392 L 431.55 406 L 425.39 392 L 419.24 406 L 413.09 392 L 406.94 406 L 400.79 392 L 394.64 406 L 388.48 392 L 382.33 406 L 376.18 392 L 370.03 406 L 363.88 392 L 357.73 406 L 351.58 392 L 345.42 406 L 339.27 392 L 333.12 406 L 326.97 392 L 320.82 406 L 314.67 392 L 308.52 406 L 302.36 392 L 296.21 406 L 290.06 392 L 283.91 406 L 277.76 392 L 271.61 406 L 265.45 392 L 259.3 406 L 253.15 392 L 247 406 L 240.85 392 L 234.7 406 L 228.55 392 L 222.39 406 L 216.24 392 L 210.09 406 L 203.94 392 L 197.79 406 L 191.64 392 L 185.48 406 L 179.33 392 L 173.18 406 L 167.03 392 L 160.88 406 L 154.73 392 L 148.58 406 L 142.42 392 L 136.27 406 L 130.12 392 L 123.97 406 L 117.82 392 L 111.67 406 L 105.52 392 L 99.36 406 L 93.21 392 L 87.06 406 L 80.91 392 L 74.76 406 L 68.61 392 L 62.45 406 L 56.3 392 L 50.15 406 L 44 392 Z"/>
+  <rect class="sheet" width="900" height="440" rx="26"/>
+  <path class="chit" d="M 24 22 H 876 V 400 L 869.74 414 L 863.47 400 L 857.21 414 L 850.94 400 L 844.68 414 L 838.41 400 L 832.15 414 L 825.88 400 L 819.62 414 L 813.35 400 L 807.09 414 L 800.82 400 L 794.56 414 L 788.29 400 L 782.03 414 L 775.76 400 L 769.5 414 L 763.24 400 L 756.97 414 L 750.71 400 L 744.44 414 L 738.18 400 L 731.91 414 L 725.65 400 L 719.38 414 L 713.12 400 L 706.85 414 L 700.59 400 L 694.32 414 L 688.06 400 L 681.79 414 L 675.53 400 L 669.26 414 L 663 400 L 656.74 414 L 650.47 400 L 644.21 414 L 637.94 400 L 631.68 414 L 625.41 400 L 619.15 414 L 612.88 400 L 606.62 414 L 600.35 400 L 594.09 414 L 587.82 400 L 581.56 414 L 575.29 400 L 569.03 414 L 562.76 400 L 556.5 414 L 550.24 400 L 543.97 414 L 537.71 400 L 531.44 414 L 525.18 400 L 518.91 414 L 512.65 400 L 506.38 414 L 500.12 400 L 493.85 414 L 487.59 400 L 481.32 414 L 475.06 400 L 468.79 414 L 462.53 400 L 456.26 414 L 450 400 L 443.74 414 L 437.47 400 L 431.21 414 L 424.94 400 L 418.68 414 L 412.41 400 L 406.15 414 L 399.88 400 L 393.62 414 L 387.35 400 L 381.09 414 L 374.82 400 L 368.56 414 L 362.29 400 L 356.03 414 L 349.76 400 L 343.5 414 L 337.24 400 L 330.97 414 L 324.71 400 L 318.44 414 L 312.18 400 L 305.91 414 L 299.65 400 L 293.38 414 L 287.12 400 L 280.85 414 L 274.59 400 L 268.32 414 L 262.06 400 L 255.79 414 L 249.53 400 L 243.26 414 L 237 400 L 230.74 414 L 224.47 400 L 218.21 414 L 211.94 400 L 205.68 414 L 199.41 400 L 193.15 414 L 186.88 400 L 180.62 414 L 174.35 400 L 168.09 414 L 161.82 400 L 155.56 414 L 149.29 400 L 143.03 414 L 136.76 400 L 130.5 414 L 124.24 400 L 117.97 414 L 111.71 400 L 105.44 414 L 99.18 400 L 92.91 414 L 86.65 400 L 80.38 414 L 74.12 400 L 67.85 414 L 61.59 400 L 55.32 414 L 49.06 400 L 42.79 414 L 36.53 400 L 30.26 414 L 24 400 Z"/>
 
-  <text x="70" y="64" class="ink head">KOPI O KOSONG BENG</text>
-  <text x="70" y="84" class="soft mono meta">ORDER #0726 &#183; 04 AUG 2026</text>
-  <path class="dot" d="M 70 100 H 830"/>
+  <text x="62" y="54" class="soft mono meta">KOPI O KOSONG BENG &#183; ORDER #0726 &#183; 04 AUG 2026</text>
+  <path class="dot" d="M 62 68 H 838"/>
 
-  <text x="70" y="128" class="ink mono item">commits, past year</text>
-  <text x="830" y="128" text-anchor="end" class="ink mono item">726</text>
-  <text x="70" y="152" class="ink mono item">longest streak</text>
-  <text x="830" y="152" text-anchor="end" class="ink mono item">23 days to 29 JUL</text>
-  <text x="70" y="176" class="ink mono item">busiest 10 days</text>
-  <text x="830" y="176" text-anchor="end" class="ink mono item">57% of the year</text>
-  <rect class="track" x="300" y="168" width="220" height="8" rx="4"/>
-  <rect class="gauge" x="300" y="168" width="126.06" height="8" rx="4"/>
+  <rect class="pill" x="62" y="80" width="168" height="22" rx="11"/>
+  <text x="146" y="94.5" text-anchor="middle" class="soft mono eyebrow">BUSIEST 10 DAYS</text>
 
-  <path class="dot" d="M 70 196 H 830"/>
-  <text x="70" y="216" class="soft label">HOW THE WEEK POURS</text>
-  <clipPath id="cup-0"><path d="M 97.29 226 L 103.29 304 Q 103.29 312 111.29 312 L 137.29 312 Q 145.29 312 145.29 304 L 151.29 226 Z"/></clipPath>
-  <path class="tumbler" d="M 97.29 226 L 103.29 304 Q 103.29 312 111.29 312 L 137.29 312 Q 145.29 312 145.29 304 L 151.29 226 Z"/>
-  <rect class="pour" clip-path="url(#cup-0)" x="95.29" y="268.22" width="58" height="47.78"/>
-  <text x="124.29" y="330" text-anchor="middle" class="soft day">MON</text>
-  <clipPath id="cup-1"><path d="M 205.86 226 L 211.86 304 Q 211.86 312 219.86 312 L 245.86 312 Q 253.86 312 253.86 304 L 259.86 226 Z"/></clipPath>
-  <path class="tumbler" d="M 205.86 226 L 211.86 304 Q 211.86 312 219.86 312 L 245.86 312 Q 253.86 312 253.86 304 L 259.86 226 Z"/>
-  <rect class="pour" clip-path="url(#cup-1)" x="203.86" y="234.78" width="58" height="81.22"/>
-  <text x="232.86" y="330" text-anchor="middle" class="soft day">TUE</text>
-  <clipPath id="cup-2"><path d="M 314.43 226 L 320.43 304 Q 320.43 312 328.43 312 L 354.43 312 Q 362.43 312 362.43 304 L 368.43 226 Z"/></clipPath>
-  <path class="tumbler" d="M 314.43 226 L 320.43 304 Q 320.43 312 328.43 312 L 354.43 312 Q 362.43 312 362.43 304 L 368.43 226 Z"/>
-  <rect class="pour" clip-path="url(#cup-2)" x="312.43" y="274.44" width="58" height="41.56"/>
-  <text x="341.43" y="330" text-anchor="middle" class="soft day">WED</text>
-  <clipPath id="cup-3"><path d="M 423 226 L 429 304 Q 429 312 437 312 L 463 312 Q 471 312 471 304 L 477 226 Z"/></clipPath>
-  <path class="tumbler" d="M 423 226 L 429 304 Q 429 312 437 312 L 463 312 Q 471 312 471 304 L 477 226 Z"/>
-  <rect class="pour" clip-path="url(#cup-3)" x="421" y="269" width="58" height="47"/>
-  <text x="450" y="330" text-anchor="middle" class="soft day">THU</text>
-  <clipPath id="cup-4"><path d="M 531.57 226 L 537.57 304 Q 537.57 312 545.57 312 L 571.57 312 Q 579.57 312 579.57 304 L 585.57 226 Z"/></clipPath>
-  <path class="tumbler" d="M 531.57 226 L 537.57 304 Q 537.57 312 545.57 312 L 571.57 312 Q 579.57 312 579.57 304 L 585.57 226 Z"/>
-  <rect class="pour-quiet" clip-path="url(#cup-4)" x="529.57" y="297.78" width="58" height="18.22"/>
-  <text x="558.57" y="330" text-anchor="middle" class="soft day">FRI</text>
-  <text x="558.57" y="344" text-anchor="middle" class="tag mono blink still">rest day</text>
-  <clipPath id="cup-5"><path d="M 640.14 226 L 646.14 304 Q 646.14 312 654.14 312 L 680.14 312 Q 688.14 312 688.14 304 L 694.14 226 Z"/></clipPath>
-  <path class="tumbler" d="M 640.14 226 L 646.14 304 Q 646.14 312 654.14 312 L 680.14 312 Q 688.14 312 688.14 304 L 694.14 226 Z"/>
-  <rect class="pour" clip-path="url(#cup-5)" x="638.14" y="267.44" width="58" height="48.56"/>
-  <text x="667.14" y="330" text-anchor="middle" class="soft day">SAT</text>
-  <clipPath id="cup-6"><path d="M 748.71 226 L 754.71 304 Q 754.71 312 762.71 312 L 788.71 312 Q 796.71 312 796.71 304 L 802.71 226 Z"/></clipPath>
-  <path class="tumbler" d="M 748.71 226 L 754.71 304 Q 754.71 312 762.71 312 L 788.71 312 Q 796.71 312 796.71 304 L 802.71 226 Z"/>
-  <rect class="pour" clip-path="url(#cup-6)" x="746.71" y="234" width="58" height="82"/>
-  <text x="775.71" y="330" text-anchor="middle" class="soft day">SUN</text>
+  <circle class="ring-track" cx="196" cy="186" r="68"/>
+  <path class="ring" d="M 196 118 A 68 68 0 1 1 165.89 246.97"/>
+  <text x="196" y="200" text-anchor="middle" class="hero">57%</text>
+  <text x="62" y="288" class="soft mono caption">of the whole year landed in 10 days</text>
 
-  <path class="dot" d="M 70 358 H 830"/>
-  <text x="70" y="380" class="soft label">COUNTING SINCE</text>
-  <text x="830" y="380" text-anchor="end" class="ink mono item">03 AUG 2025</text>
+  <text x="380" y="102" class="soft mono eyebrow">THE LAST 30 DAYS</text>
+  <polygon class="spark-fill" points="380,200 380,200 395.79,200 411.59,122 427.38,176.08 443.17,164.64 458.97,198.96 474.76,168.8 490.55,165.68 506.34,180.24 522.14,168.8 537.93,187.52 553.72,186.48 569.52,197.92 585.31,177.12 601.1,160.48 616.9,154.24 632.69,167.76 648.48,181.28 664.28,165.68 680.07,196.88 695.86,174 711.66,155.28 727.45,190.64 743.24,168.8 759.03,190.64 774.83,200 790.62,192.72 806.41,184.4 822.21,142.8 838,187.52 838,200"/>
+  <polyline class="spark-line" points="380,200 395.79,200 411.59,122 427.38,176.08 443.17,164.64 458.97,198.96 474.76,168.8 490.55,165.68 506.34,180.24 522.14,168.8 537.93,187.52 553.72,186.48 569.52,197.92 585.31,177.12 601.1,160.48 616.9,154.24 632.69,167.76 648.48,181.28 664.28,165.68 680.07,196.88 695.86,174 711.66,155.28 727.45,190.64 743.24,168.8 759.03,190.64 774.83,200 790.62,192.72 806.41,184.4 822.21,142.8 838,187.52"/>
+  <path class="spark-base" d="M 380 200 H 838"/>
+  <circle class="spark-dot blink still" cx="838" cy="187.52" r="3.5"/>
+  <path class="dot" d="M 380 218 H 838"/>
+
+  <text x="380" y="246" text-anchor="start" class="ink figure">726</text>
+  <text x="380" y="264" text-anchor="start" class="soft eyebrow">COMMITS, PAST YEAR</text>
+  <text x="838" y="246" text-anchor="end" class="ink figure">23 days</text>
+  <text x="838" y="264" text-anchor="end" class="soft eyebrow">LONGEST STREAK, TO 29 JUL</text>
+
+  <path class="dot" d="M 62 300 H 838"/>
+  <text x="62" y="320" class="soft mono eyebrow">HOW THE WEEK SPLITS</text>
+  <rect class="seg" x="62" y="330" width="95.29" height="22" rx="3"/>
+  <text x="109.65" y="368" text-anchor="middle" class="soft mono day">M</text>
+  <rect class="seg" x="161.29" y="330" width="184.37" height="22" rx="3"/>
+  <text x="253.48" y="368" text-anchor="middle" class="soft mono day">T</text>
+  <rect class="seg" x="349.67" y="330" width="78.72" height="22" rx="3"/>
+  <text x="389.03" y="368" text-anchor="middle" class="soft mono day">W</text>
+  <rect class="seg" x="432.39" y="330" width="93.22" height="22" rx="3"/>
+  <text x="479" y="368" text-anchor="middle" class="soft mono day">T</text>
+  <rect class="seg-quiet" x="529.61" y="330" width="16.57" height="22" rx="3"/>
+  <text x="537.9" y="368" text-anchor="middle" class="soft mono day">F</text>
+  <text x="537.9" y="384" text-anchor="middle" class="tag mono blink still">closed</text>
+  <rect class="seg" x="550.19" y="330" width="97.37" height="22" rx="3"/>
+  <text x="598.87" y="368" text-anchor="middle" class="soft mono day">S</text>
+  <rect class="seg" x="651.55" y="330" width="186.45" height="22" rx="3"/>
+  <text x="744.78" y="368" text-anchor="middle" class="soft mono day">S</text>
+
+  <rect width="900" height="440" rx="26" filter="url(#grain)" opacity="0.05"/>
 </svg>

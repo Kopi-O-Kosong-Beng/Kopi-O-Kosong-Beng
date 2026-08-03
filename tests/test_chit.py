@@ -95,10 +95,21 @@ class ChitAssetTests(unittest.TestCase):
                 self.assertNotIn('src="//', source)
                 self.assertNotIn('href="//', source)
 
+    def test_the_paper_grain_is_generated_not_fetched(self):
+        """The texture is a filter, not a bitmap. GitHub serves this through a
+        proxy that blocks external requests, so an <image> would come out blank.
+        """
+        for theme, path in ASSET_PATHS.items():
+            with self.subTest(theme=theme):
+                source = path.read_text(encoding="utf-8")
+                self.assertIn("feTurbulence", source)
+                self.assertIn('filter="url(#grain)"', source)
+                self.assertNotIn("<image", source.lower())
+
     def test_nothing_animated_hides_itself_at_rest(self):
         """The resting frame has to be the finished frame.
 
-        An earlier version poured the coffee in from below the glass. It looked
+        An earlier version poured coffee into a glass from below. It looked
         right in a live browser and rendered an empty glass everywhere the
         animation was not actually running, because a renderer parked at t=0
         sits on the from frame whether or not a fill-mode is set. Two rules keep
@@ -158,23 +169,43 @@ class ChitAssetTests(unittest.TestCase):
                 for label in (
                     "KOPI O KOSONG BENG",
                     "ORDER #",
-                    "commits, past year",
-                    "longest streak",
-                    "busiest 10 days",
-                    "HOW THE WEEK POURS",
-                    "COUNTING SINCE",
-                    "MON",
-                    "SUN",
+                    "COMMITS, PAST YEAR",
+                    "THE LAST 30 DAYS",
+                    "HOW THE WEEK SPLITS",
                 ):
                     self.assertIn(label, rendered)
 
-    def test_the_discarded_designs_stay_discarded(self):
-        """Three shapes were tried and thrown out, each for its own reason.
+    def test_the_derived_finding_leads_and_the_totals_do_not(self):
+        """The hero has to be the one number GitHub does not already print.
 
-        A second glass repeated the signboard's picture and its words. A grid
-        of small squares is the graphic GitHub already draws on the same page.
-        Twelve monthly cup rings were mostly empty holes, because nine of the
-        twelve months in this data have nothing in them.
+        Totals and streaks are shown on the profile page directly above this
+        image, so leading with them made the card decoration with a torn edge.
+        """
+        for theme, path in ASSET_PATHS.items():
+            with self.subTest(theme=theme):
+                source = path.read_text(encoding="utf-8")
+                hero = re.search(r'class="hero">([^<]+)<', source)
+                self.assertIsNotNone(hero, "no hero number on the card")
+                self.assertTrue(hero.group(1).strip())
+                self.assertIn('class="ring"', source)
+                # The hero is set larger than any supporting figure.
+                sizes = {
+                    name: float(size)
+                    for name, size in re.findall(
+                        r"\.(hero|figure)\s*\{[^}]*font-size:\s*([\d.]+)px", source
+                    )
+                }
+                self.assertGreater(sizes["hero"], 1.4 * sizes["figure"])
+
+    def test_the_discarded_designs_stay_discarded(self):
+        """Four shapes were tried and thrown out, each for its own reason.
+
+        A second detailed glass repeated the signboard's picture and its words.
+        A grid of small squares is the graphic GitHub already draws on the same
+        page. Twelve monthly cup rings were mostly empty holes, because nine of
+        the twelve months in this data have nothing in them. Seven glasses, one
+        per weekday, turned the card into a dashboard of small multiples with
+        most of each glass left as empty outline.
         """
         for theme, path in ASSET_PATHS.items():
             with self.subTest(theme=theme):
@@ -182,33 +213,14 @@ class ChitAssetTests(unittest.TestCase):
                 for gone in (
                     "THE PAST YEAR",
                     "THE YEAR IN CUPS",
-                    "THE LAST THIRTY DAYS",
-                    "TRADING DAYS",
+                    "HOW THE WEEK POURS",
                     "footprint",
                     "stain",
+                    "tumbler",
                     "straw",
-                ):
-                    self.assertNotIn(gone, source)
-
-    def test_no_second_hero_glass_competes_with_the_signboard(self):
-        """Seven small tumblers are data marks, and that is fine.
-
-        What is banned is a second *detailed* glass, the kind the signboard
-        already draws: a straw, ice cubes, condensation, and the stack stamped
-        on the ice. That version repeated the signboard's picture and its words
-        at the same time, and put two cups on one profile.
-        """
-        for theme, path in ASSET_PATHS.items():
-            with self.subTest(theme=theme):
-                source = path.read_text(encoding="utf-8")
-                for gone in (
-                    "straw",
-                    "TODAY&#39;S BREW",
                     'class="ice"',
-                    "drop motion",
                 ):
                     self.assertNotIn(gone, source)
-                self.assertEqual(source.count('class="tumbler"'), 7)
 
 
 class InsightTests(unittest.TestCase):
@@ -220,7 +232,6 @@ class InsightTests(unittest.TestCase):
             chit.weekday_totals(stats(window_start="2025-08-03", daily=[7])),
             [0, 0, 0, 0, 0, 0, 7],
         )
-        # A full week of ones puts one in every slot.
         self.assertEqual(
             chit.weekday_totals(stats(window_start="2025-08-04", daily=[1] * 7)),
             [1] * 7,
@@ -231,8 +242,9 @@ class InsightTests(unittest.TestCase):
 
     def test_the_burst_share_is_the_top_days_over_the_total(self):
         # Ten days of ten, ninety days of one: 100 of 190.
-        payload = stats(daily=[10] * 10 + [1] * 90)
-        self.assertAlmostEqual(chit.burst_share(payload), 100 / 190)
+        self.assertAlmostEqual(
+            chit.burst_share(stats(daily=[10] * 10 + [1] * 90)), 100 / 190
+        )
 
     def test_the_burst_share_of_a_silent_year_is_zero_not_a_crash(self):
         self.assertEqual(chit.burst_share(stats(daily=[0] * 366)), 0.0)
@@ -240,9 +252,7 @@ class InsightTests(unittest.TestCase):
 
     def test_a_rest_day_is_only_claimed_when_it_is_really_quiet(self):
         """An evenly worked week must not get an arbitrary day labelled."""
-        even = stats(window_start="2025-08-04", daily=[5] * 7)
-        self.assertIsNone(chit.rest_day(even))
-
+        self.assertIsNone(chit.rest_day(stats(window_start="2025-08-04", daily=[5] * 7)))
         # Six busy weekdays and one near dead one: 2025-08-08 is a Friday.
         lopsided = stats(window_start="2025-08-04", daily=[40, 40, 40, 40, 1, 40, 40])
         self.assertEqual(chit.rest_day(lopsided), 4)
@@ -251,59 +261,155 @@ class InsightTests(unittest.TestCase):
     def test_a_silent_year_claims_no_rest_day(self):
         self.assertIsNone(chit.rest_day(stats(daily=[0] * 366)))
 
-    def test_the_rest_day_is_tagged_and_drawn_in_the_quiet_colour(self):
-        drawn = chit.weekday_glasses(
+    def test_the_rest_day_is_marked_closed_and_drawn_quiet(self):
+        drawn = chit.week_strip(
             stats(window_start="2025-08-04", daily=[40, 40, 40, 40, 1, 40, 40])
         )
-        self.assertEqual(drawn.count('class="pour-quiet"'), 1)
-        self.assertEqual(drawn.count("rest day"), 1)
+        self.assertEqual(drawn.count('class="seg-quiet"'), 1)
+        self.assertEqual(drawn.count("closed"), 1)
 
-    def test_no_rest_day_means_no_tag_at_all(self):
-        drawn = chit.weekday_glasses(stats(window_start="2025-08-04", daily=[5] * 7))
-        self.assertNotIn("rest day", drawn)
-        self.assertNotIn("pour-quiet", drawn)
+    def test_no_rest_day_means_nothing_is_marked_closed(self):
+        drawn = chit.week_strip(stats(window_start="2025-08-04", daily=[5] * 7))
+        self.assertNotIn("closed", drawn)
+        self.assertNotIn("seg-quiet", drawn)
 
-    def test_the_streak_carries_the_date_it_ended(self):
-        # Four in a row from 2026-01-05, then a gap.
+    def test_the_streak_keeps_its_date_in_the_label_not_the_figure(self):
+        """The date must not swell the figure into rivalling the hero."""
         payload = stats(
             window_start="2026-01-05", daily=[1, 1, 1, 1, 0, 1], longest_run=4
         )
         self.assertEqual(chit.best_run_end(payload), date(2026, 1, 8))
-        self.assertEqual(chit.streak_value(payload), "4 days to 08 JAN")
+        self.assertEqual(chit.streak_label(payload), "LONGEST STREAK, TO 08 JAN")
+        self.assertEqual(chit.streak_label(stats(daily=[])), "LONGEST STREAK")
 
-    def test_a_streak_with_no_history_still_renders_a_value(self):
-        self.assertEqual(chit.streak_value(stats(daily=[], longest_run=0)), "0 days")
 
-    def test_the_pour_level_carries_the_value_linearly(self):
-        """Level is a length up the glass, unlike a circle read by its area."""
-        half, full = chit.pour_levels([5, 10])
-        self.assertAlmostEqual(full / half, 2.0)
-        self.assertEqual(full, 1.0)
-        self.assertEqual(chit.surface_y(1.0), chit.GLASS_FULL)
-        self.assertEqual(chit.surface_y(0.0), chit.GLASS_EMPTY)
+class SustainabilityTests(unittest.TestCase):
+    """The headline must survive a change of habit.
 
-    def test_a_silent_week_pours_nothing_rather_than_dividing_by_zero(self):
-        self.assertEqual(chit.pour_levels([0] * 7), [0.0] * 7)
-        self.assertNotIn("class=\"pour", chit.weekday_glasses(stats(daily=[0] * 366)))
+    A burst share is a striking headline at 57% and an embarrassing one at 19%.
+    Hardcoding it would leave the card bragging about nothing a year from now,
+    so every candidate is scored and the strongest one is promoted.
+    """
 
-    def test_seven_glasses_are_drawn_whatever_the_history(self):
-        for daily in ([], [1], list(range(400))):
+    @staticmethod
+    def shaped(daily, run=0, running=0):
+        return stats(
+            daily=daily,
+            days_total=len(daily),
+            days_active=sum(1 for day in daily if day > 0),
+            total_contributions=sum(daily),
+            longest_run=run,
+            current_run=running,
+        )
+
+    def hero(self, daily, run=0, running=0):
+        return chit.hero_and_support(self.shaped(daily, run, running))[0]
+
+    def test_a_bursty_year_leads_with_the_burst_share(self):
+        self.assertEqual(self.hero([0] * 356 + [80] * 10, run=10)["key"], "burst")
+
+    def test_a_steady_year_leads_with_the_run_instead(self):
+        self.assertEqual(self.hero([2] * 300 + [0] * 66, run=40, running=40)["key"], "running")
+
+    def test_a_silent_year_never_headlines_a_zero_percent(self):
+        """max() keeps the first maximum, so the floor candidate is declared
+        first and wins the all zero tie."""
+        hero = self.hero([0] * 366)
+        self.assertEqual(hero["key"], "total")
+        self.assertEqual(hero["value"], "0")
+
+    def test_a_share_needs_real_volume_before_it_is_promoted(self):
+        """62% of sixteen commits is arithmetically true and says nothing."""
+        tiny = self.hero([0] * 350 + [1] * 16, run=3)
+        self.assertEqual(tiny["key"], "total")
+        big = self.hero([0] * 350 + [40] * 16, run=16)
+        self.assertEqual(big["key"], "burst")
+
+    def test_the_dial_matches_the_headline_it_is_drawn_around(self):
+        for daily, run in (([0] * 356 + [80] * 10, 10), ([2] * 300 + [0] * 66, 40)):
+            with self.subTest(run=run):
+                hero = self.hero(daily, run=run, running=run)
+                self.assertGreaterEqual(hero["gauge"], 0.0)
+                self.assertLessEqual(hero["gauge"], 1.0)
+
+    def test_the_supports_never_repeat_the_hero(self):
+        for daily, run in (([0] * 356 + [80] * 10, 10), ([2] * 366, 366), ([0] * 366, 0)):
+            with self.subTest(total=sum(daily)):
+                hero, support = chit.hero_and_support(self.shaped(daily, run, run))
+                self.assertEqual(len(support), 2)
+                self.assertNotIn(hero["key"], [entry["key"] for entry in support])
+                self.assertEqual(len({entry["key"] for entry in support}), 2)
+
+    def test_every_candidate_is_renderable_whichever_one_wins(self):
+        for daily, run in (([0] * 366, 0), ([1] * 366, 366), ([0] * 356 + [80] * 10, 10)):
+            with self.subTest(total=sum(daily)):
+                ET.fromstring(chit.render_chit("dark", self.shaped(daily, run, run)))
+
+
+class SparkTests(unittest.TestCase):
+    def test_the_area_chart_always_plots_thirty_points(self):
+        for daily in ([], [5], list(range(400))):
             with self.subTest(days=len(daily)):
-                drawn = chit.weekday_glasses(stats(daily=daily))
-                self.assertEqual(drawn.count('class="tumbler"'), 7)
-                self.assertEqual(drawn.count("<clipPath"), 7)
+                self.assertEqual(len(chit.spark_points(stats(daily=daily))), chit.SPARK_DAYS)
 
-    def test_each_glass_clips_its_own_pour(self):
-        """A shared clip id would pour every glass to the same level."""
-        drawn = chit.weekday_glasses(stats())
-        ids = re.findall(r'<clipPath id="([^"]+)"', drawn)
-        self.assertEqual(len(ids), len(set(ids)))
+    def test_a_short_history_is_padded_at_the_front_not_the_back(self):
+        padded = chit.recent(stats(daily=[4, 5]))
+        self.assertEqual(padded[-2:], [4, 5])
+        self.assertEqual(padded[:-2], [0] * 28)
 
-    def test_the_glasses_stay_inside_the_printed_area(self):
-        pitch = (chit.PAD_R - chit.PAD_L) / 7
-        self.assertLess(2 * chit.GLASS_TOP_HW, pitch, "neighbouring glasses touch")
-        self.assertGreaterEqual(chit.PAD_L + 0.5 * pitch - chit.GLASS_TOP_HW, chit.PAD_L)
-        self.assertLessEqual(chit.PAD_L + 6.5 * pitch + chit.GLASS_TOP_HW, chit.PAD_R)
+    def test_the_chart_spans_the_full_width_and_never_leaves_the_baseline(self):
+        points = chit.spark_points(stats())
+        self.assertAlmostEqual(points[0][0], chit.SPARK_L)
+        self.assertAlmostEqual(points[-1][0], chit.SPARK_R)
+        for _, y in points:
+            self.assertLessEqual(y, chit.SPARK_BASE)
+            self.assertGreaterEqual(y, chit.SPARK_BASE - chit.SPARK_H)
+
+    def test_a_silent_month_draws_a_flat_line_not_a_division_by_zero(self):
+        points = chit.spark_points(stats(daily=[0] * 366))
+        self.assertEqual({round(y, 6) for _, y in points}, {chit.SPARK_BASE})
+
+    def test_the_dial_is_capped_short_of_a_full_turn(self):
+        """An arc whose ends coincide is degenerate and renders as nothing."""
+        self.assertIn(" 1 ", chit.ring_arc(1.0))
+        self.assertTrue(chit.ring_arc(1.0).startswith("M "))
+        ET.fromstring(f'<svg xmlns="http://www.w3.org/2000/svg"><path d="{chit.ring_arc(1.0)}"/></svg>')
+        ET.fromstring(f'<svg xmlns="http://www.w3.org/2000/svg"><path d="{chit.ring_arc(0.0)}"/></svg>')
+
+
+class WeekStripTests(unittest.TestCase):
+    def test_segment_widths_are_proportional_to_the_share_of_the_week(self):
+        # Monday twice everything else: its segment must be twice as wide.
+        segments = chit.week_segments(
+            stats(window_start="2025-08-04", daily=[2, 1, 1, 1, 1, 1, 1])
+        )
+        widths = [width for _, width in segments]
+        self.assertAlmostEqual(widths[0] / widths[1], 2.0)
+
+    def test_seven_segments_are_laid_out_left_to_right_without_overlap(self):
+        segments = chit.week_segments(stats())
+        self.assertEqual(len(segments), 7)
+        for (x, width), (next_x, _) in zip(segments, segments[1:]):
+            self.assertLessEqual(x + width, next_x, "segments overlap")
+
+    def test_the_strip_stays_inside_the_printed_area(self):
+        for daily in ([1] * 7, [40, 40, 40, 40, 1, 40, 40], [0] * 366):
+            with self.subTest(daily=len(daily)):
+                segments = chit.week_segments(stats(daily=daily))
+                self.assertGreaterEqual(segments[0][0], chit.PAD_L)
+                last_x, last_w = segments[-1]
+                self.assertLessEqual(round(last_x + last_w, 6), chit.PAD_R)
+
+    def test_a_dead_weekday_still_draws_a_visible_sliver(self):
+        segments = chit.week_segments(
+            stats(window_start="2025-08-04", daily=[400, 400, 400, 400, 0, 400, 400])
+        )
+        self.assertGreaterEqual(segments[4][1], chit.STRIP_MIN)
+
+    def test_a_silent_year_splits_the_strip_evenly_rather_than_vanishing(self):
+        widths = [width for _, width in chit.week_segments(stats(daily=[0] * 366))]
+        self.assertEqual(len(set(round(width, 6) for width in widths)), 1)
+        self.assertGreater(widths[0], chit.STRIP_MIN)
 
 
 class ChitRenderingTests(unittest.TestCase):
@@ -312,11 +418,7 @@ class ChitRenderingTests(unittest.TestCase):
 
     def test_a_silent_year_renders_without_dividing_by_zero(self):
         source = self.render(
-            total_contributions=0,
-            days_active=0,
-            longest_run=0,
-            current_run=0,
-            daily=[0] * 366,
+            total_contributions=0, days_active=0, longest_run=0, daily=[0] * 366
         )
         self.assertIsNone(NON_FINITE.search(source), "non finite number reached the SVG")
         ET.fromstring(source)
@@ -328,36 +430,16 @@ class ChitRenderingTests(unittest.TestCase):
                 days_active=0,
                 days_total=0,
                 longest_run=0,
-                current_run=0,
                 daily=[],
             )
-        )
-
-    def test_the_gauge_tracks_the_burst_share(self):
-        # Ten days of ten against ten days of one: 100 of 110.
-        payload = stats(daily=[10] * 10 + [1] * 10)
-        drawn = chit.render_chit("light", payload)
-        self.assertIn(f'class="gauge" x="{chit.GAUGE_X}"', drawn)
-        self.assertIn(
-            f'width="{chit.num(chit.GAUGE_W * (100 / 110))}"',
-            drawn,
-        )
-        self.assertIn("91% of the year", drawn)
-
-    def test_an_empty_gauge_draws_no_fill(self):
-        self.assertIn(
-            f'class="gauge" x="{chit.GAUGE_X}" y="168" width="0"',
-            self.render(daily=[0] * 366),
         )
 
     def test_large_counts_get_thousands_separators(self):
         self.assertIn("12,345", self.render(total_contributions=12345))
 
     def test_one_day_is_not_pluralised(self):
-        self.assertIn("1 day to ", self.render(longest_run=1))
-        self.assertIn("2 days to ", self.render(longest_run=2))
-        self.assertEqual(chit.days_label(1), "1 day")
-        self.assertEqual(chit.days_label(0), "0 days")
+        self.assertIn(">1 day<", self.render(longest_run=1))
+        self.assertIn(">2 days<", self.render(longest_run=2))
 
     def test_the_render_is_pure_and_repeatable(self):
         payload = stats()
