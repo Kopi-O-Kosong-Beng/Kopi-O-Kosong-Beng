@@ -1,246 +1,129 @@
-# The Tab: live GitHub stats as a hawker order chit
+# The Counter: a second card, and why it stopped being a stats card
 
 Date: 2026-08-04
-Status: approved, ready for implementation
+Status: shipped
 
-## Problem
+## What it is now
 
-The profile has no activity signal. The obvious fix is a third party stats widget,
-which the existing guard suite bans on purpose: `github-readme-stats`,
-`streak-stats`, `github-profile-trophy`, `contribution-graph` and `shields.io` are
-all forbidden strings in `tests/test_profile.py`. Those widgets carry their own
-fonts, palettes and framing, so any of them would sit on the page looking borrowed.
+A second generated asset, `kopi-chit-{light,dark}.svg`, sitting under the
+signboard. It lists what is being built and what each thing is built with, plus
+one live line at the foot saying when the account last pushed.
 
-The profile also currently contains zero numbers in prose, enforced by a test that
-allows only the digits `18`.
+The project list is curated in `COUNTER` in `scripts/generate_kopi_chit.py`,
+exactly as `STACK` is curated for the signboard. Editing that tuple changes the
+card; the daily workflow redraws it.
 
-## Solution
+## How it got here
 
-Generate a second SVG asset in the same visual language as the signboard, fed by
-real contribution data. No third party service is contacted at render time and no
-banned string is introduced, so the guard suite stays intact and unweakened.
+The brief was "add GitHub stats". Six designs were built and thrown away before
+the premise itself turned out to be the problem. Recording them so none of them
+comes back.
 
-The numbers live inside the SVG artwork. The `prose_only` helper in
-`tests/test_profile.py` already strips HTML attribute values before scanning for
-digits, so the READMEs stay number free with no change to that rule.
+| Design | Why it went |
+| --- | --- |
+| Chit beside a second glass | The signboard already draws a glass and already prints the stack, so it repeated the picture and the words at once |
+| A calendar of small squares | That is GitHub's own graphic, on the same page, in a warmer palette |
+| Twelve monthly cup rings | Nine of the twelve months are empty, so any per month layout is a row of holes |
+| Seven glasses, one per weekday | Small multiples turn a card into a dashboard, and most of each glass was empty outline |
+| A weekday split strip | Tells a stranger which day he does not work |
+| A scored activity headline | See below |
 
-## Visual design
+### The window was lying
 
-One card, `900 x 410`, sitting directly beneath the signboard so the two read as a
-single stall front: a full width thermal printed order chit with a torn bottom
-edge.
+Every unflattering number came from measuring 366 days.
 
-**There is deliberately no second glass.** The first build put a tall glass of
-iced kopi beside the chit, filling to the share of days brewed with the stack
-stamped on its ice cubes. Stacked under the signboard it read as two cups on one
-profile, and worse, it repeated the stack twice: once as pictures on the ice and
-once as words along the signboard's specials strip. The glass stays on the sign,
-where it belongs, and the chit became the receipt it always was.
+| Window | Reads as |
+| --- | --- |
+| 366 days | 45 active days, 12 per cent, a dormant account |
+| 30 days | 27 active days, 90 per cent, someone shipping most days |
 
-**And there is deliberately no contribution grid.** The freed space first went to
-a calendar of small squares, one per day. That is the graphic GitHub already
-draws on the same page, and repainting it in a warmer palette is precisely the
-borrowed look the guard suite exists to keep off this profile. Designing a stats
-card is not the same as reskinning one.
+Both true. 666 of the 726 commits landed in the final month, because the account
+was genuinely quiet before that. **When a figure looks bad, check the
+measurement period before changing the metric.**
 
-**Nor twelve monthly cup rings**, which were tried next. The problem was the
-data, not the drawing: nine of the twelve months in this account are empty, so
-any per month layout is a row of holes however carefully it is rendered.
+### Then the metrics went too
 
-The card shows **the last thirty days**, full width, one bar per day. That is the
-only window where this data is dense, 28 of 30 days active, and it visibly moves
-every morning. Height scales linearly, which is the honest encoding for a bar,
-where length does the reading. The axis names the date of the leftmost bar so it
-is not a mystery ruler.
+Reframing fixed the honesty but not the point. Activity numbers are the weakest
+signal on a profile: gameable, and about typing rather than judgement. Worse,
+several were actively harmful to the person they describe.
 
-### The copy says what it measures
+- "57 per cent of the year in its 10 busiest days" reads as inconsistent.
+- "45 of 366 active days" reads as an abandoned account.
+- A quietest weekday tagged `closed` reads as "does not work Fridays".
 
-The first pass leaned on the receipt metaphor and the puns did not map onto the
-numbers underneath. `days brewed` was not a thing anyone buys, `SERVED SINCE`
-read like the stall opened that day rather than naming a rolling window, and a
-`TOTAL` row whose value was "no sugar" totalled nothing while repeating the
-sign-off sitting directly beneath it in the README.
+The repo's own guard suite had banned stats widgets before any of this was
+built. That decision was right, and it was right for this reason.
 
-The labels are now plain: `commits, past year`, `longest streak`, `days active`,
-and a footer that states the window the card is counting over. The kopi theme
-lives in the paper, the ink, the torn edge and the signboard above it, which is
-enough. It does not need every label to be a joke.
+## What a visitor actually wants
 
-```
-KOPI O KOSONG BENG
-ORDER #0412  ·  04 AUG 2026
-..........................................
-1x   commits, past year               412
-1x   longest run                   7 days
-1x   days brewed                   49/366
-..........................................
-LAST 30 DAYS
-[ 30 bar sparkline ]
-..........................................
-TOTAL                             no sugar
-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
-```
+They want to know what this person builds and what they build it with. The
+README says the first in prose and never says the second at all, which is the
+gap the card now fills. Nothing on it decays when a habit changes, and there is
+no number that can undersell anyone.
 
-Right, `x 620..880`: a tall glass of iced kopi, drawn larger than the one on the
-sign so it reads as the hero of this card.
-
-- Coffee level is `days_active / days_total`, the share of the past year with at
-  least one contribution. The glass literally fills as he shows up.
-- Ice cubes are his stack, one cube per entry, sized by rank, each stamped with a
-  short label. Captioned `TODAY'S BREW`, echoing the strip on the signboard.
-- Straw, condensation drops and the `bead` keyframes are carried over from the
-  signboard unchanged.
-
-Palette tokens come from `generate_kopi_sign.PALETTES` with no additions, so light
-and dark stay in lockstep with the sign.
-
-### Motion
-
-Every animation starts and ends at the resting state, and none of them moves
-the coffee.
-
-- `.motion` drops reuse the existing `bead` keyframes.
-- `.bob` floats each ice cube, staggered, on an outer group. The tilt stays on
-  an inner group, because a CSS transform on the same element replaces the
-  `transform` attribute outright and would flatten every cube.
-- `.brew-top` ripples the crema horizontally around its own centre.
-
-The first attempt poured the coffee up into the glass from below. It looked
-right in a live browser and rendered an **empty glass** anywhere the animation
-was not actually running, because a renderer parked at t=0 sits on the `from`
-frame whether or not a fill-mode is set. Dropping the fill-mode is not enough.
-The level is now plain geometry and only decoration moves.
-
-```css
-@media (prefers-reduced-motion: reduce) {
-  .motion { animation: none !important; opacity: 0.7 !important; }
-  .still  { animation: none !important; }
-}
-```
-
-`tests/test_chit.py` locks this in: no animation may declare a `both` or
-`backwards` fill-mode, and every animated element must carry a class the
-reduced motion block switches off.
+The single exception is the footer. Proof that an account is not abandoned is
+the one thing activity data can usefully tell a visitor, and it costs one line:
+`LAST SERVED / TODAY`.
 
 ## Data source
 
-`https://github.com/users/<login>/contributions`, fetched with no authentication.
+`https://github.com/users/<login>/contributions`, fetched with no
+authentication. Verified 2026-08-04: HTTP 200, 366 day cells with exact per day
+counts. It is the calendar the public profile renders, so private contributions
+are included once the account enables Settings, Profile, "Include private
+contributions on my profile". That checkbox is the entire setup, it is account
+level and permanent, and no token or repo secret is involved.
 
-Verified on 2026-08-04: returns HTTP 200 and 366 day cells, each carrying
-`data-date`, `data-level` and an `id`, with exact per day counts in a matching
-`<tool-tip>` element keyed by `for`. This is the same calendar the public profile
-page renders, so private contributions are included the moment the account enables
-Settings, Profile, "Include private contributions on my profile".
-
-That checkbox is the entire setup. It is account level and permanent: every private
-repo, including ones created later, counts automatically from the day it exists.
-No token, no repo secret, nothing that expires.
+Only the footer needs this now, but the pipeline is kept: it is what makes the
+card able to say anything live at all.
 
 ### Two traps this endpoint sets
 
-**DOM order is not chronological.** Cell ids run `component-<weekday>-<week>`, so the
-markup lists every Sunday, then every Monday, and so on. The first three cells in
-the response were `2025-08-03`, `2025-08-10`, `2025-08-17`. Parsing must sort by
-`data-date` and must never trust document order.
+**DOM order is not chronological.** Cell ids run `component-<weekday>-<week>`, so
+the markup lists every Sunday, then every Monday. Parsing must sort on
+`data-date`.
 
-**Counts live in sibling elements.** The `<td>` carries only a coarse `data-level`
-bucket from 0 to 4. Exact counts are in `<tool-tip for="...">` text such as
-`3 contributions on August 5th.` or `No contributions on August 3rd.`, joined to
-the cell by id.
-
-Parsing uses `html.parser.HTMLParser` from the standard library rather than regular
-expressions, because attribute order is not guaranteed. The repo has no third party
-dependencies and this does not add one.
-
-### Why languages are curated, not fetched
-
-The account has 3 public repos, one a fork, and the API reports their languages as
-`Python`, `Python` and `null`. Auto detection would render a single lonely `python`
-ice cube. Real work lives in private repos, and reading language bytes out of those
-is the one thing that would have required a `repo` scoped token.
-
-So the stack stays curated, exactly as the signboard already curates it. `STACK` is
-lifted out of `generate_kopi_sign.py` as a module constant and both cards read from
-it, making it a single source of truth instead of two hardcoded lists that drift.
+**Counts live in sibling elements.** The `<td>` carries only a coarse
+`data-level` bucket. Exact counts are in `<tool-tip for="...">` text, joined by
+id. Parsing uses `html.parser` rather than regular expressions, because
+attribute order is not guaranteed.
 
 ## Architecture
-
-Network and drawing are kept strictly apart so the drawing stays testable.
 
 | Unit | Responsibility | Depends on |
 | --- | --- | --- |
 | `scripts/fetch_kopi_stats.py` | One HTTP fetch, parse, write `data/stats.json` | network |
-| `scripts/generate_kopi_chit.py` | Pure: stats dict to SVG string | palettes, stack |
+| `scripts/generate_kopi_chit.py` | Pure: `COUNTER` plus stats dict to SVG | palettes |
 | `.github/workflows/brew.yml` | Daily fetch, generate, test, commit if changed | both |
 
-`data/stats.json` is committed. That is what preserves the existing byte exact drift
-test under changing data: the asset must equal `render_chit(theme, <committed json>)`.
-Live data never enters a test.
+`data/stats.json` is committed, which is what preserves the byte exact drift
+test under changing data: the asset must equal the generator run over the
+committed file. Live data never enters a test.
 
-### `data/stats.json`
+`fetch_kopi_stats.py` refuses to write unless it parses at least 300 day cells,
+so a markup change upstream leaves the previous file in place and the card goes
+stale rather than wrong.
 
-```json
-{
-  "login": "Kopi-O-Kosong-Beng",
-  "generated_on": "2026-08-04",
-  "window_start": "2025-08-03",
-  "window_end": "2026-08-03",
-  "total_contributions": 412,
-  "days_active": 49,
-  "days_total": 366,
-  "longest_run": 7,
-  "current_run": 2,
-  "recent": [0, 1, 3, 0, "... 30 entries, oldest first"]
-}
-```
+## Guards worth keeping
 
-### Failure behaviour
+- **No scoreboard.** Tests fail if a commit total, a streak, a year ratio or a
+  percentage reaches any drawn `<text>` element. This is the lesson above, held
+  in place mechanically.
+- **Nothing animated hides itself at rest.** No animation may declare a `both`
+  or `backwards` fill-mode, and every animated element must carry a class the
+  reduced motion block switches off. An early version poured coffee up into a
+  glass and rendered an empty glass anywhere the animation was not running,
+  because a renderer parked at `t=0` sits on the `from` frame regardless of
+  fill-mode.
+- **The two cards may not disagree.** Every stack tag on the counter must be one
+  the signboard also claims.
+- **Layout is asserted, not eyeballed.** Row separators must not cross the stack
+  chips, and no chip row may run past the right margin. Both were real bugs.
+- **Paper grain is generated.** `feTurbulence`, not a bitmap, because GitHub's
+  image proxy would leave a fetched texture blank.
 
-The scrape is the one fragile piece. `fetch_kopi_stats.py` refuses to write unless
-it parses at least 300 day cells with counts. On failure the workflow leaves the
-previous `data/stats.json` in place, so the card goes stale rather than breaking or
-rendering zeros.
+## Still open
 
-## Testing
-
-`tests/test_chit.py`, mirroring the signboard contract:
-
-1. Both assets exist, are pure ASCII, start with the XML declaration, LF only.
-2. Assets match `render_chit(theme, committed_stats)` byte for byte.
-3. Geometry and accessibility: `viewBox`, `role="img"`, `aria-labelledby`, `<title>`,
-   `<desc>`, reduced motion block, and no `<script>`, `<image>`, `@font-face`,
-   `xlink:href`, `href="`, `https://` or protocol relative `//`.
-4. Light and dark differ only by palette token substitution.
-5. Copy contract: chit headings and every stack label present.
-6. Purity and edge cases, driven by fixtures rather than live data:
-   - all zero series produces no divide by zero and a flat baseline
-   - fully active series yields fill `1.0` and a run equal to the series length
-   - longest run is correct across a known series with gaps
-   - stack labels containing `&` or `<` are XML escaped and the result still parses
-   - thousands separators appear on large counts
-7. `data/stats.json` schema: required keys present, `recent` has 30 entries,
-   `days_active <= days_total`.
-8. Both cards derive their stack from `generate_kopi_sign.STACK`.
-
-`tests/test_profile.py` gains guards that both READMEs carry the chit in a
-`<picture>` with both themes, that its `<img>` has real alt text, and that the chit
-is always a local `./assets/` path and never a remote URL. Every existing check is
-kept as is.
-
-## Non goals
-
-- No stars or repo counts. Both are near zero and would read as thin.
-- No streak service, no trophy wall, no badges. The guard list stands.
-- No public numbers in README prose. The digits stay inside the artwork.
-
-## Known tension
-
-The profile was built with deliberately zero metrics. A chit is far closer to
-personality than to a trophy wall, but it is still a move from "no numbers" to
-"some numbers", and that was accepted knowingly.
-
-Separately, the calendar currently shows 49 active days out of 366. For someone
-shipping a product full time that is under counting, and the two usual causes are
-the private contributions checkbox being off, or pitchMe commits carrying a git
-email that is not attached to this GitHub account. Worth confirming before these
-numbers go on a public card.
+The account shows 45 active days out of 366 because private contributions are
+not being counted. Either the profile checkbox is off, or pitchMe commits carry
+a git email not attached to this GitHub account.

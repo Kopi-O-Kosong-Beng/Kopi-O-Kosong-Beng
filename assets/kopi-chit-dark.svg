@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 356" role="img" aria-labelledby="title desc">
-  <title id="title">The order chit of Chia Zhi Feng, printed at the Kopi O Kosong Beng stall</title>
-  <desc id="desc">A printed order chit. Its headline, shown inside a dial, is 28/30: of the last 30 days had work pushed. Alongside it: 739 commits, past year, 23 days longest streak, to 29 jul. An area chart traces the last 30 days.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" role="img" aria-labelledby="title desc">
+  <title id="title">The counter at Kopi O Kosong Beng: what Chia Zhi Feng is building</title>
+  <desc id="desc">A printed chit listing what is on the counter. pitchMe, an AI speaking coach. you talk, it tells you the truth. built with typescript, gcp; a robot arm, taught to pick things up without dropping them. built with python, ros; a two player math game, no CPU in it. just wires and states. built with fpga; quantum devices, made at hours I would rather not say. built with python. A line at the foot says the stall last served today.</desc>
   <defs>
     <filter id="grain" x="0" y="0" width="100%" height="100%">
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
@@ -16,58 +16,74 @@
     .sheet { fill: #100D0A; }
     .chit { fill: #1B1611; stroke: #3B2F23; stroke-width: 1.25; }
     .dot { fill: none; stroke: #3B2F23; stroke-width: 1; stroke-dasharray: 1 3; }
-    .pill { fill: none; stroke: #3B2F23; stroke-width: 1; }
     .meta { font-size: 9px; letter-spacing: 1.8px; }
     .eyebrow { font-size: 8px; letter-spacing: 2.4px; }
-    .caption { font-size: 12px; letter-spacing: 0.3px; }
-    .hero { font-size: 40px; font-weight: 700; letter-spacing: -1px; fill: #E09551; }
-    .figure { font-size: 26px; font-weight: 700; letter-spacing: -0.4px; }
-    .ring-track { fill: none; stroke: #2A2119; stroke-width: 13; }
-    .ring { fill: none; stroke: #E09551; stroke-width: 13; stroke-linecap: round; }
-    .spark-fill { fill: #E09551; opacity: 0.16; }
-    .spark-line { fill: none; stroke: #E09551; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
-    .spark-base { fill: none; stroke: #3B2F23; stroke-width: 1; }
-    .spark-dot { fill: #E09551; }
-    /* Only today's dot on the chart moves, and it rests at full opacity, so a
-       renderer parked at t=0 shows the finished card. An earlier version
-       animated the artwork itself and rendered wrong wherever the animation
-       was not running. */
-    .blink { animation: settle 3.4s ease-in-out infinite; }
+    .name { font-size: 19px; font-weight: 700; letter-spacing: 0.2px; }
+    .note { font-size: 8.5px; letter-spacing: 2px; fill: #E09551; }
+    .line { font-size: 11.5px; letter-spacing: 0.2px; }
+    .chip { fill: #2A2119; }
+    .chip-text { font-size: 8px; letter-spacing: 1.4px; }
+    .pulse { fill: #E09551; }
+    /* Only the live dot moves, and it rests at full opacity, so a renderer
+       parked at t=0 shows the finished card. An earlier version animated the
+       artwork itself and rendered wrong wherever the animation was not
+       running. */
+    .blink { animation: settle 2.6s ease-in-out infinite; }
     @keyframes settle {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.45; }
+      50% { opacity: 0.35; }
     }
     @media (prefers-reduced-motion: reduce) {
       .still { animation: none !important; }
     }
   </style>
 
-  <rect class="sheet" width="900" height="356" rx="26"/>
-  <path class="chit" d="M 24 22 H 876 V 316 L 869.74 330 L 863.47 316 L 857.21 330 L 850.94 316 L 844.68 330 L 838.41 316 L 832.15 330 L 825.88 316 L 819.62 330 L 813.35 316 L 807.09 330 L 800.82 316 L 794.56 330 L 788.29 316 L 782.03 330 L 775.76 316 L 769.5 330 L 763.24 316 L 756.97 330 L 750.71 316 L 744.44 330 L 738.18 316 L 731.91 330 L 725.65 316 L 719.38 330 L 713.12 316 L 706.85 330 L 700.59 316 L 694.32 330 L 688.06 316 L 681.79 330 L 675.53 316 L 669.26 330 L 663 316 L 656.74 330 L 650.47 316 L 644.21 330 L 637.94 316 L 631.68 330 L 625.41 316 L 619.15 330 L 612.88 316 L 606.62 330 L 600.35 316 L 594.09 330 L 587.82 316 L 581.56 330 L 575.29 316 L 569.03 330 L 562.76 316 L 556.5 330 L 550.24 316 L 543.97 330 L 537.71 316 L 531.44 330 L 525.18 316 L 518.91 330 L 512.65 316 L 506.38 330 L 500.12 316 L 493.85 330 L 487.59 316 L 481.32 330 L 475.06 316 L 468.79 330 L 462.53 316 L 456.26 330 L 450 316 L 443.74 330 L 437.47 316 L 431.21 330 L 424.94 316 L 418.68 330 L 412.41 316 L 406.15 330 L 399.88 316 L 393.62 330 L 387.35 316 L 381.09 330 L 374.82 316 L 368.56 330 L 362.29 316 L 356.03 330 L 349.76 316 L 343.5 330 L 337.24 316 L 330.97 330 L 324.71 316 L 318.44 330 L 312.18 316 L 305.91 330 L 299.65 316 L 293.38 330 L 287.12 316 L 280.85 330 L 274.59 316 L 268.32 330 L 262.06 316 L 255.79 330 L 249.53 316 L 243.26 330 L 237 316 L 230.74 330 L 224.47 316 L 218.21 330 L 211.94 316 L 205.68 330 L 199.41 316 L 193.15 330 L 186.88 316 L 180.62 330 L 174.35 316 L 168.09 330 L 161.82 316 L 155.56 330 L 149.29 316 L 143.03 330 L 136.76 316 L 130.5 330 L 124.24 316 L 117.97 330 L 111.71 316 L 105.44 330 L 99.18 316 L 92.91 330 L 86.65 316 L 80.38 330 L 74.12 316 L 67.85 330 L 61.59 316 L 55.32 330 L 49.06 316 L 42.79 330 L 36.53 316 L 30.26 330 L 24 316 Z"/>
+  <rect class="sheet" width="900" height="450" rx="26"/>
+  <path class="chit" d="M 24 22 H 876 V 410 L 869.74 424 L 863.47 410 L 857.21 424 L 850.94 410 L 844.68 424 L 838.41 410 L 832.15 424 L 825.88 410 L 819.62 424 L 813.35 410 L 807.09 424 L 800.82 410 L 794.56 424 L 788.29 410 L 782.03 424 L 775.76 410 L 769.5 424 L 763.24 410 L 756.97 424 L 750.71 410 L 744.44 424 L 738.18 410 L 731.91 424 L 725.65 410 L 719.38 424 L 713.12 410 L 706.85 424 L 700.59 410 L 694.32 424 L 688.06 410 L 681.79 424 L 675.53 410 L 669.26 424 L 663 410 L 656.74 424 L 650.47 410 L 644.21 424 L 637.94 410 L 631.68 424 L 625.41 410 L 619.15 424 L 612.88 410 L 606.62 424 L 600.35 410 L 594.09 424 L 587.82 410 L 581.56 424 L 575.29 410 L 569.03 424 L 562.76 410 L 556.5 424 L 550.24 410 L 543.97 424 L 537.71 410 L 531.44 424 L 525.18 410 L 518.91 424 L 512.65 410 L 506.38 424 L 500.12 410 L 493.85 424 L 487.59 410 L 481.32 424 L 475.06 410 L 468.79 424 L 462.53 410 L 456.26 424 L 450 410 L 443.74 424 L 437.47 410 L 431.21 424 L 424.94 410 L 418.68 424 L 412.41 410 L 406.15 424 L 399.88 410 L 393.62 424 L 387.35 410 L 381.09 424 L 374.82 410 L 368.56 424 L 362.29 410 L 356.03 424 L 349.76 410 L 343.5 424 L 337.24 410 L 330.97 424 L 324.71 410 L 318.44 424 L 312.18 410 L 305.91 424 L 299.65 410 L 293.38 424 L 287.12 410 L 280.85 424 L 274.59 410 L 268.32 424 L 262.06 410 L 255.79 424 L 249.53 410 L 243.26 424 L 237 410 L 230.74 424 L 224.47 410 L 218.21 424 L 211.94 410 L 205.68 424 L 199.41 410 L 193.15 424 L 186.88 410 L 180.62 424 L 174.35 410 L 168.09 424 L 161.82 410 L 155.56 424 L 149.29 410 L 143.03 424 L 136.76 410 L 130.5 424 L 124.24 410 L 117.97 424 L 111.71 410 L 105.44 424 L 99.18 410 L 92.91 424 L 86.65 410 L 80.38 424 L 74.12 410 L 67.85 424 L 61.59 410 L 55.32 424 L 49.06 410 L 42.79 424 L 36.53 410 L 30.26 424 L 24 410 Z"/>
 
-  <text x="62" y="54" class="soft mono meta">KOPI O KOSONG BENG &#183; ORDER #0739 &#183; 04 AUG 2026</text>
+  <text x="62" y="54" class="soft mono meta">THE COUNTER &#183; KOPI O KOSONG BENG &#183; 04 AUG 2026</text>
   <path class="dot" d="M 62 68 H 838"/>
 
-  <rect class="pill" x="62" y="80" width="168" height="22" rx="11"/>
-  <text x="146" y="94.5" text-anchor="middle" class="soft mono eyebrow">ACTIVE DAYS</text>
+  <g>
+    <text x="62" y="104" class="ink name">pitchMe</text>
+    <circle class="pulse blink still" cx="800" cy="100" r="3"/>
+    <text x="838" y="103" text-anchor="end" class="mono note">LIVE</text>
+    <text x="62" y="123" class="soft mono line">an AI speaking coach. you talk, it tells you the truth.</text>
+    <rect class="chip" x="62" y="130" width="72" height="16" rx="8"/>
+    <text x="98" y="141" text-anchor="middle" class="soft mono chip-text">typescript</text>
+    <rect class="chip" x="140" y="130" width="34.2" height="16" rx="8"/>
+    <text x="157.1" y="141" text-anchor="middle" class="soft mono chip-text">gcp</text>
+  </g>
+  <path class="dot" d="M 62 150 H 838"/>
+  <g>
+    <text x="62" y="174" class="ink name">a robot arm</text>
+    <text x="838" y="173" text-anchor="end" class="mono note">SUTD</text>
+    <text x="62" y="193" class="soft mono line">taught to pick things up without dropping them.</text>
+    <rect class="chip" x="62" y="200" width="50.4" height="16" rx="8"/>
+    <text x="87.2" y="211" text-anchor="middle" class="soft mono chip-text">python</text>
+    <rect class="chip" x="118.4" y="200" width="34.2" height="16" rx="8"/>
+    <text x="135.5" y="211" text-anchor="middle" class="soft mono chip-text">ros</text>
+  </g>
+  <path class="dot" d="M 62 220 H 838"/>
+  <g>
+    <text x="62" y="244" class="ink name">a two player math game</text>
+    <text x="838" y="243" text-anchor="end" class="mono note">SUTD</text>
+    <text x="62" y="263" class="soft mono line">no CPU in it. just wires and states.</text>
+    <rect class="chip" x="62" y="270" width="39.6" height="16" rx="8"/>
+    <text x="81.8" y="281" text-anchor="middle" class="soft mono chip-text">fpga</text>
+  </g>
+  <path class="dot" d="M 62 290 H 838"/>
+  <g>
+    <text x="62" y="314" class="ink name">quantum devices</text>
+    <text x="838" y="313" text-anchor="end" class="mono note">CLEANROOM</text>
+    <text x="62" y="333" class="soft mono line">made at hours I would rather not say.</text>
+    <rect class="chip" x="62" y="340" width="50.4" height="16" rx="8"/>
+    <text x="87.2" y="351" text-anchor="middle" class="soft mono chip-text">python</text>
+  </g>
 
-  <circle class="ring-track" cx="196" cy="186" r="68"/>
-  <path class="ring" d="M 196 118 A 68 68 0 1 1 168.34 123.88"/>
-  <text x="196" y="200" text-anchor="middle" class="hero">28/30</text>
-  <text x="62" y="288" class="soft mono caption">of the last 30 days had work pushed</text>
+  <path class="dot" d="M 62 372 H 838"/>
+  <text x="62" y="394" class="soft mono eyebrow">LAST SERVED</text>
+  <text x="838" y="394" text-anchor="end" class="ink mono eyebrow">TODAY</text>
 
-  <text x="380" y="102" class="soft mono eyebrow">THE LAST 30 DAYS</text>
-  <polygon class="spark-fill" points="380,200 380,200 395.79,122 411.59,176.08 427.38,164.64 443.17,198.96 458.97,168.8 474.76,165.68 490.55,180.24 506.34,168.8 522.14,187.52 537.93,186.48 553.72,197.92 569.52,177.12 585.31,160.48 601.1,154.24 616.9,167.76 632.69,181.28 648.48,165.68 664.28,196.88 680.07,174 695.86,155.28 711.66,190.64 727.45,168.8 743.24,190.64 759.03,200 774.83,192.72 790.62,184.4 806.41,142.8 822.21,187.52 838,186.48 838,200"/>
-  <polyline class="spark-line" points="380,200 395.79,122 411.59,176.08 427.38,164.64 443.17,198.96 458.97,168.8 474.76,165.68 490.55,180.24 506.34,168.8 522.14,187.52 537.93,186.48 553.72,197.92 569.52,177.12 585.31,160.48 601.1,154.24 616.9,167.76 632.69,181.28 648.48,165.68 664.28,196.88 680.07,174 695.86,155.28 711.66,190.64 727.45,168.8 743.24,190.64 759.03,200 774.83,192.72 790.62,184.4 806.41,142.8 822.21,187.52 838,186.48"/>
-  <path class="spark-base" d="M 380 200 H 838"/>
-  <circle class="spark-dot blink still" cx="838" cy="186.48" r="3.5"/>
-  <path class="dot" d="M 380 218 H 838"/>
-
-  <text x="380" y="246" text-anchor="start" class="ink figure">739</text>
-  <text x="380" y="264" text-anchor="start" class="soft eyebrow">COMMITS, PAST YEAR</text>
-  <text x="838" y="246" text-anchor="end" class="ink figure">23 days</text>
-  <text x="838" y="264" text-anchor="end" class="soft eyebrow">LONGEST STREAK, TO 29 JUL</text>
-
-
-  <rect width="900" height="356" rx="26" filter="url(#grain)" opacity="0.05"/>
+  <rect width="900" height="450" rx="26" filter="url(#grain)" opacity="0.05"/>
 </svg>
