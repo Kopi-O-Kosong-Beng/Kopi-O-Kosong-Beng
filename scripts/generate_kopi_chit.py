@@ -5,9 +5,16 @@ in, which is why the committed asset can still be compared byte for byte
 against a fresh render even though the numbers change daily. Nothing in this
 module touches the network.
 
-The card leads with a finding, not a total. A total and a streak are the same
-numbers GitHub prints directly above this image, so the hero is the derived
-one: how much of the year landed in its ten busiest days.
+The card leads on the recent window, not the year. Measured over 366 days this
+account reads as dormant, because it was: only 45 of those days were active,
+and 666 of the 726 commits landed in the final month. Measured over 30 days it
+reads as what it is, someone shipping most days. Same data, and the year figure
+was the misleading one.
+
+It also does not report rhythm. An earlier version showed the share of the year
+that landed in its ten busiest days, and which weekday was quietest. Both were
+true, neither was anyone's business, and both read to a stranger as
+inconsistent or as not working Fridays.
 
 Shapes tried and thrown out, each recorded in the design doc: a second detailed
 glass repeated the signboard, a calendar of small squares was GitHub's own
@@ -35,13 +42,13 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSET_DIR = ROOT / "assets"
 STATS_FILE = ROOT / "data" / "stats.json"
 
-WIDTH, HEIGHT = 900, 440
+WIDTH, HEIGHT = 900, 356
 
 # Nested enclosures: the outer sheet holds the chit, which sits inset with its
 # own hairline. A card laid flat on one background reads as a screenshot.
 SHEET_R = 26
 CHIT_LEFT, CHIT_RIGHT = 24, 876
-CHIT_TOP, CHIT_BOTTOM = 22, 400
+CHIT_TOP, CHIT_BOTTOM = 22, 316
 TEETH, TOOTH_DROP = 68, 14
 
 PAD_L, PAD_R = 62, 838
@@ -58,27 +65,13 @@ SPARK_BASE, SPARK_H = 200.0, 78.0
 SPARK_DAYS = 30
 FIGURE_Y = 246
 
-# One strip split into seven segments by share of the week. Seven separate
-# glasses were tried and dropped: small multiples turn a card into a dashboard,
-# and most of each glass was empty outline. A single proportional bar shows the
-# same lopsidedness in one line, and a near dead Friday reads as the sliver it
-# actually is.
-STRIP_TOP, STRIP_H = 330.0, 22.0
-STRIP_GAP, STRIP_MIN = 4.0, 2.0
-DOW_LABEL_Y = 368
-DOW_TAG_Y = 384
-
-BURST_DAYS = 10
 
 # A burst share needs real volume behind it before it is worth a headline.
-BURST_FLOOR = 150
 
 MONTHS = (
     "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
     "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
 )
-WEEKDAYS = ("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
-INITIALS = ("M", "T", "W", "T", "F", "S", "S")
 
 STYLE = """
     text { font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif; }
@@ -91,6 +84,7 @@ STYLE = """
     .pill { fill: none; stroke: $rule; stroke-width: 1; }
     .meta { font-size: 9px; letter-spacing: 1.8px; }
     .eyebrow { font-size: 8px; letter-spacing: 2.4px; }
+    .caption { font-size: 12px; letter-spacing: 0.3px; }
     .hero { font-size: 40px; font-weight: 700; letter-spacing: -1px; fill: $accent; }
     .figure { font-size: 26px; font-weight: 700; letter-spacing: -0.4px; }
     .ring-track { fill: none; stroke: $g0; stroke-width: 13; }
@@ -99,15 +93,10 @@ STYLE = """
     .spark-line { fill: none; stroke: $accent; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
     .spark-base { fill: none; stroke: $rule; stroke-width: 1; }
     .spark-dot { fill: $accent; }
-    .caption { font-size: 12px; letter-spacing: 0.3px; }
-    .day { font-size: 9px; letter-spacing: 2px; }
-    .tag { font-size: 8px; letter-spacing: 1.6px; fill: $accent; }
-    .seg { fill: $accent; }
-    .seg-quiet { fill: $g0; }
-    /* Only the rest day tag moves, and it rests at full opacity, so a renderer
-       parked at t=0 shows the finished card. An earlier version animated the
-       artwork itself and rendered wrong wherever the animation was not
-       running. */
+    /* Only today's dot on the chart moves, and it rests at full opacity, so a
+       renderer parked at t=0 shows the finished card. An earlier version
+       animated the artwork itself and rendered wrong wherever the animation
+       was not running. */
     .blink { animation: settle 3.4s ease-in-out infinite; }
     @keyframes settle {
       0%, 100% { opacity: 1; }
@@ -156,34 +145,10 @@ def each_day(stats):
     return [(start + timedelta(days=offset), value) for offset, value in enumerate(daily)]
 
 
-def weekday_totals(stats):
-    """Monday first, matching the letters printed under the strip."""
-    totals = [0] * 7
-    for day, value in each_day(stats):
-        totals[day.weekday()] += value
-    return totals
 
 
-def rest_day(stats):
-    """The weekday this account is effectively shut.
-
-    Only claimed when the quietest weekday is genuinely far below the average,
-    otherwise an evenly spread week would get an arbitrary day labelled.
-    """
-    totals = weekday_totals(stats)
-    if sum(totals) <= 0:
-        return None
-    quietest = min(range(7), key=lambda index: totals[index])
-    return quietest if totals[quietest] * 3 < sum(totals) / 7 else None
 
 
-def burst_share(stats, top=BURST_DAYS):
-    """How much of the year landed in its busiest handful of days."""
-    daily = sorted(stats.get("daily") or [], reverse=True)
-    total = sum(daily)
-    if total <= 0:
-        return 0.0
-    return sum(daily[:top]) / total
 
 
 def best_run_end(stats):
@@ -215,7 +180,7 @@ def strength(value, floor, ceiling):
 
 
 # Which supporting figures to fall back on, in order, once the hero is taken.
-SUPPORT_ORDER = ("total", "streak", "steady", "running", "burst")
+SUPPORT_ORDER = ("total", "streak", "running", "recent")
 
 
 def candidates(stats):
@@ -233,8 +198,7 @@ def candidates(stats):
     active = stats.get("days_active", 0)
     run = stats.get("longest_run", 0)
     running = stats.get("current_run", 0)
-    share = burst_share(stats)
-    ratio = active / days_total if days_total else 0.0
+    fresh = sum(1 for value in recent(stats) if value > 0)
     end = best_run_end(stats)
 
     return [
@@ -246,27 +210,17 @@ def candidates(stats):
             "caption": f"pushed over the last {days_total} days",
             "figure": count(total),
             "label": "COMMITS, PAST YEAR",
-            "gauge": min(1.0, active / days_total) if days_total else 0.0,
+            "gauge": fresh / SPARK_DAYS,
         },
         {
-            "key": "burst",
-            "score": strength(share, 0.35, 0.9) if total >= BURST_FLOOR else 0.0,
-            "value": f"{share:.0%}",
-            "eyebrow": f"BUSIEST {BURST_DAYS} DAYS",
-            "caption": f"of the whole year landed in {BURST_DAYS} days",
-            "figure": f"{share:.0%}",
-            "label": f"IN THE BUSIEST {BURST_DAYS} DAYS",
-            "gauge": share,
-        },
-        {
-            "key": "steady",
-            "score": strength(ratio, 0.45, 0.95),
-            "value": f"{ratio:.0%}",
-            "eyebrow": "DAYS WORKED",
-            "caption": "of the year had something pushed to it",
-            "figure": f"{active}/{days_total}",
-            "label": "DAYS WORKED",
-            "gauge": ratio,
+            "key": "recent",
+            "score": strength(fresh / SPARK_DAYS, 0.5, 1.0),
+            "value": f"{fresh}/{SPARK_DAYS}",
+            "eyebrow": "ACTIVE DAYS",
+            "caption": f"of the last {SPARK_DAYS} days had work pushed",
+            "figure": f"{fresh}/{SPARK_DAYS}",
+            "label": f"ACTIVE DAYS, LAST {SPARK_DAYS}",
+            "gauge": fresh / SPARK_DAYS,
         },
         {
             "key": "running",
@@ -305,47 +259,8 @@ def hero_and_support(stats):
     return hero, support
 
 
-def week_segments(stats):
-    """Widths proportional to each weekday's share of the whole week.
-
-    Proportional widths are what make the point: a near dead Friday comes out
-    as the sliver it is, next to a Sunday taking a quarter of the strip.
-    """
-    totals = weekday_totals(stats)
-    span = PAD_R - PAD_L - 6 * STRIP_GAP
-    whole = sum(totals)
-    if whole <= 0:
-        share = [1 / 7] * 7
-    else:
-        share = [value / whole for value in totals]
-    widths = [max(STRIP_MIN, part * span) for part in share]
-    out, x = [], float(PAD_L)
-    for index, width in enumerate(widths):
-        out.append((x, width))
-        x += width + STRIP_GAP
-    return out
 
 
-def week_strip(stats):
-    quiet = rest_day(stats)
-    rows = []
-    for index, (x, width) in enumerate(week_segments(stats)):
-        style = "seg-quiet" if index == quiet else "seg"
-        centre = x + width / 2
-        rows.append(
-            f'  <rect class="{style}" x="{num(x)}" y="{num(STRIP_TOP)}" '
-            f'width="{num(width)}" height="{num(STRIP_H)}" rx="3"/>'
-        )
-        rows.append(
-            f'  <text x="{num(centre)}" y="{DOW_LABEL_Y}" text-anchor="middle" '
-            f'class="soft mono day">{INITIALS[index]}</text>'
-        )
-        if index == quiet:
-            rows.append(
-                f'  <text x="{num(centre)}" y="{DOW_TAG_Y}" text-anchor="middle" '
-                f'class="tag mono blink still">closed</text>'
-            )
-    return "\n".join(rows)
 
 
 def ring_arc(fraction):
@@ -416,18 +331,12 @@ def figure(x, anchor, entry):
 
 def render_chit(theme, stats):
     hero, support = hero_and_support(stats)
-    quiet = rest_day(stats)
-    quiet_desc = (
-        f" {WEEKDAYS[quiet]} is so far below the rest that it is marked closed."
-        if quiet is not None
-        else ""
-    )
     support_desc = ", ".join(f"{entry['figure']} {entry['label'].lower()}" for entry in support)
 
     markup = f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WIDTH} {HEIGHT}" role="img" aria-labelledby="title desc">
   <title id="title">The order chit of Chia Zhi Feng, printed at the Kopi O Kosong Beng stall</title>
-  <desc id="desc">A printed order chit. Its headline, shown inside a dial, is {hero["value"]} {hero["caption"]}. Alongside it: {support_desc}. An area chart traces the last {SPARK_DAYS} days, and a strip along the bottom splits the week into seven parts, each as wide as that weekday's share.{quiet_desc}</desc>
+  <desc id="desc">A printed order chit. Its headline, shown inside a dial, is {hero["value"]}: {hero["caption"]}. Alongside it: {support_desc}. An area chart traces the last {SPARK_DAYS} days.</desc>
   <defs>
     <filter id="grain" x="0" y="0" width="100%" height="100%">
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
@@ -457,9 +366,6 @@ def render_chit(theme, stats):
 {figure(SPARK_L, "start", support[0])}
 {figure(PAD_R, "end", support[1])}
 
-  <path class="dot" d="M {PAD_L} 300 H {PAD_R}"/>
-  <text x="{PAD_L}" y="320" class="soft mono eyebrow">HOW THE WEEK SPLITS</text>
-{week_strip(stats)}
 
   <rect width="{WIDTH}" height="{HEIGHT}" rx="{SHEET_R}" filter="url(#grain)" opacity="0.05"/>
 </svg>

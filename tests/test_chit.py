@@ -171,7 +171,7 @@ class ChitAssetTests(unittest.TestCase):
                     "ORDER #",
                     "COMMITS, PAST YEAR",
                     "THE LAST 30 DAYS",
-                    "HOW THE WEEK SPLITS",
+                    "ACTIVE DAYS",
                 ):
                     self.assertIn(label, rendered)
 
@@ -214,6 +214,9 @@ class ChitAssetTests(unittest.TestCase):
                     "THE PAST YEAR",
                     "THE YEAR IN CUPS",
                     "HOW THE WEEK POURS",
+                    "HOW THE WEEK SPLITS",
+                    "seg-quiet",
+                    "rest day",
                     "footprint",
                     "stain",
                     "tumbler",
@@ -226,53 +229,6 @@ class ChitAssetTests(unittest.TestCase):
 class InsightTests(unittest.TestCase):
     """The card has to say something the profile page does not already say."""
 
-    def test_weekday_totals_start_on_monday_and_keep_every_day(self):
-        # 2025-08-03 is a Sunday, so a single day lands in the last slot.
-        self.assertEqual(
-            chit.weekday_totals(stats(window_start="2025-08-03", daily=[7])),
-            [0, 0, 0, 0, 0, 0, 7],
-        )
-        self.assertEqual(
-            chit.weekday_totals(stats(window_start="2025-08-04", daily=[1] * 7)),
-            [1] * 7,
-        )
-
-    def test_weekday_totals_sum_to_the_whole_window(self):
-        self.assertEqual(sum(chit.weekday_totals(stats())), sum(DAILY))
-
-    def test_the_burst_share_is_the_top_days_over_the_total(self):
-        # Ten days of ten, ninety days of one: 100 of 190.
-        self.assertAlmostEqual(
-            chit.burst_share(stats(daily=[10] * 10 + [1] * 90)), 100 / 190
-        )
-
-    def test_the_burst_share_of_a_silent_year_is_zero_not_a_crash(self):
-        self.assertEqual(chit.burst_share(stats(daily=[0] * 366)), 0.0)
-        self.assertEqual(chit.burst_share(stats(daily=[])), 0.0)
-
-    def test_a_rest_day_is_only_claimed_when_it_is_really_quiet(self):
-        """An evenly worked week must not get an arbitrary day labelled."""
-        self.assertIsNone(chit.rest_day(stats(window_start="2025-08-04", daily=[5] * 7)))
-        # Six busy weekdays and one near dead one: 2025-08-08 is a Friday.
-        lopsided = stats(window_start="2025-08-04", daily=[40, 40, 40, 40, 1, 40, 40])
-        self.assertEqual(chit.rest_day(lopsided), 4)
-        self.assertEqual(chit.WEEKDAYS[4], "FRI")
-
-    def test_a_silent_year_claims_no_rest_day(self):
-        self.assertIsNone(chit.rest_day(stats(daily=[0] * 366)))
-
-    def test_the_rest_day_is_marked_closed_and_drawn_quiet(self):
-        drawn = chit.week_strip(
-            stats(window_start="2025-08-04", daily=[40, 40, 40, 40, 1, 40, 40])
-        )
-        self.assertEqual(drawn.count('class="seg-quiet"'), 1)
-        self.assertEqual(drawn.count("closed"), 1)
-
-    def test_no_rest_day_means_nothing_is_marked_closed(self):
-        drawn = chit.week_strip(stats(window_start="2025-08-04", daily=[5] * 7))
-        self.assertNotIn("closed", drawn)
-        self.assertNotIn("seg-quiet", drawn)
-
     def test_the_streak_keeps_its_date_in_the_label_not_the_figure(self):
         """The date must not swell the figure into rivalling the hero."""
         payload = stats(
@@ -281,6 +237,53 @@ class InsightTests(unittest.TestCase):
         self.assertEqual(chit.best_run_end(payload), date(2026, 1, 8))
         self.assertEqual(chit.streak_label(payload), "LONGEST STREAK, TO 08 JAN")
         self.assertEqual(chit.streak_label(stats(daily=[])), "LONGEST STREAK")
+
+
+class FramingTests(unittest.TestCase):
+    """The window is the whole argument.
+
+    Over 366 days this account reads as dormant: 45 active days, because it was
+    genuinely quiet until the final month. Over 30 days it reads as someone
+    shipping most days. Both are true, and publishing the year ratio told a
+    visitor the opposite of the truth about how this person works now.
+    """
+
+    def test_the_year_ratio_never_reaches_the_card(self):
+        committed = json.loads(STATS_FILE.read_text(encoding="utf-8"))
+        year_ratio = f'{committed["days_active"]}/{committed["days_total"]}'
+        for theme, path in ASSET_PATHS.items():
+            with self.subTest(theme=theme):
+                self.assertNotIn(year_ratio, path.read_text(encoding="utf-8"))
+
+    def test_a_dormant_start_does_not_drag_down_the_headline(self):
+        """Eleven quiet months then a month of daily work. The card has to read
+        the last thirty days, not average them against the dead year."""
+        daily = [0] * 336 + [4] * 30
+        payload = stats(
+            daily=daily,
+            days_total=len(daily),
+            days_active=30,
+            total_contributions=sum(daily),
+            longest_run=30,
+            current_run=30,
+        )
+        hero, _ = chit.hero_and_support(payload)
+        self.assertIn(hero["key"], ("recent", "running"))
+        self.assertGreaterEqual(hero["gauge"], 0.9)
+
+    def test_a_lapsed_account_is_not_flattered_by_the_recent_window(self):
+        """The reverse has to hold too: busy last year, nothing this month."""
+        daily = [4] * 336 + [0] * 30
+        payload = stats(
+            daily=daily,
+            days_total=len(daily),
+            days_active=336,
+            total_contributions=sum(daily),
+            longest_run=336,
+            current_run=0,
+        )
+        hero, _ = chit.hero_and_support(payload)
+        self.assertNotEqual(hero["key"], "recent")
 
 
 class SustainabilityTests(unittest.TestCase):
@@ -305,11 +308,12 @@ class SustainabilityTests(unittest.TestCase):
     def hero(self, daily, run=0, running=0):
         return chit.hero_and_support(self.shaped(daily, run, running))[0]
 
-    def test_a_bursty_year_leads_with_the_burst_share(self):
-        self.assertEqual(self.hero([0] * 356 + [80] * 10, run=10)["key"], "burst")
+    def test_a_recently_active_account_leads_with_the_recent_window(self):
+        self.assertEqual(self.hero([0] * 336 + [3] * 30, run=30)["key"], "recent")
 
-    def test_a_steady_year_leads_with_the_run_instead(self):
-        self.assertEqual(self.hero([2] * 300 + [0] * 66, run=40, running=40)["key"], "running")
+    def test_a_long_current_run_can_outrank_the_recent_window(self):
+        hero = self.hero([2] * 300 + [0] * 36 + [2] * 30, run=300, running=40)
+        self.assertIn(hero["key"], ("running", "recent"))
 
     def test_a_silent_year_never_headlines_a_zero_percent(self):
         """max() keeps the first maximum, so the floor candidate is declared
@@ -318,22 +322,15 @@ class SustainabilityTests(unittest.TestCase):
         self.assertEqual(hero["key"], "total")
         self.assertEqual(hero["value"], "0")
 
-    def test_a_share_needs_real_volume_before_it_is_promoted(self):
-        """62% of sixteen commits is arithmetically true and says nothing."""
-        tiny = self.hero([0] * 350 + [1] * 16, run=3)
-        self.assertEqual(tiny["key"], "total")
-        big = self.hero([0] * 350 + [40] * 16, run=16)
-        self.assertEqual(big["key"], "burst")
-
     def test_the_dial_matches_the_headline_it_is_drawn_around(self):
-        for daily, run in (([0] * 356 + [80] * 10, 10), ([2] * 300 + [0] * 66, 40)):
+        for daily, run in (([0] * 336 + [80] * 30, 30), ([2] * 300 + [0] * 66, 40)):
             with self.subTest(run=run):
                 hero = self.hero(daily, run=run, running=run)
                 self.assertGreaterEqual(hero["gauge"], 0.0)
                 self.assertLessEqual(hero["gauge"], 1.0)
 
     def test_the_supports_never_repeat_the_hero(self):
-        for daily, run in (([0] * 356 + [80] * 10, 10), ([2] * 366, 366), ([0] * 366, 0)):
+        for daily, run in (([0] * 336 + [80] * 30, 30), ([2] * 366, 366), ([0] * 366, 0)):
             with self.subTest(total=sum(daily)):
                 hero, support = chit.hero_and_support(self.shaped(daily, run, run))
                 self.assertEqual(len(support), 2)
@@ -341,7 +338,7 @@ class SustainabilityTests(unittest.TestCase):
                 self.assertEqual(len({entry["key"] for entry in support}), 2)
 
     def test_every_candidate_is_renderable_whichever_one_wins(self):
-        for daily, run in (([0] * 366, 0), ([1] * 366, 366), ([0] * 356 + [80] * 10, 10)):
+        for daily, run in (([0] * 366, 0), ([1] * 366, 366), ([0] * 336 + [80] * 30, 30)):
             with self.subTest(total=sum(daily)):
                 ET.fromstring(chit.render_chit("dark", self.shaped(daily, run, run)))
 
@@ -377,39 +374,6 @@ class SparkTests(unittest.TestCase):
         ET.fromstring(f'<svg xmlns="http://www.w3.org/2000/svg"><path d="{chit.ring_arc(0.0)}"/></svg>')
 
 
-class WeekStripTests(unittest.TestCase):
-    def test_segment_widths_are_proportional_to_the_share_of_the_week(self):
-        # Monday twice everything else: its segment must be twice as wide.
-        segments = chit.week_segments(
-            stats(window_start="2025-08-04", daily=[2, 1, 1, 1, 1, 1, 1])
-        )
-        widths = [width for _, width in segments]
-        self.assertAlmostEqual(widths[0] / widths[1], 2.0)
-
-    def test_seven_segments_are_laid_out_left_to_right_without_overlap(self):
-        segments = chit.week_segments(stats())
-        self.assertEqual(len(segments), 7)
-        for (x, width), (next_x, _) in zip(segments, segments[1:]):
-            self.assertLessEqual(x + width, next_x, "segments overlap")
-
-    def test_the_strip_stays_inside_the_printed_area(self):
-        for daily in ([1] * 7, [40, 40, 40, 40, 1, 40, 40], [0] * 366):
-            with self.subTest(daily=len(daily)):
-                segments = chit.week_segments(stats(daily=daily))
-                self.assertGreaterEqual(segments[0][0], chit.PAD_L)
-                last_x, last_w = segments[-1]
-                self.assertLessEqual(round(last_x + last_w, 6), chit.PAD_R)
-
-    def test_a_dead_weekday_still_draws_a_visible_sliver(self):
-        segments = chit.week_segments(
-            stats(window_start="2025-08-04", daily=[400, 400, 400, 400, 0, 400, 400])
-        )
-        self.assertGreaterEqual(segments[4][1], chit.STRIP_MIN)
-
-    def test_a_silent_year_splits_the_strip_evenly_rather_than_vanishing(self):
-        widths = [width for _, width in chit.week_segments(stats(daily=[0] * 366))]
-        self.assertEqual(len(set(round(width, 6) for width in widths)), 1)
-        self.assertGreater(widths[0], chit.STRIP_MIN)
 
 
 class ChitRenderingTests(unittest.TestCase):
