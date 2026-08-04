@@ -1,3 +1,4 @@
+from datetime import date
 from pathlib import Path
 import json
 import re
@@ -169,9 +170,7 @@ class NumbersTests(unittest.TestCase):
                 self.assertEqual(hero.group(1), expected)
 
     def test_every_figure_matches_the_committed_data(self):
-        values = dict(
-            (label, value) for value, label in chit.figures(self.committed)
-        )
+        values = {label: value for value, _, label in chit.figures(self.committed)}
         self.assertEqual(
             values["LONGEST STREAK"], chit.days_label(self.committed["longest_run"])
         )
@@ -187,9 +186,10 @@ class NumbersTests(unittest.TestCase):
     def test_all_four_figures_reach_the_card(self):
         for theme in ASSET_PATHS:
             rendered = drawn(theme)
-            for value, label in chit.figures(self.committed):
+            for value, sub, label in chit.figures(self.committed):
                 with self.subTest(theme=theme, label=label):
                     self.assertIn(value, rendered)
+                    self.assertIn(sub, rendered)
                     self.assertIn(label, rendered)
 
     def test_the_busiest_day_is_the_peak_of_the_whole_window(self):
@@ -214,6 +214,65 @@ class NumbersTests(unittest.TestCase):
 
     def test_large_counts_get_thousands_separators(self):
         self.assertIn("12,345", chit.render_chit("light", stats(total_contributions=12345)))
+
+
+class DateSpanTests(unittest.TestCase):
+    """A streak means little without knowing when it ran.
+
+    The widget most profiles use prints those dates, and a bare number does
+    not, so this is the one place the default cards were ahead.
+    """
+
+    def test_the_longest_run_reports_the_dates_it_covered(self):
+        # Four in a row from 2026-01-05, then a gap, then one more.
+        payload = stats(
+            window_start="2026-01-05", daily=[1, 1, 1, 1, 0, 1], longest_run=4
+        )
+        self.assertEqual(
+            chit.best_run_span(payload), (date(2026, 1, 5), date(2026, 1, 8))
+        )
+        self.assertEqual(
+            dict((label, sub) for _, sub, label in chit.figures(payload))[
+                "LONGEST STREAK"
+            ],
+            "05 TO 08 JAN",
+        )
+
+    def test_a_span_crossing_a_month_names_both_months(self):
+        self.assertEqual(
+            chit.span_label(date(2026, 1, 28), date(2026, 2, 3)), "28 JAN TO 03 FEB"
+        )
+        self.assertEqual(
+            chit.span_label(date(2026, 2, 1), date(2026, 2, 9)), "01 TO 09 FEB"
+        )
+
+    def test_the_current_run_reports_where_it_started(self):
+        payload = stats(window_start="2026-01-05", daily=[0, 1, 1, 1], current_run=3)
+        self.assertEqual(chit.current_run_start(payload), date(2026, 1, 6))
+
+    def test_a_broken_current_run_says_so_rather_than_inventing_a_date(self):
+        payload = stats(window_start="2026-01-05", daily=[1, 1, 0], current_run=0)
+        self.assertIsNone(chit.current_run_start(payload))
+        subs = dict((label, sub) for _, sub, label in chit.figures(payload))
+        self.assertEqual(subs["CURRENT STREAK"], "NOT RUNNING")
+
+    def test_the_busiest_day_carries_its_date(self):
+        payload = stats(window_start="2026-01-05", daily=[2, 9, 3])
+        self.assertEqual(chit.busiest_day_date(payload), date(2026, 1, 6))
+
+    def test_a_tie_on_the_busiest_day_reports_the_most_recent(self):
+        payload = stats(window_start="2026-01-05", daily=[9, 1, 9])
+        self.assertEqual(chit.busiest_day_date(payload), date(2026, 1, 7))
+
+    def test_a_silent_account_names_no_dates_at_all(self):
+        payload = stats(daily=[0] * 366, longest_run=0, current_run=0)
+        self.assertIsNone(chit.best_run_span(payload))
+        self.assertIsNone(chit.current_run_start(payload))
+        self.assertIsNone(chit.busiest_day_date(payload))
+        subs = [sub for _, sub, _ in chit.figures(payload)]
+        self.assertIn("NONE YET", subs)
+        self.assertIn("NOT RUNNING", subs)
+        self.assertIn("NOTHING YET", subs)
 
 
 class SparkTests(unittest.TestCase):
@@ -265,6 +324,11 @@ class LayoutTests(unittest.TestCase):
         """Georgia sets old style figures, so 3, 4, 7 and 9 drop below the
         baseline and the label collided with them at the first spacing."""
         self.assertGreaterEqual(chit.HERO_LABEL_Y - chit.HERO_Y, 32)
+
+    def test_each_column_stacks_value_then_dates_then_name(self):
+        self.assertLess(chit.FIGURE_Y, chit.FIGURE_SUB_Y)
+        self.assertLess(chit.FIGURE_SUB_Y, chit.FIGURE_LABEL_Y)
+        self.assertGreaterEqual(chit.FIGURE_SUB_Y - chit.FIGURE_Y, 14)
 
     def test_the_four_columns_do_not_collide(self):
         for left, right in zip(chit.COLUMNS, chit.COLUMNS[1:]):

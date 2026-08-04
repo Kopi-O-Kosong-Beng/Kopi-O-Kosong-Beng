@@ -13,7 +13,7 @@ count and reports rate over the recent window, which is the same data framed
 where it is true of how the account behaves now.
 """
 
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from string import Template
 from xml.sax.saxutils import escape
@@ -27,13 +27,13 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSET_DIR = ROOT / "assets"
 STATS_FILE = ROOT / "data" / "stats.json"
 
-WIDTH, HEIGHT = 900, 356
+WIDTH, HEIGHT = 900, 372
 
 # Nested enclosures: the outer sheet holds the chit, which sits inset with its
 # own hairline. A card laid flat on one background reads as a screenshot.
 SHEET_R = 26
 CHIT_LEFT, CHIT_RIGHT = 24, 876
-CHIT_TOP, CHIT_BOTTOM = 22, 316
+CHIT_TOP, CHIT_BOTTOM = 22, 332
 TEETH, TOOTH_DROP = 68, 14
 
 PAD_L, PAD_R = 62, 838
@@ -48,9 +48,12 @@ SPARK_DAYS = 30
 
 # Four columns across the full width, left aligned so the eye can run down them.
 COLUMNS = (62, 256, 450, 644)
-FIGURE_Y, FIGURE_LABEL_Y = 240, 258
+# Each column carries a value, the dates behind it, then its name. The
+# dates are the part the widget everyone else uses gets right and a bare
+# number does not: a streak means little without knowing when it ran.
+FIGURE_Y, FIGURE_SUB_Y, FIGURE_LABEL_Y = 238, 254, 270
 
-FOOTER_Y = 300
+FOOTER_Y = 316
 
 MONTHS = (
     "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
@@ -62,12 +65,14 @@ STYLE = """
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
     .ink { fill: $ink; }
     .soft { fill: $ink_soft; }
+    .accent { fill: $accent; }
     .sheet { fill: $paper; }
     .chit { fill: $panel; stroke: $rule; stroke-width: 1.25; }
     .dot { fill: none; stroke: $rule; stroke-width: 1; stroke-dasharray: 1 3; }
     .meta { font-size: 9px; letter-spacing: 1.8px; }
     .eyebrow { font-size: 8px; letter-spacing: 2.4px; }
     .hero { font-size: 76px; font-weight: 700; letter-spacing: -2.5px; fill: $accent; }
+    .sub { font-size: 8.5px; letter-spacing: 1.6px; }
     .figure { font-size: 27px; font-weight: 700; letter-spacing: -0.4px; }
     .spark-fill { fill: $accent; opacity: 0.16; }
     .spark-line { fill: none; stroke: $accent; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
@@ -111,6 +116,10 @@ def days_label(value):
     return f"{value} day" if value == 1 else f"{value} days"
 
 
+def short_stamp(day):
+    return f"{day.day:02d} {MONTHS[day.month - 1]}"
+
+
 def stamp(iso):
     """Format without strftime, which would drag in the runner's locale."""
     day = date.fromisoformat(iso)
@@ -123,9 +132,60 @@ def recent(stats):
     return [0] * (SPARK_DAYS - len(tail)) + tail
 
 
+def each_day(stats):
+    daily = stats.get("daily") or []
+    if not daily or not stats.get("window_start"):
+        return []
+    start = date.fromisoformat(stats["window_start"])
+    return [
+        (start + timedelta(days=offset), value) for offset, value in enumerate(daily)
+    ]
+
+
 def busiest_day(stats):
     daily = stats.get("daily") or []
     return max(daily) if daily else 0
+
+
+def busiest_day_date(stats):
+    """The most recent day that hit the peak, so a tie reads as the latest."""
+    peak, when = 0, None
+    for day, value in each_day(stats):
+        if value >= peak and value > 0:
+            peak, when = value, day
+    return when
+
+
+def span_label(start, end):
+    if (start.year, start.month) == (end.year, end.month):
+        return f"{start.day:02d} TO {end.day:02d} {MONTHS[end.month - 1]}"
+    return f"{short_stamp(start)} TO {short_stamp(end)}"
+
+
+def best_run_span(stats):
+    """Start and end of the longest unbroken run, or None if there was none."""
+    best = run = 0
+    end = None
+    for day, value in each_day(stats):
+        run = run + 1 if value > 0 else 0
+        if run > best:
+            best, end = run, day
+    if not end:
+        return None
+    return end - timedelta(days=best - 1), end
+
+
+def current_run_start(stats):
+    """Where the run that is still going began. None when nothing is running."""
+    history = each_day(stats)
+    run = 0
+    for day, value in reversed(history):
+        if value <= 0:
+            break
+        run += 1
+    if not run:
+        return None
+    return history[-1][0] - timedelta(days=run - 1)
 
 
 def recent_active(stats):
@@ -162,11 +222,30 @@ def figures(stats):
     rate over the year would print 45 of 366 on an account that was simply not
     busy yet, which reads as dormant rather than as new.
     """
+    best = best_run_span(stats)
+    started = current_run_start(stats)
+    peak_day = busiest_day_date(stats)
     return (
-        (days_label(stats.get("longest_run", 0)), "LONGEST STREAK"),
-        (days_label(stats.get("current_run", 0)), "CURRENT STREAK"),
-        (count(busiest_day(stats)), "BUSIEST DAY"),
-        (f"{recent_active(stats)}/{SPARK_DAYS}", f"ACTIVE, LAST {SPARK_DAYS} DAYS"),
+        (
+            days_label(stats.get("longest_run", 0)),
+            span_label(*best) if best else "NONE YET",
+            "LONGEST STREAK",
+        ),
+        (
+            days_label(stats.get("current_run", 0)),
+            f"SINCE {short_stamp(started)}" if started else "NOT RUNNING",
+            "CURRENT STREAK",
+        ),
+        (
+            count(busiest_day(stats)),
+            short_stamp(peak_day) if peak_day else "NOTHING YET",
+            "BUSIEST DAY",
+        ),
+        (
+            f"{recent_active(stats)}/{SPARK_DAYS}",
+            "DAYS PUSHED",
+            f"ACTIVE, LAST {SPARK_DAYS} DAYS",
+        ),
     )
 
 
@@ -195,9 +274,10 @@ def spark(stats):
 
 def figure_row(stats):
     rows = []
-    for x, (value, label) in zip(COLUMNS, figures(stats)):
+    for x, (value, sub, label) in zip(COLUMNS, figures(stats)):
         rows.append(
             f'  <text x="{x}" y="{FIGURE_Y}" class="ink figure">{escape(value)}</text>\n'
+            f'  <text x="{x}" y="{FIGURE_SUB_Y}" class="accent mono sub">{escape(sub)}</text>\n'
             f'  <text x="{x}" y="{FIGURE_LABEL_Y}" class="soft eyebrow">{escape(label)}</text>'
         )
     return "\n".join(rows)
@@ -218,7 +298,7 @@ def torn_edge():
 
 def render_chit(theme, stats):
     total = stats.get("total_contributions", 0)
-    spoken = ", ".join(f"{value} {label.lower()}" for value, label in figures(stats))
+    spoken = ", ".join(f"{value} {label.lower()} ({sub.lower()})" for value, sub, label in figures(stats))
 
     markup = f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WIDTH} {HEIGHT}" role="img" aria-labelledby="title desc">
@@ -246,7 +326,7 @@ def render_chit(theme, stats):
 
   <path class="dot" d="M {PAD_L} 200 H {PAD_R}"/>
 {figure_row(stats)}
-  <path class="dot" d="M {PAD_L} 278 H {PAD_R}"/>
+  <path class="dot" d="M {PAD_L} 292 H {PAD_R}"/>
 
   <text x="{PAD_L}" y="{FOOTER_Y}" class="soft mono eyebrow">LAST PUSHED</text>
   <text x="{PAD_R}" y="{FOOTER_Y}" text-anchor="end" class="ink mono eyebrow">{served_label(stats)}</text>

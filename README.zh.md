@@ -55,7 +55,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/kopi-chit-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="./assets/kopi-chit-light.svg">
-  <img alt="一张数据小票:过去一年的贡献数放得很大,旁边是最近三十天的曲线图,下面一排是最长连续天数、当前连续天数、单日最高,以及最近三十天里有多少天在推代码" src="./assets/kopi-chit-light.svg" width="100%">
+  <img alt="一张数据小票:过去一年的贡献数放得很大,旁边是最近三十天的曲线图,下面一排是最长连续天数和它的起止日期、当前连续从哪天开始、单日最高和是哪天,以及最近三十天里有多少天在推代码" src="./assets/kopi-chit-light.svg" width="100%">
 </picture>
 
 <p align="center"><i>不要糖。从来都不要。</i></p>

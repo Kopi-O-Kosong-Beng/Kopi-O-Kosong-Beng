@@ -55,7 +55,7 @@ Still at SUTD. Flying to Waterloo at the end of August for an exchange semester.
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/kopi-chit-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="./assets/kopi-chit-light.svg">
-  <img alt="A printed stats chit: contributions over the past year set large, an area chart of the last thirty days beside it, then a row giving my longest streak, current streak, busiest single day and how many of the last thirty days had work pushed" src="./assets/kopi-chit-light.svg" width="100%">
+  <img alt="A printed stats chit: contributions over the past year set large, an area chart of the last thirty days beside it, then a row giving my longest streak and the dates it ran, my current streak and when it started, my busiest single day and its date, and how many of the last thirty days had work pushed" src="./assets/kopi-chit-light.svg" width="100%">
 </picture>
 
 <p align="center"><i>no sugar. never was.</i></p>
