@@ -50,12 +50,12 @@
 
 </details>
 
-### 柜台
+### 数据
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/kopi-chit-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="./assets/kopi-chit-light.svg">
-  <img alt="一张写着「柜台」的小票,列出我在做的东西和各自用的技术:pitchMe、机械臂、双人数学游戏、量子元件,每项下面标着技术栈,最下面一行写着这摊子上次开张是什么时候" src="./assets/kopi-chit-light.svg" width="100%">
+  <img alt="一张数据小票:过去一年的贡献数放得很大,旁边是最近三十天的曲线图,下面一排是最长连续天数、当前连续天数、单日最高,以及最近三十天里有多少天在推代码" src="./assets/kopi-chit-light.svg" width="100%">
 </picture>
 
 <p align="center"><i>不要糖。从来都不要。</i></p>

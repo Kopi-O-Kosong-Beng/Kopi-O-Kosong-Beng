@@ -27,18 +27,24 @@ def stats(**overrides):
         "generated_on": "2026-08-04",
         "window_start": "2025-08-03",
         "window_end": "2026-08-03",
-        "total_contributions": 726,
+        "total_contributions": 739,
         "days_active": 45,
         "days_total": 366,
         "longest_run": 23,
-        "current_run": 4,
+        "current_run": 5,
         "daily": [0] * 336 + [3] * 30,
     }
     base.update(overrides)
     return base
 
 
-class CounterAssetTests(unittest.TestCase):
+def drawn(theme):
+    """Only what a reader sees. itertext() would sweep in the <style> block."""
+    source = ASSET_PATHS[theme].read_text(encoding="utf-8")
+    return "\n".join(re.findall(r"<text[^>]*>([^<]*)</text>", source))
+
+
+class AssetContractTests(unittest.TestCase):
     def test_both_assets_exist_and_are_pure_ascii(self):
         for theme, path in ASSET_PATHS.items():
             with self.subTest(theme=theme):
@@ -51,6 +57,11 @@ class CounterAssetTests(unittest.TestCase):
                 self.assertNotIn(b"\r\n", path.read_bytes())
 
     def test_assets_match_the_generator_run_over_the_committed_stats(self):
+        """The drift test survives changing data because the input is committed.
+
+        Live numbers never reach a test. The asset must equal the generator run
+        over data/stats.json, so a stale asset and a hand edited asset both fail.
+        """
         committed = json.loads(STATS_FILE.read_text(encoding="utf-8"))
         for theme, path in ASSET_PATHS.items():
             with self.subTest(theme=theme):
@@ -143,105 +154,95 @@ class CounterAssetTests(unittest.TestCase):
                     self.assertIn(value, source)
 
 
-class CounterCopyTests(unittest.TestCase):
-    def rendered(self, theme):
-        root = ET.fromstring(ASSET_PATHS[theme].read_text(encoding="utf-8"))
-        return "".join(root.itertext())
-
-    def test_every_entry_reaches_the_card_whole(self):
-        for theme in ASSET_PATHS:
-            rendered = self.rendered(theme)
-            for entry in chit.COUNTER:
-                with self.subTest(theme=theme, entry=entry["name"]):
-                    self.assertIn(entry["name"], rendered)
-                    self.assertIn(entry["line"], rendered)
-                    self.assertIn(entry["note"], rendered)
-                    for tag in entry["stack"]:
-                        self.assertIn(tag, rendered)
-
-    def test_the_card_says_what_each_thing_is_built_with(self):
-        """The whole reason this card exists. The README lists the projects in
-        prose and never says the stack, which is what a visitor scans for."""
-        for entry in chit.COUNTER:
-            with self.subTest(entry=entry["name"]):
-                self.assertTrue(entry["stack"], "an entry with no stack tags")
-
-    def test_the_card_carries_its_heading_and_the_live_line(self):
-        for theme in ASSET_PATHS:
-            rendered = self.rendered(theme)
-            self.assertIn("THE COUNTER", rendered)
-            self.assertIn("KOPI O KOSONG BENG", rendered)
-            self.assertIn("LAST SERVED", rendered)
-
-
-class NoScoreboardTests(unittest.TestCase):
-    """This card must never drift back into an activity scoreboard.
-
-    Commit counts, streaks and ratios are the weakest signal on a profile, and
-    measured over a year this account reads as dormant because it genuinely was
-    until recently. All of it was true and none of it helped.
-    """
+class NumbersTests(unittest.TestCase):
+    """The figures have to be the ones the committed data actually supports."""
 
     def setUp(self):
         self.committed = json.loads(STATS_FILE.read_text(encoding="utf-8"))
 
-    def rendered(self, theme):
-        """Only what a reader actually sees.
-
-        itertext() would sweep in the <style> block, whose keyframe stops are
-        written as 0% and 100%, and the guard would fail on its own CSS.
-        """
-        source = ASSET_PATHS[theme].read_text(encoding="utf-8")
-        return "\n".join(re.findall(r"<text[^>]*>([^<]*)</text>", source))
-
-    def test_no_commit_total_reaches_the_card(self):
-        total = str(self.committed["total_contributions"])
-        for theme in ASSET_PATHS:
-            with self.subTest(theme=theme):
-                self.assertNotIn(total, self.rendered(theme))
-
-    def test_no_streak_reaches_the_card(self):
-        run = self.committed["longest_run"]
-        for theme in ASSET_PATHS:
-            with self.subTest(theme=theme):
-                rendered = self.rendered(theme)
-                self.assertNotIn(f"{run} day", rendered)
-                self.assertNotIn("STREAK", rendered.upper())
-
-    def test_no_year_ratio_reaches_the_card(self):
-        ratio = f'{self.committed["days_active"]}/{self.committed["days_total"]}'
-        for theme in ASSET_PATHS:
-            with self.subTest(theme=theme):
-                self.assertNotIn(ratio, self.rendered(theme))
-
-    def test_no_percentage_reaches_the_card(self):
-        for theme in ASSET_PATHS:
-            with self.subTest(theme=theme):
-                self.assertNotIn("%", self.rendered(theme))
-
-    def test_the_discarded_designs_stay_discarded(self):
-        """Every shape tried and thrown out, so none of them creeps back."""
+    def test_the_hero_is_the_year_total(self):
+        expected = f'{self.committed["total_contributions"]:,}'
         for theme, path in ASSET_PATHS.items():
             with self.subTest(theme=theme):
-                source = path.read_text(encoding="utf-8")
-                for gone in (
-                    "THE PAST YEAR",
-                    "THE YEAR IN CUPS",
-                    "HOW THE WEEK POURS",
-                    "HOW THE WEEK SPLITS",
-                    "BUSIEST",
-                    "rest day",
-                    "footprint",
-                    "tumbler",
-                    "straw",
-                    'class="ice"',
-                    'class="ring"',
-                    "spark",
-                ):
-                    self.assertNotIn(gone, source)
+                hero = re.search(r'class="hero">([^<]+)<', path.read_text(encoding="utf-8"))
+                self.assertIsNotNone(hero)
+                self.assertEqual(hero.group(1), expected)
+
+    def test_every_figure_matches_the_committed_data(self):
+        values = dict(
+            (label, value) for value, label in chit.figures(self.committed)
+        )
+        self.assertEqual(
+            values["LONGEST STREAK"], chit.days_label(self.committed["longest_run"])
+        )
+        self.assertEqual(
+            values["CURRENT STREAK"], chit.days_label(self.committed["current_run"])
+        )
+        self.assertEqual(
+            values["BUSIEST DAY"], f'{max(self.committed["daily"]):,}'
+        )
+        active = sum(1 for day in self.committed["daily"][-30:] if day > 0)
+        self.assertEqual(values[f"ACTIVE, LAST {chit.SPARK_DAYS} DAYS"], f"{active}/30")
+
+    def test_all_four_figures_reach_the_card(self):
+        for theme in ASSET_PATHS:
+            rendered = drawn(theme)
+            for value, label in chit.figures(self.committed):
+                with self.subTest(theme=theme, label=label):
+                    self.assertIn(value, rendered)
+                    self.assertIn(label, rendered)
+
+    def test_the_busiest_day_is_the_peak_of_the_whole_window(self):
+        self.assertEqual(chit.busiest_day(stats(daily=[1, 90, 4])), 90)
+        self.assertEqual(chit.busiest_day(stats(daily=[])), 0)
+
+    def test_rate_is_reported_over_the_recent_window_not_the_year(self):
+        """45 of 366 would read as dormant on an account that was simply new.
+
+        666 of 726 commits landed in the final month, so the year ratio
+        describes a period this account barely existed for.
+        """
+        payload = stats(daily=[0] * 336 + [1] * 30, days_active=30, days_total=366)
+        self.assertEqual(chit.recent_active(payload), 30)
+        year_ratio = f'{payload["days_active"]}/{payload["days_total"]}'
+        self.assertNotIn(year_ratio, chit.render_chit("light", payload))
+
+    def test_one_day_is_not_pluralised(self):
+        self.assertEqual(chit.days_label(1), "1 day")
+        self.assertEqual(chit.days_label(0), "0 days")
+        self.assertIn(">1 day<", chit.render_chit("light", stats(longest_run=1)))
+
+    def test_large_counts_get_thousands_separators(self):
+        self.assertIn("12,345", chit.render_chit("light", stats(total_contributions=12345)))
 
 
-class LastServedTests(unittest.TestCase):
+class SparkTests(unittest.TestCase):
+    def test_the_chart_always_plots_thirty_points(self):
+        for daily in ([], [5], list(range(400))):
+            with self.subTest(days=len(daily)):
+                self.assertEqual(
+                    len(chit.spark_points(stats(daily=daily))), chit.SPARK_DAYS
+                )
+
+    def test_a_short_history_is_padded_at_the_front_not_the_back(self):
+        padded = chit.recent(stats(daily=[4, 5]))
+        self.assertEqual(padded[-2:], [4, 5])
+        self.assertEqual(padded[:-2], [0] * 28)
+
+    def test_the_chart_spans_the_full_width_and_stays_on_its_baseline(self):
+        points = chit.spark_points(stats())
+        self.assertAlmostEqual(points[0][0], chit.SPARK_L)
+        self.assertAlmostEqual(points[-1][0], chit.SPARK_R)
+        for _, y in points:
+            self.assertLessEqual(y, chit.SPARK_BASE)
+            self.assertGreaterEqual(y, chit.SPARK_BASE - chit.SPARK_H)
+
+    def test_a_silent_month_draws_a_flat_line_not_a_division_by_zero(self):
+        points = chit.spark_points(stats(daily=[0] * 366))
+        self.assertEqual({round(y, 6) for _, y in points}, {chit.SPARK_BASE})
+
+
+class LastPushedTests(unittest.TestCase):
     def test_the_footer_reads_naturally_at_every_distance(self):
         for daily, expected in (
             ([1, 1, 1], "TODAY"),
@@ -254,46 +255,31 @@ class LastServedTests(unittest.TestCase):
                 self.assertEqual(chit.served_label(stats(daily=daily)), expected)
 
     def test_the_gap_is_counted_back_from_the_window_not_from_today(self):
-        """The label has to describe the data the card was built from, or a
-        stale stats file would quietly start lying."""
+        """The label describes the data the card was built from, so a stale
+        stats file cannot quietly start lying."""
         self.assertEqual(chit.days_since_served(stats(daily=[5] + [0] * 9)), 9)
 
 
 class LayoutTests(unittest.TestCase):
-    def test_no_row_separator_crosses_a_stack_chip(self):
-        """The separators sat straight across the chips in the first cut."""
-        for theme, path in ASSET_PATHS.items():
-            source = path.read_text(encoding="utf-8")
-            rules = [
-                float(value)
-                for value in re.findall(
-                    rf'class="dot" d="M {chit.PAD_L} ([0-9.]+) H', source
-                )
-            ]
-            bands = [
-                (float(y), float(y) + chit.CHIP_H)
-                for y in re.findall(r'class="chip" x="[0-9.]+" y="([0-9.]+)"', source)
-            ]
-            self.assertTrue(rules and bands)
-            for rule in rules:
-                for low, high in bands:
-                    with self.subTest(theme=theme, rule=rule):
-                        self.assertFalse(low <= rule <= high, "separator crosses a chip")
+    def test_the_hero_label_clears_the_descenders_above_it(self):
+        """Georgia sets old style figures, so 3, 4, 7 and 9 drop below the
+        baseline and the label collided with them at the first spacing."""
+        self.assertGreaterEqual(chit.HERO_LABEL_Y - chit.HERO_Y, 32)
 
-    def test_every_row_and_the_footer_sit_inside_the_chit(self):
-        last = chit.ROW_TOP + (len(chit.COUNTER) - 1) * chit.ROW_H
-        self.assertLess(last + 60, chit.FOOTER_Y)
+    def test_the_four_columns_do_not_collide(self):
+        for left, right in zip(chit.COLUMNS, chit.COLUMNS[1:]):
+            with self.subTest(column=left):
+                self.assertGreaterEqual(right - left, 180)
+        self.assertLess(chit.COLUMNS[-1], chit.PAD_R)
+
+    def test_the_hero_column_does_not_run_under_the_chart(self):
+        self.assertLess(chit.PAD_L + 300, chit.SPARK_L + 20)
+
+    def test_everything_sits_inside_the_chit(self):
+        self.assertLess(chit.FIGURE_LABEL_Y, chit.FOOTER_Y)
         self.assertLess(chit.FOOTER_Y, chit.CHIT_BOTTOM)
         self.assertLess(chit.CHIT_BOTTOM + chit.TOOTH_DROP, chit.HEIGHT)
-
-    def test_a_row_of_chips_never_runs_past_the_right_margin(self):
-        for entry in chit.COUNTER:
-            with self.subTest(entry=entry["name"]):
-                width = sum(
-                    len(tag) * chit.CHIP_CHAR + 2 * chit.CHIP_PAD
-                    for tag in entry["stack"]
-                ) + chit.CHIP_GAP * (len(entry["stack"]) - 1)
-                self.assertLess(chit.PAD_L + width, chit.PAD_R)
+        self.assertLess(chit.SPARK_BASE, chit.FIGURE_Y)
 
 
 class RenderingTests(unittest.TestCase):
@@ -305,28 +291,27 @@ class RenderingTests(unittest.TestCase):
         self.assertEqual(payload, stats(), "render_chit mutated its input")
 
     def test_a_silent_account_still_renders_valid_markup(self):
-        source = chit.render_chit("light", stats(daily=[0] * 366))
+        source = chit.render_chit(
+            "light",
+            stats(total_contributions=0, longest_run=0, current_run=0, daily=[0] * 366),
+        )
         self.assertIsNone(NON_FINITE.search(source))
         ET.fromstring(source)
         self.assertIn("NOT YET", source)
 
-    def test_markup_in_an_entry_is_escaped_and_the_svg_still_parses(self):
-        original = chit.COUNTER
-        try:
-            chit.COUNTER = (
-                {
-                    "name": "a & b",
-                    "note": "LIVE",
-                    "line": "<script>alert(1)</script>",
-                    "stack": ("c++", "a<b"),
-                },
+    def test_an_empty_window_still_renders_valid_markup(self):
+        ET.fromstring(
+            chit.render_chit(
+                "light",
+                stats(
+                    total_contributions=0,
+                    days_total=0,
+                    longest_run=0,
+                    current_run=0,
+                    daily=[],
+                ),
             )
-            source = chit.render_chit("light", stats())
-            self.assertNotIn("<script>", source)
-            self.assertIn("&amp;", source)
-            ET.fromstring(source)
-        finally:
-            chit.COUNTER = original
+        )
 
     def test_the_date_is_formatted_without_depending_on_locale(self):
         self.assertIn("04 AUG 2026", chit.render_chit("light", stats()))
@@ -334,20 +319,31 @@ class RenderingTests(unittest.TestCase):
             "01 JAN 2027", chit.render_chit("light", stats(generated_on="2027-01-01"))
         )
 
+    def test_the_discarded_designs_stay_discarded(self):
+        """Every shape tried and thrown out, so none of them creeps back."""
+        for theme, path in ASSET_PATHS.items():
+            with self.subTest(theme=theme):
+                source = path.read_text(encoding="utf-8")
+                for gone in (
+                    "THE PAST YEAR",
+                    "THE YEAR IN CUPS",
+                    "HOW THE WEEK POURS",
+                    "HOW THE WEEK SPLITS",
+                    "THE COUNTER",
+                    "rest day",
+                    "footprint",
+                    "tumbler",
+                    "straw",
+                    'class="ice"',
+                ):
+                    self.assertNotIn(gone, source)
+
 
 class SharedSourceTests(unittest.TestCase):
     def test_the_signboard_strip_is_built_from_the_shared_stack(self):
         rendered = generate_kopi_sign.render_svg("light")
         for name, _ in generate_kopi_sign.STACK:
             self.assertIn(name, rendered)
-
-    def test_every_tag_on_the_counter_is_one_the_signboard_claims(self):
-        """The two cards must not disagree about what he works in."""
-        claimed = {name for name, _ in generate_kopi_sign.STACK}
-        for entry in chit.COUNTER:
-            for tag in entry["stack"]:
-                with self.subTest(entry=entry["name"], tag=tag):
-                    self.assertIn(tag, claimed)
 
 
 if __name__ == "__main__":

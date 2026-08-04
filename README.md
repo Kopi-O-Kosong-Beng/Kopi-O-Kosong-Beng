@@ -50,12 +50,12 @@ Still at SUTD. Flying to Waterloo at the end of August for an exchange semester.
 
 </details>
 
-### THE COUNTER
+### THE NUMBERS
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/kopi-chit-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="./assets/kopi-chit-light.svg">
-  <img alt="A printed chit headed The Counter, listing what I am building and what each thing is built with: pitchMe, a robot arm, a two player math game and quantum devices, each with its stack tagged underneath, and a line at the foot saying when the stall last served" src="./assets/kopi-chit-light.svg" width="100%">
+  <img alt="A printed stats chit: contributions over the past year set large, an area chart of the last thirty days beside it, then a row giving my longest streak, current streak, busiest single day and how many of the last thirty days had work pushed" src="./assets/kopi-chit-light.svg" width="100%">
 </picture>
 
 <p align="center"><i>no sugar. never was.</i></p>
