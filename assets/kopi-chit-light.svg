@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 372" role="img" aria-labelledby="title desc">
   <title id="title">The numbers at Kopi O Kosong Beng, the GitHub account of Chia Zhi Feng</title>
-  <desc id="desc">A printed stats chit. 739 contributions over the past year, with 23 days longest streak (07 to 29 jul), 5 days current streak (since 31 jul), 75 busiest day (07 jul), 28/30 active, last 30 days (days pushed). An area chart traces the last 30 days, and a line at the foot says the account last pushed today.</desc>
+  <desc id="desc">A printed stats chit. 746 contributions over the past year, with 23 days longest streak (07 to 29 jul), 5 days current streak (since 31 jul), 75 busiest day (07 jul), 28/30 active, last 30 days (days pushed). An area chart traces the last 30 days, and a line at the foot says the account last pushed today.</desc>
   <defs>
     <filter id="grain" x="0" y="0" width="100%" height="100%">
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
@@ -46,14 +46,14 @@
   <text x="62" y="54" class="soft mono meta">THE NUMBERS &#183; KOPI O KOSONG BENG &#183; 04 AUG 2026</text>
   <path class="dot" d="M 62 68 H 838"/>
 
-  <text x="62" y="142" class="hero">739</text>
+  <text x="62" y="142" class="hero">746</text>
   <text x="62" y="180" class="soft eyebrow">CONTRIBUTIONS, PAST YEAR</text>
 
   <text x="380" y="100" class="soft mono eyebrow">THE LAST 30 DAYS</text>
-  <polygon class="spark-fill" points="380,178 380,178 395.79,106 411.59,155.92 427.38,145.36 443.17,177.04 458.97,149.2 474.76,146.32 490.55,159.76 506.34,149.2 522.14,166.48 537.93,165.52 553.72,176.08 569.52,156.88 585.31,141.52 601.1,135.76 616.9,148.24 632.69,160.72 648.48,146.32 664.28,175.12 680.07,154 695.86,136.72 711.66,169.36 727.45,149.2 743.24,169.36 759.03,178 774.83,171.28 790.62,163.6 806.41,125.2 822.21,166.48 838,165.52 838,178"/>
-  <polyline class="spark-line" points="380,178 395.79,106 411.59,155.92 427.38,145.36 443.17,177.04 458.97,149.2 474.76,146.32 490.55,159.76 506.34,149.2 522.14,166.48 537.93,165.52 553.72,176.08 569.52,156.88 585.31,141.52 601.1,135.76 616.9,148.24 632.69,160.72 648.48,146.32 664.28,175.12 680.07,154 695.86,136.72 711.66,169.36 727.45,149.2 743.24,169.36 759.03,178 774.83,171.28 790.62,163.6 806.41,125.2 822.21,166.48 838,165.52"/>
+  <polygon class="spark-fill" points="380,178 380,178 395.79,106 411.59,155.92 427.38,145.36 443.17,177.04 458.97,149.2 474.76,146.32 490.55,159.76 506.34,149.2 522.14,166.48 537.93,165.52 553.72,176.08 569.52,156.88 585.31,141.52 601.1,135.76 616.9,148.24 632.69,160.72 648.48,146.32 664.28,175.12 680.07,154 695.86,136.72 711.66,169.36 727.45,149.2 743.24,169.36 759.03,178 774.83,171.28 790.62,163.6 806.41,125.2 822.21,166.48 838,158.8 838,178"/>
+  <polyline class="spark-line" points="380,178 395.79,106 411.59,155.92 427.38,145.36 443.17,177.04 458.97,149.2 474.76,146.32 490.55,159.76 506.34,149.2 522.14,166.48 537.93,165.52 553.72,176.08 569.52,156.88 585.31,141.52 601.1,135.76 616.9,148.24 632.69,160.72 648.48,146.32 664.28,175.12 680.07,154 695.86,136.72 711.66,169.36 727.45,149.2 743.24,169.36 759.03,178 774.83,171.28 790.62,163.6 806.41,125.2 822.21,166.48 838,158.8"/>
   <path class="spark-base" d="M 380 178 H 838"/>
-  <circle class="spark-dot blink still" cx="838" cy="165.52" r="3.5"/>
+  <circle class="spark-dot blink still" cx="838" cy="158.8" r="3.5"/>
 
   <path class="dot" d="M 62 200 H 838"/>
   <text x="62" y="238" class="ink figure">23 days</text>
