@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 372" role="img" aria-labelledby="title desc">
   <title id="title">The numbers at Kopi O Kosong Beng, the GitHub account of Chia Zhi Feng</title>
-  <desc id="desc">A printed stats chit. 789 contributions over the past year, with 23 days longest streak (07 to 29 jul), 6 days current streak (since 31 jul), 75 busiest day (07 jul), 29/30 active, last 30 days (days pushed). An area chart traces the last 30 days, and a line at the foot says the account last pushed today.</desc>
+  <desc id="desc">A printed stats chit. 815 contributions over the past year, with 23 days longest streak (07 to 29 jul), 0 days current streak (not running), 75 busiest day (07 jul), 28/30 active, last 30 days (days pushed). An area chart traces the last 30 days, and a line at the foot says the account last pushed yesterday.</desc>
   <defs>
     <filter id="grain" x="0" y="0" width="100%" height="100%">
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
@@ -43,35 +43,35 @@
   <rect class="sheet" width="900" height="372" rx="26"/>
   <path class="chit" d="M 24 22 H 876 V 332 L 869.74 346 L 863.47 332 L 857.21 346 L 850.94 332 L 844.68 346 L 838.41 332 L 832.15 346 L 825.88 332 L 819.62 346 L 813.35 332 L 807.09 346 L 800.82 332 L 794.56 346 L 788.29 332 L 782.03 346 L 775.76 332 L 769.5 346 L 763.24 332 L 756.97 346 L 750.71 332 L 744.44 346 L 738.18 332 L 731.91 346 L 725.65 332 L 719.38 346 L 713.12 332 L 706.85 346 L 700.59 332 L 694.32 346 L 688.06 332 L 681.79 346 L 675.53 332 L 669.26 346 L 663 332 L 656.74 346 L 650.47 332 L 644.21 346 L 637.94 332 L 631.68 346 L 625.41 332 L 619.15 346 L 612.88 332 L 606.62 346 L 600.35 332 L 594.09 346 L 587.82 332 L 581.56 346 L 575.29 332 L 569.03 346 L 562.76 332 L 556.5 346 L 550.24 332 L 543.97 346 L 537.71 332 L 531.44 346 L 525.18 332 L 518.91 346 L 512.65 332 L 506.38 346 L 500.12 332 L 493.85 346 L 487.59 332 L 481.32 346 L 475.06 332 L 468.79 346 L 462.53 332 L 456.26 346 L 450 332 L 443.74 346 L 437.47 332 L 431.21 346 L 424.94 332 L 418.68 346 L 412.41 332 L 406.15 346 L 399.88 332 L 393.62 346 L 387.35 332 L 381.09 346 L 374.82 332 L 368.56 346 L 362.29 332 L 356.03 346 L 349.76 332 L 343.5 346 L 337.24 332 L 330.97 346 L 324.71 332 L 318.44 346 L 312.18 332 L 305.91 346 L 299.65 332 L 293.38 346 L 287.12 332 L 280.85 346 L 274.59 332 L 268.32 346 L 262.06 332 L 255.79 346 L 249.53 332 L 243.26 346 L 237 332 L 230.74 346 L 224.47 332 L 218.21 346 L 211.94 332 L 205.68 346 L 199.41 332 L 193.15 346 L 186.88 332 L 180.62 346 L 174.35 332 L 168.09 346 L 161.82 332 L 155.56 346 L 149.29 332 L 143.03 346 L 136.76 332 L 130.5 346 L 124.24 332 L 117.97 346 L 111.71 332 L 105.44 346 L 99.18 332 L 92.91 346 L 86.65 332 L 80.38 346 L 74.12 332 L 67.85 346 L 61.59 332 L 55.32 346 L 49.06 332 L 42.79 346 L 36.53 332 L 30.26 346 L 24 332 Z"/>
 
-  <text x="62" y="54" class="soft mono meta">THE NUMBERS &#183; KOPI O KOSONG BENG &#183; 05 AUG 2026</text>
+  <text x="62" y="54" class="soft mono meta">THE NUMBERS &#183; KOPI O KOSONG BENG &#183; 07 AUG 2026</text>
   <path class="dot" d="M 62 68 H 838"/>
 
-  <text x="62" y="142" class="hero">789</text>
+  <text x="62" y="142" class="hero">815</text>
   <text x="62" y="180" class="soft eyebrow">CONTRIBUTIONS, PAST YEAR</text>
 
   <text x="380" y="100" class="soft mono eyebrow">THE LAST 30 DAYS</text>
-  <polygon class="spark-fill" points="380,178 380,106 395.79,155.92 411.59,145.36 427.38,177.04 443.17,149.2 458.97,146.32 474.76,159.76 490.55,149.2 506.34,166.48 522.14,165.52 537.93,176.08 553.72,156.88 569.52,141.52 585.31,135.76 601.1,148.24 616.9,160.72 632.69,146.32 648.48,175.12 664.28,154 680.07,136.72 695.86,169.36 711.66,149.2 727.45,169.36 743.24,178 759.03,171.28 774.83,163.6 790.62,125.2 806.41,166.48 822.21,158.8 838,136.72 838,178"/>
-  <polyline class="spark-line" points="380,106 395.79,155.92 411.59,145.36 427.38,177.04 443.17,149.2 458.97,146.32 474.76,159.76 490.55,149.2 506.34,166.48 522.14,165.52 537.93,176.08 553.72,156.88 569.52,141.52 585.31,135.76 601.1,148.24 616.9,160.72 632.69,146.32 648.48,175.12 664.28,154 680.07,136.72 695.86,169.36 711.66,149.2 727.45,169.36 743.24,178 759.03,171.28 774.83,163.6 790.62,125.2 806.41,166.48 822.21,158.8 838,136.72"/>
+  <polygon class="spark-fill" points="380,178 380,133.49 395.79,176.69 411.59,138.73 427.38,134.8 443.17,153.13 458.97,138.73 474.76,162.29 490.55,160.98 506.34,175.38 522.14,149.2 537.93,128.25 553.72,120.4 569.52,137.42 585.31,154.44 601.1,134.8 616.9,174.07 632.69,145.27 648.48,121.71 664.28,166.22 680.07,138.73 695.86,166.22 711.66,178 727.45,168.84 743.24,158.36 759.03,106 774.83,160.98 790.62,151.82 806.41,121.71 822.21,145.27 838,178 838,178"/>
+  <polyline class="spark-line" points="380,133.49 395.79,176.69 411.59,138.73 427.38,134.8 443.17,153.13 458.97,138.73 474.76,162.29 490.55,160.98 506.34,175.38 522.14,149.2 537.93,128.25 553.72,120.4 569.52,137.42 585.31,154.44 601.1,134.8 616.9,174.07 632.69,145.27 648.48,121.71 664.28,166.22 680.07,138.73 695.86,166.22 711.66,178 727.45,168.84 743.24,158.36 759.03,106 774.83,160.98 790.62,151.82 806.41,121.71 822.21,145.27 838,178"/>
   <path class="spark-base" d="M 380 178 H 838"/>
-  <circle class="spark-dot blink still" cx="838" cy="136.72" r="3.5"/>
+  <circle class="spark-dot blink still" cx="838" cy="178" r="3.5"/>
 
   <path class="dot" d="M 62 200 H 838"/>
   <text x="62" y="238" class="ink figure">23 days</text>
   <text x="62" y="254" class="accent mono sub">07 TO 29 JUL</text>
   <text x="62" y="270" class="soft eyebrow">LONGEST STREAK</text>
-  <text x="256" y="238" class="ink figure">6 days</text>
-  <text x="256" y="254" class="accent mono sub">SINCE 31 JUL</text>
+  <text x="256" y="238" class="ink figure">0 days</text>
+  <text x="256" y="254" class="accent mono sub">NOT RUNNING</text>
   <text x="256" y="270" class="soft eyebrow">CURRENT STREAK</text>
   <text x="450" y="238" class="ink figure">75</text>
   <text x="450" y="254" class="accent mono sub">07 JUL</text>
   <text x="450" y="270" class="soft eyebrow">BUSIEST DAY</text>
-  <text x="644" y="238" class="ink figure">29/30</text>
+  <text x="644" y="238" class="ink figure">28/30</text>
   <text x="644" y="254" class="accent mono sub">DAYS PUSHED</text>
   <text x="644" y="270" class="soft eyebrow">ACTIVE, LAST 30 DAYS</text>
   <path class="dot" d="M 62 292 H 838"/>
 
   <text x="62" y="316" class="soft mono eyebrow">LAST PUSHED</text>
-  <text x="838" y="316" text-anchor="end" class="ink mono eyebrow">TODAY</text>
+  <text x="838" y="316" text-anchor="end" class="ink mono eyebrow">YESTERDAY</text>
 
   <rect width="900" height="372" rx="26" filter="url(#grain)" opacity="0.05"/>
 </svg>
