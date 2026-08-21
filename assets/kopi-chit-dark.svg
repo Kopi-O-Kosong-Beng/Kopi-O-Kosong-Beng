@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 372" role="img" aria-labelledby="title desc">
   <title id="title">The numbers at Kopi O Kosong Beng, the GitHub account of Chia Zhi Feng</title>
-  <desc id="desc">A printed stats chit. 956 contributions over the past year, with 23 days longest streak (07 to 29 jul), 0 days current streak (not running), 75 busiest day (07 jul), 26/30 active, last 30 days (days pushed). An area chart traces the last 30 days, and a line at the foot says the account last pushed 2 days ago.</desc>
+  <desc id="desc">A printed stats chit. 956 contributions over the past year, with 23 days longest streak (07 to 29 jul), 0 days current streak (not running), 75 busiest day (07 jul), 25/30 active, last 30 days (days pushed). An area chart traces the last 30 days, and a line at the foot says the account last pushed 3 days ago.</desc>
   <defs>
     <filter id="grain" x="0" y="0" width="100%" height="100%">
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
@@ -43,15 +43,15 @@
   <rect class="sheet" width="900" height="372" rx="26"/>
   <path class="chit" d="M 24 22 H 876 V 332 L 869.74 346 L 863.47 332 L 857.21 346 L 850.94 332 L 844.68 346 L 838.41 332 L 832.15 346 L 825.88 332 L 819.62 346 L 813.35 332 L 807.09 346 L 800.82 332 L 794.56 346 L 788.29 332 L 782.03 346 L 775.76 332 L 769.5 346 L 763.24 332 L 756.97 346 L 750.71 332 L 744.44 346 L 738.18 332 L 731.91 346 L 725.65 332 L 719.38 346 L 713.12 332 L 706.85 346 L 700.59 332 L 694.32 346 L 688.06 332 L 681.79 346 L 675.53 332 L 669.26 346 L 663 332 L 656.74 346 L 650.47 332 L 644.21 346 L 637.94 332 L 631.68 346 L 625.41 332 L 619.15 346 L 612.88 332 L 606.62 346 L 600.35 332 L 594.09 346 L 587.82 332 L 581.56 346 L 575.29 332 L 569.03 346 L 562.76 332 L 556.5 346 L 550.24 332 L 543.97 346 L 537.71 332 L 531.44 346 L 525.18 332 L 518.91 346 L 512.65 332 L 506.38 346 L 500.12 332 L 493.85 346 L 487.59 332 L 481.32 346 L 475.06 332 L 468.79 346 L 462.53 332 L 456.26 346 L 450 332 L 443.74 346 L 437.47 332 L 431.21 346 L 424.94 332 L 418.68 346 L 412.41 332 L 406.15 346 L 399.88 332 L 393.62 346 L 387.35 332 L 381.09 346 L 374.82 332 L 368.56 346 L 362.29 332 L 356.03 346 L 349.76 332 L 343.5 346 L 337.24 332 L 330.97 346 L 324.71 332 L 318.44 346 L 312.18 332 L 305.91 346 L 299.65 332 L 293.38 346 L 287.12 332 L 280.85 346 L 274.59 332 L 268.32 346 L 262.06 332 L 255.79 346 L 249.53 332 L 243.26 346 L 237 332 L 230.74 346 L 224.47 332 L 218.21 346 L 211.94 332 L 205.68 346 L 199.41 332 L 193.15 346 L 186.88 332 L 180.62 346 L 174.35 332 L 168.09 346 L 161.82 332 L 155.56 346 L 149.29 332 L 143.03 346 L 136.76 332 L 130.5 346 L 124.24 332 L 117.97 346 L 111.71 332 L 105.44 346 L 99.18 332 L 92.91 346 L 86.65 332 L 80.38 346 L 74.12 332 L 67.85 346 L 61.59 332 L 55.32 346 L 49.06 332 L 42.79 346 L 36.53 332 L 30.26 346 L 24 332 Z"/>
 
-  <text x="62" y="54" class="soft mono meta">THE NUMBERS &#183; KOPI O KOSONG BENG &#183; 20 AUG 2026</text>
+  <text x="62" y="54" class="soft mono meta">THE NUMBERS &#183; KOPI O KOSONG BENG &#183; 21 AUG 2026</text>
   <path class="dot" d="M 62 68 H 838"/>
 
   <text x="62" y="142" class="hero">956</text>
   <text x="62" y="180" class="soft eyebrow">CONTRIBUTIONS, PAST YEAR</text>
 
   <text x="380" y="100" class="soft mono eyebrow">THE LAST 30 DAYS</text>
-  <polygon class="spark-fill" points="380,178 380,154.86 395.79,135.57 411.59,174.14 427.38,145.86 443.17,122.71 458.97,166.43 474.76,139.43 490.55,166.43 506.34,178 522.14,169 537.93,158.71 553.72,106 569.52,161.29 585.31,152.29 601.1,118.86 616.9,145.86 632.69,161.29 648.48,174.14 664.28,166.43 680.07,169 695.86,167.71 711.66,156.14 727.45,162.57 743.24,178 759.03,145.86 774.83,120.14 790.62,175.43 806.41,172.86 822.21,178 838,178 838,178"/>
-  <polyline class="spark-line" points="380,154.86 395.79,135.57 411.59,174.14 427.38,145.86 443.17,122.71 458.97,166.43 474.76,139.43 490.55,166.43 506.34,178 522.14,169 537.93,158.71 553.72,106 569.52,161.29 585.31,152.29 601.1,118.86 616.9,145.86 632.69,161.29 648.48,174.14 664.28,166.43 680.07,169 695.86,167.71 711.66,156.14 727.45,162.57 743.24,178 759.03,145.86 774.83,120.14 790.62,175.43 806.41,172.86 822.21,178 838,178"/>
+  <polygon class="spark-fill" points="380,178 380,135.57 395.79,174.14 411.59,145.86 427.38,122.71 443.17,166.43 458.97,139.43 474.76,166.43 490.55,178 506.34,169 522.14,158.71 537.93,106 553.72,161.29 569.52,152.29 585.31,118.86 601.1,145.86 616.9,161.29 632.69,174.14 648.48,166.43 664.28,169 680.07,167.71 695.86,156.14 711.66,162.57 727.45,178 743.24,145.86 759.03,120.14 774.83,175.43 790.62,172.86 806.41,178 822.21,178 838,178 838,178"/>
+  <polyline class="spark-line" points="380,135.57 395.79,174.14 411.59,145.86 427.38,122.71 443.17,166.43 458.97,139.43 474.76,166.43 490.55,178 506.34,169 522.14,158.71 537.93,106 553.72,161.29 569.52,152.29 585.31,118.86 601.1,145.86 616.9,161.29 632.69,174.14 648.48,166.43 664.28,169 680.07,167.71 695.86,156.14 711.66,162.57 727.45,178 743.24,145.86 759.03,120.14 774.83,175.43 790.62,172.86 806.41,178 822.21,178 838,178"/>
   <path class="spark-base" d="M 380 178 H 838"/>
   <circle class="spark-dot blink still" cx="838" cy="178" r="3.5"/>
 
@@ -65,13 +65,13 @@
   <text x="450" y="238" class="ink figure">75</text>
   <text x="450" y="254" class="accent mono sub">07 JUL</text>
   <text x="450" y="270" class="soft eyebrow">BUSIEST DAY</text>
-  <text x="644" y="238" class="ink figure">26/30</text>
+  <text x="644" y="238" class="ink figure">25/30</text>
   <text x="644" y="254" class="accent mono sub">DAYS PUSHED</text>
   <text x="644" y="270" class="soft eyebrow">ACTIVE, LAST 30 DAYS</text>
   <path class="dot" d="M 62 292 H 838"/>
 
   <text x="62" y="316" class="soft mono eyebrow">LAST PUSHED</text>
-  <text x="838" y="316" text-anchor="end" class="ink mono eyebrow">2 DAYS AGO</text>
+  <text x="838" y="316" text-anchor="end" class="ink mono eyebrow">3 DAYS AGO</text>
 
   <rect width="900" height="372" rx="26" filter="url(#grain)" opacity="0.05"/>
 </svg>
