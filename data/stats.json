@@ -365,14 +365,15 @@
     0,
     0,
     0,
+    0,
     0
   ],
   "days_active": 58,
-  "days_total": 365,
-  "generated_on": "2026-08-23",
+  "days_total": 366,
+  "generated_on": "2026-08-24",
   "login": "Kopi-O-Kosong-Beng",
   "longest_run": 23,
   "total_contributions": 956,
-  "window_end": "2026-08-23",
+  "window_end": "2026-08-24",
   "window_start": "2025-08-24"
 }
