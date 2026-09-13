@@ -3,13 +3,6 @@
   "daily": [
     0,
     0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     1,
     0,
     0,
@@ -371,14 +364,15 @@
     1,
     22,
     7,
+    0,
     0
   ],
   "days_active": 63,
-  "days_total": 371,
-  "generated_on": "2026-09-12",
+  "days_total": 365,
+  "generated_on": "2026-09-13",
   "login": "Kopi-O-Kosong-Beng",
   "longest_run": 23,
   "total_contributions": 1040,
-  "window_end": "2026-09-12",
-  "window_start": "2025-09-07"
+  "window_end": "2026-09-13",
+  "window_start": "2025-09-14"
 }
