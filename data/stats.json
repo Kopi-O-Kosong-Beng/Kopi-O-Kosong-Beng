@@ -1,5 +1,5 @@
 {
-  "current_run": 1,
+  "current_run": 0,
   "daily": [
     0,
     0,
@@ -367,14 +367,16 @@
     0,
     0,
     0,
-    4
+    4,
+    1,
+    0
   ],
-  "days_active": 65,
-  "days_total": 367,
-  "generated_on": "2026-09-29",
+  "days_active": 66,
+  "days_total": 369,
+  "generated_on": "2026-10-01",
   "login": "Kopi-O-Kosong-Beng",
   "longest_run": 23,
-  "total_contributions": 1057,
-  "window_end": "2026-09-29",
+  "total_contributions": 1058,
+  "window_end": "2026-10-01",
   "window_start": "2025-09-28"
 }
