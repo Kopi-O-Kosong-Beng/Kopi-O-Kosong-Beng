@@ -1,13 +1,6 @@
 {
-  "current_run": 2,
+  "current_run": 0,
   "daily": [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     0,
     0,
     0,
@@ -371,14 +364,15 @@
     0,
     0,
     9,
-    21
+    21,
+    0
   ],
   "days_active": 80,
-  "days_total": 371,
-  "generated_on": "2026-10-17",
+  "days_total": 365,
+  "generated_on": "2026-10-18",
   "login": "Kopi-O-Kosong-Beng",
   "longest_run": 23,
   "total_contributions": 1246,
-  "window_end": "2026-10-17",
-  "window_start": "2025-10-12"
+  "window_end": "2026-10-18",
+  "window_start": "2025-10-19"
 }
