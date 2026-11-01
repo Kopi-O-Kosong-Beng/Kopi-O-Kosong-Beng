@@ -131,13 +131,6 @@
     0,
     0,
     0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     1,
     0,
     0,
@@ -371,14 +364,15 @@
     17,
     0,
     0,
+    0,
     0
   ],
   "days_active": 86,
-  "days_total": 371,
-  "generated_on": "2026-10-31",
+  "days_total": 365,
+  "generated_on": "2026-11-01",
   "login": "Kopi-O-Kosong-Beng",
   "longest_run": 23,
   "total_contributions": 1303,
-  "window_end": "2026-10-31",
-  "window_start": "2025-10-26"
+  "window_end": "2026-11-01",
+  "window_start": "2025-11-02"
 }
